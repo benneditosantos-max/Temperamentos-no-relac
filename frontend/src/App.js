@@ -877,6 +877,139 @@ const PremiumUpgradeDialog = ({ open, onOpenChange, userId }) => {
   );
 };
 
+// Payment Success Component
+const PaymentSuccess = () => {
+  const [isCheckingPayment, setIsCheckingPayment] = useState(true);
+  const [paymentStatus, setPaymentStatus] = useState(null);
+
+  useEffect(() => {
+    checkPaymentStatus();
+  }, []);
+
+  const getUrlParameter = (name) => {
+    name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+    const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+    const results = regex.exec(location.search);
+    return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+  };
+
+  const checkPaymentStatus = async () => {
+    const sessionId = getUrlParameter('session_id');
+    if (!sessionId) {
+      setPaymentStatus('error');
+      setIsCheckingPayment(false);
+      return;
+    }
+
+    try {
+      // Poll payment status
+      let attempts = 0;
+      const maxAttempts = 5;
+      
+      const pollStatus = async () => {
+        const response = await axios.get(`${API}/payments/checkout/status/${sessionId}`);
+        const data = response.data;
+        
+        if (data.payment_status === 'paid') {
+          setPaymentStatus('success');
+          setIsCheckingPayment(false);
+          toast.success("🎉 Pagamento realizado com sucesso! Bem-vindo ao Premium!");
+          return;
+        } else if (data.status === 'expired') {
+          setPaymentStatus('expired');
+          setIsCheckingPayment(false);
+          return;
+        }
+        
+        attempts++;
+        if (attempts < maxAttempts) {
+          setTimeout(pollStatus, 2000);
+        } else {
+          setPaymentStatus('timeout');
+          setIsCheckingPayment(false);
+        }
+      };
+      
+      pollStatus();
+      
+    } catch (error) {
+      console.error('Error checking payment status:', error);
+      setPaymentStatus('error');
+      setIsCheckingPayment(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50 flex items-center justify-center">
+      <div className="max-w-md mx-auto p-8">
+        <Card className="text-center">
+          <CardContent className="pt-6">
+            {isCheckingPayment && (
+              <>
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+                <h2 className="text-xl font-semibold mb-2">Verificando pagamento...</h2>
+                <p className="text-gray-600">Aguarde enquanto confirmamos sua transação.</p>
+              </>
+            )}
+            
+            {paymentStatus === 'success' && (
+              <>
+                <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
+                <h2 className="text-2xl font-bold text-green-600 mb-2">Pagamento Confirmado!</h2>
+                <p className="text-gray-600 mb-6">
+                  Parabéns! Você agora tem acesso ao Premium com insights exclusivos.
+                </p>
+                <Button 
+                  onClick={() => window.location.href = '/'}
+                  className="bg-purple-600 hover:bg-purple-700"
+                >
+                  Voltar ao App
+                </Button>
+              </>
+            )}
+            
+            {paymentStatus === 'error' && (
+              <>
+                <div className="h-16 w-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-2xl">❌</span>
+                </div>
+                <h2 className="text-xl font-semibold text-red-600 mb-2">Erro no Pagamento</h2>
+                <p className="text-gray-600 mb-6">
+                  Ocorreu um erro ao processar seu pagamento. Tente novamente.
+                </p>
+                <Button 
+                  onClick={() => window.location.href = '/'}
+                  variant="outline"
+                >
+                  Voltar ao App
+                </Button>
+              </>
+            )}
+            
+            {(paymentStatus === 'expired' || paymentStatus === 'timeout') && (
+              <>
+                <div className="h-16 w-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-2xl">⏰</span>
+                </div>
+                <h2 className="text-xl font-semibold text-yellow-600 mb-2">Sessão Expirada</h2>
+                <p className="text-gray-600 mb-6">
+                  A sessão de pagamento expirou. Por favor, tente novamente.
+                </p>
+                <Button 
+                  onClick={() => window.location.href = '/'}
+                  variant="outline"
+                >
+                  Voltar ao App
+                </Button>
+              </>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+};
+
 // Main App Component
 function App() {
   const [currentPath, setCurrentPath] = useState(window.location.pathname);
@@ -891,11 +1024,20 @@ function App() {
   }, []);
 
   // Simple routing logic
-  const pathMatch = currentPath.match(/^\/dashboard\/(.+)$/);
-  const userId = pathMatch ? pathMatch[1] : null;
+  const dashboardMatch = currentPath.match(/^\/dashboard\/(.+)$/);
+  const userId = dashboardMatch ? dashboardMatch[1] : null;
 
   if (userId) {
     return <Dashboard userId={userId} />;
+  }
+
+  if (currentPath === '/premium/success') {
+    return (
+      <>
+        <PaymentSuccess />
+        <Toaster />
+      </>
+    );
   }
 
   return (
