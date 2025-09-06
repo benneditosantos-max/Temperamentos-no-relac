@@ -260,10 +260,9 @@ const CreateProfileDialog = ({ open, onOpenChange }) => {
       // Store user ID in localStorage for simple session management
       localStorage.setItem('userId', response.data.id);
       
-      // Use React's state-based navigation instead of window.location
+      // Navigate to dashboard
       setTimeout(() => {
-        window.history.pushState({}, '', `/dashboard/${response.data.id}`);
-        window.location.reload(); // Force reload to update the route
+        window.location.href = `/dashboard/${response.data.id}`;
       }, 1000);
       
     } catch (error) {
