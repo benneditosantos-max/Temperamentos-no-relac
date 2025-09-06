@@ -313,16 +313,16 @@ const CreateProfileDialog = ({ open, onOpenChange }) => {
           
           <div>
             <Label htmlFor="zodiac_sign">Signo do Zodíaco</Label>
-            <Select onValueChange={(value) => setFormData({...formData, zodiac_sign: value})}>
+            <Select value={formData.zodiac_sign} onValueChange={(value) => setFormData({...formData, zodiac_sign: value})}>
               <SelectTrigger>
                 <SelectValue placeholder="Selecione seu signo" />
               </SelectTrigger>
               <SelectContent>
                 {zodiacSigns.map((sign) => (
                   <SelectItem key={sign.value} value={sign.value}>
-                    <div className="flex items-center justify-between">
-                      <span>{sign.label}</span>
-                      <span className="text-xs text-gray-500 ml-2">{sign.dates}</span>
+                    <div className="flex flex-col">
+                      <span className="font-medium">{sign.label}</span>
+                      <span className="text-xs text-gray-500">{sign.dates}</span>
                     </div>
                   </SelectItem>
                 ))}
