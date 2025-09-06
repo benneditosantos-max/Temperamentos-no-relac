@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Complete testing of the free user partner limit behavior in the 'Temperamentos no Relacionamento' application. Specifically test the user experience when a free user attempts to add a second partner after reaching their limit of one, and verify the premium upgrade modal appears correctly."
+user_problem_statement: "Realizar teste COMPLETO de todas as funcionalidades do aplicativo 'Temperamentos no Relacionamento'. Não apenas os limites de parceiros (já testados), mas TODO o ecossistema da aplicação incluindo: funcionalidades principais (perfil, questionário, compatibilidade), sistema de gamificação (badges, progresso, celebrações), sistema premium ($12), funcionalidades premium avançadas, sistema de compatibilidade de casal, navegação e UX, integrações técnicas, e conteúdo em português."
 
 backend:
   - task: "Partner Limit API - Free User (1 partner max)"
