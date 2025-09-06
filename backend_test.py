@@ -524,21 +524,42 @@ def main():
     
     tester = TemperamentosAPITester()
     
-    # Test sequence
-    tests = [
+    # Test sequence - Basic functionality first
+    basic_tests = [
         ("Root API", tester.test_root_endpoint),
         ("Create User", tester.test_create_user),
         ("Get User", tester.test_get_user),
         ("Get Questionnaire", tester.test_get_questionnaire),
         ("Submit Questionnaire", tester.test_submit_questionnaire),
         ("Verify Progress After Questionnaire", tester.verify_user_progress_after_questionnaire),
+        ("Get Zodiac Signs", tester.test_zodiac_signs)
+    ]
+    
+    # Partner Limit Tests - Core functionality being tested
+    partner_limit_tests = [
+        ("Partner Limits - Free User (0 partners)", tester.test_partner_limits_free_user_zero_partners),
+        ("Add First Partner - Free User", tester.test_add_first_partner_free_user),
+        ("Partner Limits - Free User (1 partner)", tester.test_partner_limits_free_user_one_partner),
+        ("Add Second Partner - Free User (Should Fail)", tester.test_add_second_partner_free_user_should_fail),
+        ("Upgrade User to Premium", tester.test_upgrade_user_to_premium),
+        ("Partner Limits - Premium User (1 partner)", tester.test_partner_limits_premium_user_one_partner),
+        ("Add Multiple Partners - Premium User", tester.test_add_multiple_partners_premium_user),
+        ("Partner Limits - Premium User (4 partners)", tester.test_partner_limits_premium_user_four_partners),
+        ("Add 5th Partner - Premium User (Should Fail)", tester.test_add_fifth_partner_premium_user_should_fail),
+        ("Get User Partners", tester.test_get_user_partners),
+        ("Fresh Free User - Partner Limits Test", tester.test_fresh_free_user_partner_limits)
+    ]
+    
+    # Additional tests
+    additional_tests = [
         ("Create Second User", tester.test_create_second_user),
         ("Submit Questionnaire User 2", tester.test_submit_questionnaire_user2),
         ("Generate Compatibility Report", tester.test_compatibility_report),
-        ("Upgrade Premium", tester.test_upgrade_premium),
-        ("Share with Partner", tester.test_share_with_partner),
-        ("Get Zodiac Signs", tester.test_zodiac_signs)
+        ("Share with Partner", tester.test_share_with_partner)
     ]
+    
+    # Combine all tests
+    tests = basic_tests + partner_limit_tests + additional_tests
     
     failed_tests = []
     
