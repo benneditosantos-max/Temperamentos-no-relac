@@ -636,17 +636,51 @@ export const CompatibilityDashboard = ({ userId, userIsPremium = false }) => {
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-4">
           <Heart className="h-8 w-8 text-pink-500" />
-          <h2 className="text-3xl font-bold text-gray-900">Compatibilidade de Casal</h2>
+          <div>
+            <h2 className="text-3xl font-bold text-gray-900">Compatibilidade de Casal</h2>
+            {partnerLimits && (
+              <div className="flex items-center gap-2 mt-1">
+                <Badge className={partnerLimits.is_premium ? "bg-yellow-100 text-yellow-800" : "bg-gray-100 text-gray-600"}>
+                  {partnerLimits.is_premium ? "Premium" : "Gratuito"}
+                </Badge>
+                <span className="text-sm text-gray-500">
+                  {partnerLimits.current_partners} de {partnerLimits.max_partners} parceiros
+                </span>
+                {partnerLimits.remaining_slots > 0 && (
+                  <Badge variant="outline" className="text-green-600 border-green-300">
+                    +{partnerLimits.remaining_slots} disponível{partnerLimits.remaining_slots > 1 ? 'is' : ''}
+                  </Badge>
+                )}
+              </div>
+            )}
+          </div>
         </div>
-        <Button
-          onClick={() => setShowAddPartner(true)}
-          className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
-        >
-          <Plus className="mr-2 h-4 w-4" />
-          Adicionar Parceiro(a)
-        </Button>
+        <div className="flex items-center gap-3">
+          {!partnerLimits?.is_premium && partnerLimits?.current_partners >= 1 && (
+            <Button
+              onClick={() => setShowUpgradeModal(true)}
+              variant="outline"
+              className="border-yellow-400 text-yellow-700 hover:bg-yellow-50"
+            >
+              <Crown className="mr-2 h-4 w-4" />
+              Upgrade Premium
+            </Button>
+          )}
+          <Button
+            onClick={handleAddPartnerClick}
+            disabled={!partnerLimits?.can_add_more}
+            className={`${
+              partnerLimits?.can_add_more 
+                ? "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700" 
+                : "bg-gray-400 cursor-not-allowed"
+            }`}
+          >
+            <Plus className="mr-2 h-4 w-4" />
+            {partnerLimits?.can_add_more ? "Adicionar Parceiro(a)" : "Limite Atingido"}
+          </Button>
+        </div>
       </div>
 
       {partners.length === 0 ? (
