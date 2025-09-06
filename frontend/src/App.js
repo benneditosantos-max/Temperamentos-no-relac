@@ -561,8 +561,45 @@ const Dashboard = ({ userId }) => {
       
       toast.success("🎉 Relatório de compatibilidade gerado! Nova conquista desbloqueada!");
       
-      // Show report results
-      alert(`Compatibilidade: ${report.compatibility_score}%\n\nPontos Fortes:\n${report.strengths.join('\n')}\n\nDesafios:\n${report.challenges.join('\n')}\n\nRecomendações:\n${report.recommendations.join('\n')}`);
+      // Show enhanced report results
+      const reportHtml = `
+        <div style="max-width: 600px; margin: 0 auto; padding: 20px; font-family: Arial, sans-serif;">
+          <h2 style="color: #7c3aed; text-align: center;">Relatório de Compatibilidade</h2>
+          <div style="text-align: center; margin: 20px 0;">
+            <div style="font-size: 48px; font-weight: bold; color: #059669;">${report.compatibility_score}%</div>
+            <p style="color: #6b7280;">Score de Compatibilidade</p>
+          </div>
+          
+          <h3 style="color: #059669; margin-top: 30px;">✅ Pontos Fortes:</h3>
+          <ul>${report.strengths.map(s => `<li style="margin: 5px 0;">${s}</li>`).join('')}</ul>
+          
+          <h3 style="color: #dc2626; margin-top: 20px;">⚠️ Desafios:</h3>
+          <ul>${report.challenges.map(c => `<li style="margin: 5px 0;">${c}</li>`).join('')}</ul>
+          
+          <h3 style="color: #7c3aed; margin-top: 20px;">💡 Recomendações:</h3>
+          <ul>${report.recommendations.map(r => `<li style="margin: 5px 0;">${r}</li>`).join('')}</ul>
+          
+          ${user?.is_premium ? `
+            <h3 style="color: #d97706; margin-top: 20px;">👑 Insights Premium:</h3>
+            <ul>${report.premium_insights.map(i => `<li style="margin: 5px 0;">${i}</li>`).join('')}</ul>
+          ` : `
+            <div style="background: #fef3c7; padding: 20px; border-radius: 8px; margin-top: 20px; text-align: center;">
+              <h4 style="color: #92400e;">🔒 Insights Premium Disponíveis</h4>
+              <p style="color: #92400e; margin: 10px 0;">Desbloqueie análises mais profundas e estratégias personalizadas!</p>
+            </div>
+          `}
+        </div>
+      `;
+      
+      // Create a new window to show the report
+      const reportWindow = window.open('', '_blank', 'width=800,height=600');
+      reportWindow.document.write(`
+        <html>
+          <head><title>Relatório de Compatibilidade</title></head>
+          <body>${reportHtml}</body>
+        </html>
+      `);
+      reportWindow.document.close();
       
       // Reload user data to get updated badges
       loadUserData();
