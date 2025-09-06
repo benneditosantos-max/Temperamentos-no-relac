@@ -275,6 +275,13 @@ const Home = () => {
         open={showCreateProfile} 
         onOpenChange={setShowCreateProfile} 
       />
+
+      {/* Login Dialog */}
+      <LoginDialog 
+        open={showLogin} 
+        onOpenChange={setShowLogin}
+        onLogin={handleLogin}
+      />
     </div>
   );
 };
