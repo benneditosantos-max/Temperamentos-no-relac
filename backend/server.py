@@ -102,6 +102,23 @@ class CompatibilityRequest(BaseModel):
     user1_id: str
     user2_id: str
 
+# Payment Models
+class PaymentTransaction(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    amount: float
+    currency: str = "BRL"
+    session_id: str
+    payment_status: str = "pending"
+    stripe_status: str = "pending"
+    metadata: Optional[Dict[str, Any]] = None
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class PremiumUpgradeRequest(BaseModel):
+    user_id: str
+    origin_url: str
+
 # Zodiac Sign Data
 ZODIAC_DATA = {
     ZodiacSign.ARIES: {"modality": Modality.CARDINAL, "element": "fire", "name": "Áries"},
