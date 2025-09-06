@@ -486,6 +486,7 @@ const Dashboard = ({ userId }) => {
   useEffect(() => {
     loadUserData();
     loadQuestionnaire();
+    loadTemperamentResult();
   }, [userId]);
 
   const loadUserData = async () => {
