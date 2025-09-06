@@ -298,7 +298,32 @@ TEMPERAMENT_PROFILES = {
         decision_making="Tomam decisões cuidadosamente, considerando todas as implicações. Preferem manter o que já está funcionando bem.",
         strengths=["Lealdade inabalável", "Estabilidade emocional", "Determinação", "Confiabilidade", "Profundidade nas relações"],
         challenges=["Resistência a mudanças", "Teimosia", "Dificuldade para se adaptar", "Possessividade", "Rigidez de pensamento"],
-        growth_tips=["Pratique a flexibilidade em situações menores", "Abra-se para novas experiências", "Aprenda a expressar sentimentos mais abertamente", "Desenvolva tolerância a mudanças"]
+        growth_tips=["Pratique a flexibilidade em situações menores", "Abra-se para novas experiências", "Aprenda a expressar sentimentos mais abertamente", "Desenvolva tolerância a mudanças"],
+        emotional_triggers=[
+            "Mudanças bruscas ou inesperadas",
+            "Pressão para tomar decisões rápidas",
+            "Questionamento da sua lealdade ou compromisso",
+            "Instabilidade financeira ou emocional",
+            "Traição ou quebra de confiança"
+        ],
+        growth_strategies=[
+            "Comece com micro-mudanças diárias (novo caminho para o trabalho, comida diferente)",
+            "Pratique o exercício '3 opções': sempre considere 3 alternativas antes de decidir",
+            "Desenvolva um ritual de 'abertura' - 5 min diários pensando em uma novidade para experimentar",
+            "Crie um 'fundo de mudança' - reserve 10% do tempo para experimentos",
+            "Pratique yoga ou tai chi para desenvolver flexibilidade física e mental"
+        ],
+        daily_practices=[
+            "Manhã: Faça uma pequena mudança na rotina matinal",
+            "Tarde: Identifique uma crença ou opinião e questione-a gentilmente",
+            "Noite: Reflita sobre algo novo que aprendeu hoje",
+            "Semanal: Experimente uma atividade completamente nova"
+        ],
+        relationship_dynamics={
+            "with_cardinal": "O Cardinal acelera, o Fixo estabiliza. Negocie o ritmo das mudanças.",
+            "with_fixed": "Relacionamento sólido mas pode estagnar. Introduzam novidades juntos regularmente.",
+            "with_mutable": "O Fixo oferece âncora, o Mutável traz variedade. Equilibrem estabilidade e mudança."
+        }
     ),
     Modality.MUTABLE: TemperamentProfile(
         modality=Modality.MUTABLE,
