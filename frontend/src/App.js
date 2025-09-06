@@ -15,7 +15,14 @@ import { Separator } from "./components/ui/separator";
 import { Alert, AlertDescription } from "./components/ui/alert";
 import { toast } from "sonner";
 import { Toaster } from "./components/ui/sonner";
-import { Heart, Star, Trophy, Users, CheckCircle, Crown, Sparkles, Target, Gift } from "lucide-react";
+import { Heart, Star, Trophy, Users, CheckCircle, Crown, Sparkles, Target, Gift, BookOpen, Award, Calendar, Download } from "lucide-react";
+import { 
+  TemperamentProfileCard, 
+  SelfKnowledgeQuestionnaire, 
+  WeeklyMissionsPanel, 
+  EnhancedPremiumModal,
+  PDFExportButton 
+} from "./components/PremiumFeatures";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
