@@ -831,14 +831,50 @@ const Dashboard = ({ userId }) => {
           </Dialog>
         )}
 
-        {/* Temperament Profile Modal */}
+        {/* Enhanced Temperament Profile Modal */}
         {showTemperamentProfile && temperamentResult && (
           <Dialog open={showTemperamentProfile} onOpenChange={setShowTemperamentProfile}>
-            <DialogContent className="sm:max-w-4xl">
-              <TemperamentProfileCard 
+            <DialogContent className="sm:max-w-6xl max-h-[90vh] overflow-y-auto">
+              <EnhancedTemperamentProfile 
                 modality={temperamentResult.dominant_modality} 
                 isPreview={false}
               />
+            </DialogContent>
+          </Dialog>
+        )}
+
+        {/* Couple Exercises Modal */}
+        {showCoupleExercises && (
+          <Dialog open={showCoupleExercises} onOpenChange={setShowCoupleExercises}>
+            <DialogContent className="sm:max-w-6xl max-h-[90vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle className="text-2xl flex items-center gap-2">
+                  <Heart className="h-6 w-6 text-purple-500" />
+                  Exercícios Premium para Casais
+                </DialogTitle>
+                <DialogDescription>
+                  Dinâmicas guiadas para fortalecer comunicação, resolver conflitos e aprofundar intimidade
+                </DialogDescription>
+              </DialogHeader>
+              <CoupleExercisesPanel userId={userId} />
+            </DialogContent>
+          </Dialog>
+        )}
+
+        {/* Personalized Reports Modal */}
+        {showPersonalizedReports && (
+          <Dialog open={showPersonalizedReports} onOpenChange={setShowPersonalizedReports}>
+            <DialogContent className="sm:max-w-4xl max-h-[90vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle className="text-2xl flex items-center gap-2">
+                  <BookOpen className="h-6 w-6 text-purple-500" />
+                  Seus Relatórios Personalizados
+                </DialogTitle>
+                <DialogDescription>
+                  Análises profundas e insights únicos sobre seu crescimento pessoal e do relacionamento
+                </DialogDescription>
+              </DialogHeader>
+              <PersonalizedReportPanel userId={userId} />
             </DialogContent>
           </Dialog>
         )}
