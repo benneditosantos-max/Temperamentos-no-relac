@@ -783,9 +783,9 @@ const Dashboard = ({ userId }) => {
           <div className="mb-8">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold text-gray-900">Seu Perfil de Temperamento</h2>
-              <Badge className="bg-yellow-100 text-yellow-800">Preview</Badge>
+              <Badge className="bg-yellow-100 text-yellow-800">Preview Gratuito</Badge>
             </div>
-            <TemperamentProfileCard 
+            <EnhancedTemperamentProfile 
               modality={temperamentResult.dominant_modality} 
               isPreview={true}
             />
