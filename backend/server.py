@@ -635,6 +635,219 @@ async def upgrade_to_premium(user_id: str):
 async def get_zodiac_signs():
     return {"signs": ZODIAC_DATA}
 
+# Premium Content Routes
+@api_router.get("/premium/temperament-profiles")
+async def get_temperament_profiles():
+    return {"profiles": {k.value: v.dict() for k, v in TEMPERAMENT_PROFILES.items()}}
+
+@api_router.get("/premium/temperament-profile/{modality}")
+async def get_temperament_profile(modality: Modality):
+    if modality in TEMPERAMENT_PROFILES:
+        return TEMPERAMENT_PROFILES[modality]
+    raise HTTPException(status_code=404, detail="Perfil de temperamento não encontrado")
+
+@api_router.get("/premium/self-knowledge-questions")
+async def get_self_knowledge_questions():
+    return {"questions": [q.dict() for q in SELF_KNOWLEDGE_QUESTIONS]}
+
+@api_router.post("/premium/self-knowledge/submit")
+async def submit_self_knowledge(user_id: str, answers: List[SelfKnowledgeAnswer]):
+    # Calculate insights based on answers
+    insights = {}
+    categories = {}
+    
+    for answer in answers:
+        if answer.category not in categories:
+            categories[answer.category] = {"cardinal": 0, "fixed": 0, "mutable": 0}
+        
+        # Find the question and get modality
+        question = next((q for q in SELF_KNOWLEDGE_QUESTIONS if q.id == answer.question_id), None)
+        if question:
+            option = next((opt for opt in question.options if opt["answer"] == answer.answer), None)
+            if option:
+                categories[answer.category][option["modality"]] += answer.score
+    
+    # Generate insights for each category
+    for category, scores in categories.items():
+        dominant = max(scores, key=scores.get)
+        if category == "communication":
+            if dominant == "cardinal":
+                insights[category] = "Você tem um estilo de comunicação direto e assertivo. Foque em desenvolver mais paciência e escuta ativa."
+            elif dominant == "fixed":
+                insights[category] = "Sua comunicação é estável e profunda. Pratique expressar sentimentos mais abertamente."
+            else:
+                insights[category] = "Você se adapta bem na comunicação. Desenvolva mais assertividade quando necessário."
+        elif category == "conflict":
+            if dominant == "cardinal":
+                insights[category] = "Você enfrenta conflitos diretamente. Aprenda a dar tempo para o parceiro processar."
+            elif dominant == "fixed":
+                insights[category] = "Você mantém suas posições com firmeza. Pratique mais flexibilidade em questões menores."
+            else:
+                insights[category] = "Você busca harmonia nos conflitos. Às vezes é preciso ser mais firme em questões importantes."
+        elif category == "intimacy":
+            if dominant == "cardinal":
+                insights[category] = "Você é apaixonado e intenso na intimidade. Equilibre momentos de intensidade com calma."
+            elif dominant == "fixed":
+                insights[category] = "Você constrói intimidade através da lealdade. Explore mais espontaneidade na relação."
+            else:
+                insights[category] = "Você se adapta às necessidades do parceiro. Lembre-se de expressar suas próprias necessidades também."
+        elif category == "decision_making":
+            if dominant == "cardinal":
+                insights[category] = "Você toma decisões rapidamente. Às vezes vale a pena consultar mais o parceiro."
+            elif dominant == "fixed":
+                insights[category] = "Você pondera bem as decisões. Pratique mais agilidade em decisões menores."
+            else:
+                insights[category] = "Você considera múltiplas perspectivas. Desenvolva mais confiança em suas escolhas."
+    
+    # Store result
+    result = SelfKnowledgeResult(
+        user_id=user_id,
+        answers=answers,
+        insights=insights
+    )
+    
+    result_mongo = result.dict()
+    result_mongo['completed_at'] = result_mongo['completed_at'].isoformat()
+    await db.self_knowledge_results.insert_one(result_mongo)
+    
+    # Award points and update progress
+    await award_points(user_id, 100, "Questionário de Autoconhecimento Completo")
+    
+    return result
+
+@api_router.get("/premium/weekly-missions/{user_id}")
+async def get_weekly_missions(user_id: str):
+    # Get current week
+    from datetime import datetime
+    now = datetime.now()
+    current_week = now.isocalendar()[1]
+    current_year = now.year
+    
+    # Create missions for current week if not exist
+    missions = []
+    for i, template in enumerate(WEEKLY_MISSIONS_TEMPLATE):
+        mission = WeeklyMission(
+            id=f"mission_{current_year}_{current_week}_{i+1}",
+            title=template.title,
+            description=template.description,
+            points=template.points,
+            week_number=current_week,
+            year=current_year,
+            mission_type=template.mission_type
+        )
+        missions.append(mission)
+        
+        # Check if user has this mission
+        user_mission_data = await db.user_missions.find_one({
+            "user_id": user_id,
+            "mission_id": mission.id
+        })
+        
+        if not user_mission_data:
+            # Create user mission record
+            user_mission = UserMission(
+                user_id=user_id,
+                mission_id=mission.id
+            )
+            user_mission_mongo = user_mission.dict()
+            await db.user_missions.insert_one(user_mission_mongo)
+    
+    # Get user mission progress
+    user_missions = await db.user_missions.find({"user_id": user_id}).to_list(length=None)
+    
+    # Combine missions with progress
+    result = []
+    for mission in missions:
+        user_mission = next((um for um in user_missions if um["mission_id"] == mission.id), None)
+        mission_data = mission.dict()
+        mission_data["completed"] = user_mission["completed"] if user_mission else False
+        mission_data["completed_at"] = user_mission.get("completed_at") if user_mission else None
+        result.append(mission_data)
+    
+    return {"missions": result}
+
+@api_router.post("/premium/complete-mission/{user_id}/{mission_id}")
+async def complete_mission(user_id: str, mission_id: str):
+    # Find mission
+    mission_data = await db.user_missions.find_one({
+        "user_id": user_id,
+        "mission_id": mission_id
+    })
+    
+    if not mission_data:
+        raise HTTPException(status_code=404, detail="Missão não encontrada")
+    
+    if mission_data["completed"]:
+        return {"message": "Missão já foi completada"}
+    
+    # Complete mission
+    await db.user_missions.update_one(
+        {"user_id": user_id, "mission_id": mission_id},
+        {
+            "$set": {
+                "completed": True,
+                "completed_at": datetime.now(timezone.utc).isoformat()
+            }
+        }
+    )
+    
+    # Find mission points
+    mission_points = 100  # default
+    for template in WEEKLY_MISSIONS_TEMPLATE:
+        if template.title in mission_id:
+            mission_points = template.points
+            break
+    
+    # Award points
+    await award_points(user_id, mission_points, f"Missão Completada")
+    
+    return {"message": "Missão completada com sucesso!", "points_earned": mission_points}
+
+@api_router.get("/premium/user-progress/{user_id}")
+async def get_user_progress(user_id: str):
+    progress_data = await db.user_progress.find_one({"user_id": user_id})
+    
+    if not progress_data:
+        # Create initial progress
+        progress = UserProgress(user_id=user_id)
+        progress_mongo = progress.dict()
+        progress_mongo['last_activity'] = progress_mongo['last_activity'].isoformat()
+        await db.user_progress.insert_one(progress_mongo)
+        return progress
+    
+    # Parse from MongoDB
+    if isinstance(progress_data.get('last_activity'), str):
+        progress_data['last_activity'] = datetime.fromisoformat(progress_data['last_activity'])
+    
+    return UserProgress(**progress_data)
+
+async def award_points(user_id: str, points: int, reason: str):
+    """Helper function to award points to user"""
+    progress_data = await db.user_progress.find_one({"user_id": user_id})
+    
+    if not progress_data:
+        # Create initial progress
+        progress = UserProgress(user_id=user_id, total_points=points)
+        progress_mongo = progress.dict()
+        progress_mongo['last_activity'] = progress_mongo['last_activity'].isoformat()
+        await db.user_progress.insert_one(progress_mongo)
+    else:
+        # Update progress
+        new_total = progress_data.get("total_points", 0) + points
+        new_level = (new_total // 500) + 1  # Level up every 500 points
+        
+        await db.user_progress.update_one(
+            {"user_id": user_id},
+            {
+                "$set": {
+                    "total_points": new_total,
+                    "current_level": new_level,
+                    "last_activity": datetime.now(timezone.utc).isoformat()
+                },
+                "$inc": {"missions_completed": 1}
+            }
+        )
+
 # Payment Routes
 @api_router.post("/payments/checkout/session", response_model=CheckoutSessionResponse)
 async def create_checkout_session(request: PremiumUpgradeRequest, http_request: Request):
