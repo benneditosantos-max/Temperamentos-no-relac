@@ -890,7 +890,7 @@ const Dashboard = ({ userId }) => {
 const BadgesSection = ({ user }) => (
   <div className="bg-white rounded-2xl shadow-xl p-8 mb-8">
     <h2 className="text-2xl font-bold text-gray-900 mb-6">Suas Conquistas</h2>
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
       <BadgeItem
         icon={<Users className="h-6 w-6" />}
         title="Perfil Criado"
@@ -911,6 +911,12 @@ const BadgesSection = ({ user }) => (
       />
       <BadgeItem
         icon={<Heart className="h-6 w-6" />}
+        title="Primeira Conexão"
+        earned={user?.badges?.includes('first_connection_created')}
+        color="bg-orange-500"
+      />
+      <BadgeItem
+        icon={<Gift className="h-6 w-6" />}
         title="Compartilhado"
         earned={user?.badges?.includes('shared_with_partner')}
         color="bg-pink-500"
