@@ -249,7 +249,7 @@ ZODIAC_DATA = {
     ZodiacSign.PISCES: {"modality": Modality.MUTABLE, "element": "water", "name": "Peixes"}
 }
 
-# Detailed Temperament Profiles
+# Enhanced Detailed Temperament Profiles
 TEMPERAMENT_PROFILES = {
     Modality.CARDINAL: TemperamentProfile(
         modality=Modality.CARDINAL,
@@ -261,7 +261,32 @@ TEMPERAMENT_PROFILES = {
         decision_making="Tomam decisões rapidamente, baseadas na intuição e na urgência do momento. Preferem agir a ficar analisando por muito tempo.",
         strengths=["Liderança natural", "Iniciativa", "Coragem para mudanças", "Energia motivadora", "Visão de futuro"],
         challenges=["Impaciência", "Dificuldade em delegar", "Pode ser dominante", "Ansiedade por resultados", "Falta de persistência em projetos longos"],
-        growth_tips=["Pratique a paciência e a escuta ativa", "Aprenda a delegar responsabilidades", "Desenvolva persistência em projetos de longo prazo", "Equilibre ação com reflexão"]
+        growth_tips=["Pratique a paciência e a escuta ativa", "Aprenda a delegar responsabilidades", "Desenvolva persistência em projetos de longo prazo", "Equilibre ação com reflexão"],
+        emotional_triggers=[
+            "Lentidão ou indecisão dos outros",
+            "Falta de progresso visível",
+            "Microgerenciamento ou controle excessivo",
+            "Rotinas muito rígidas sem espaço para inovação",
+            "Críticas à sua capacidade de liderança"
+        ],
+        growth_strategies=[
+            "Desenvolva técnicas de respiração profunda para moments de impaciência",
+            "Pratique meditação de 10 minutos diários para cultivar paciência",
+            "Crie um sistema de delegação progressiva - comece com tarefas pequenas",
+            "Estabeleça metas intermediárias para projetos longos",
+            "Pratique ouvir sem interromper por 5 minutos em cada conversa"
+        ],
+        daily_practices=[
+            "Manhã: Defina 3 prioridades principais do dia",
+            "Tarde: Pare 10 minutos para reflexão sobre o progresso",
+            "Noite: Identifique uma lição aprendida e uma gratidão",
+            "Semanal: Reserve 1h para planejamento estratégico pessoal"
+        ],
+        relationship_dynamics={
+            "with_cardinal": "Parceria dinâmica mas pode gerar competição. Definam áreas de liderança específicas.",
+            "with_fixed": "Complementaridade poderosa. O Fixo oferece estabilidade, o Cardinal traz movimento.",
+            "with_mutable": "Combinação criativa. O Cardinal inicia, o Mutável adapta e aperfeiçoa."
+        }
     ),
     Modality.FIXED: TemperamentProfile(
         modality=Modality.FIXED,
