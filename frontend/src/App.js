@@ -20,9 +20,103 @@ import { Heart, Star, Trophy, Users, CheckCircle, Crown, Sparkles, Target, Gift 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
+// Login Component
+const LoginDialog = ({ open, onOpenChange, onLogin }) => {
+  const [loginData, setLoginData] = useState({
+    email: "",
+    password: ""
+  });
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      // For now, simulate login by finding user by email
+      // In a real app, this would be a proper authentication endpoint
+      const response = await axios.get(`${API}/users`);
+      const users = response.data;
+      const user = users.find(u => u.email === loginData.email);
+      
+      if (user) {
+        localStorage.setItem('userId', user.id);
+        localStorage.setItem('userEmail', user.email);
+        toast.success("Login realizado com sucesso!");
+        onLogin(user.id);
+        onOpenChange(false);
+      } else {
+        toast.error("Usuário não encontrado. Crie um perfil primeiro.");
+      }
+    } catch (error) {
+      toast.error("Erro ao fazer login. Tente novamente.");
+      console.error("Login error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <Users className="h-5 w-5 text-purple-600" />
+            Fazer Login
+          </DialogTitle>
+          <DialogDescription>
+            Entre com suas credenciais para acessar seu perfil
+          </DialogDescription>
+        </DialogHeader>
+        
+        <form onSubmit={handleLogin} className="space-y-4">
+          <div>
+            <Label htmlFor="login_email">Email</Label>
+            <Input
+              id="login_email"
+              type="email"
+              value={loginData.email}
+              onChange={(e) => setLoginData({...loginData, email: e.target.value})}
+              placeholder="seu@email.com"
+              required
+            />
+          </div>
+          
+          <div>
+            <Label htmlFor="login_password">Senha (deixe em branco)</Label>
+            <Input
+              id="login_password"
+              type="password"
+              value={loginData.password}
+              onChange={(e) => setLoginData({...loginData, password: e.target.value})}
+              placeholder="Por enquanto, deixe vazio"
+            />
+            <p className="text-xs text-gray-500 mt-1">
+              Sistema de login simplificado - use apenas o email cadastrado
+            </p>
+          </div>
+          
+          <Button 
+            type="submit" 
+            className="w-full bg-purple-600 hover:bg-purple-700"
+            disabled={isLoading}
+          >
+            {isLoading ? "Entrando..." : "Entrar"}
+          </Button>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
 // Home Page Component
 const Home = () => {
   const [showCreateProfile, setShowCreateProfile] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
+
+  const handleLogin = (userId) => {
+    window.location.href = `/dashboard/${userId}`;
+  };
   
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-50 via-purple-50 to-indigo-50">
