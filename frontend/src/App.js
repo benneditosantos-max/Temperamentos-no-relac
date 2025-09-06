@@ -792,7 +792,12 @@ function App() {
     return <Dashboard userId={userId} />;
   }
 
-  return <Home />;
+  return (
+    <>
+      <Home />
+      <Toaster />
+    </>
+  );
 }
 
 export default App;
