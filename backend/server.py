@@ -428,6 +428,194 @@ SELF_KNOWLEDGE_QUESTIONS = [
     )
 ]
 
+# Premium Couple Exercises
+COUPLE_EXERCISES = [
+    CoupleExercise(
+        title="Ritual de Conexão Diária",
+        category="communication",
+        description="Um exercício simples para manter a conexão emocional forte todos os dias",
+        instructions=[
+            "Reservem 15 minutos no final do dia, sem distrações (celular, TV, etc.)",
+            "Sentem-se de frente um para o outro, mantendo contato visual",
+            "Compartilhem 3 coisas: 1 gratidão, 1 desafio do dia, 1 expectativa para amanhã",
+            "Ouçam sem interromper, apenas fazendo perguntas de esclarecimento",
+            "Terminem com um abraço de 20 segundos (tempo necessário para liberar ocitocina)"
+        ],
+        duration_minutes=15,
+        difficulty_level=1,
+        required_materials=["Ambiente tranquilo", "15 minutos livres"],
+        expected_outcomes=["Maior intimidade emocional", "Melhor comunicação", "Conexão diária fortalecida"],
+        follow_up_questions=[
+            "Como vocês se sentiram durante o exercício?",
+            "Que diferenças notaram na qualidade da conexão?",
+            "Quais ajustes fariam para a próxima vez?"
+        ]
+    ),
+    CoupleExercise(
+        title="Roleplay de Resolução de Conflitos",
+        category="conflict_resolution",
+        description="Pratiquem resolver conflitos de forma construtiva através de representação",
+        instructions=[
+            "Escolham um conflito menor recente (não resolvido completamente)",
+            "Definam quem será 'Person A' e 'Person B' primeiro",
+            "Person A expressa seu ponto de vista por 3 minutos sem interrupção",
+            "Person B reflete o que ouviu antes de responder ('Entendi que você sente...')",
+            "Troquem de papéis e repitam o processo",
+            "Juntos, identifiquem pelo menos 2 pontos de acordo",
+            "Criem um plano de ação com pequenos passos concretos"
+        ],
+        duration_minutes=30,
+        difficulty_level=3,
+        required_materials=["Timer", "Papel para anotações"],
+        expected_outcomes=["Melhores habilidades de escuta", "Resolução construtiva", "Maior empatia mútua"],
+        follow_up_questions=[
+            "O que descobriram sobre o estilo de comunicação um do outro?",
+            "Que estratégias funcionaram melhor?",
+            "Como podem aplicar isso em conflitos futuros?"
+        ]
+    ),
+    CoupleExercise(
+        title="Mapa da Intimidade",
+        category="intimacy",
+        description="Explorem e compartilhem suas necessidades e desejos de intimidade física e emocional",
+        instructions=[
+            "Em papéis separados, desenhem/escrevam sobre 4 tipos de intimidade que valorizam:",
+            "1. Intimidade Física (toque, proximidade)",
+            "2. Intimidade Emocional (sentimentos, vulnerabilidade)",  
+            "3. Intimidade Intelectual (ideias, sonhos)",
+            "4. Intimidade Espiritual (valores, propósito)",
+            "Compartilhem seus 'mapas' um de cada vez, explicando cada área",
+            "Identifiquem áreas de sobreposição e diferenças",
+            "Criem um 'plano de intimidade' incluindo elementos importantes para ambos"
+        ],
+        duration_minutes=45,
+        difficulty_level=4,
+        required_materials=["Papel", "Canetas coloridas", "Ambiente privado"],
+        expected_outcomes=["Melhor compreensão das necessidades", "Intimidade mais profunda", "Plano personalizado"],
+        follow_up_questions=[
+            "Que descobertas surpreenderam vocês?",
+            "Em que áreas gostariam de crescer mais?",
+            "Como vão implementar o plano nas próximas semanas?"
+        ]
+    )
+]
+
+# Journey Levels System
+JOURNEY_LEVELS = [
+    JourneyLevel(
+        level=1,
+        title="Despertar - Descoberta Pessoal",
+        description="Compreenda profundamente seu próprio temperamento e padrões",
+        unlock_requirements={"profile_created": True, "questionnaire_completed": True},
+        content_unlocked=["Perfil detalhado", "Gatilhos emocionais", "Práticas diárias"],
+        exercises_available=["Ritual de Conexão Diária"],
+        estimated_duration_days=7
+    ),
+    JourneyLevel(
+        level=2,
+        title="Conexão - Dinâmica do Casal",
+        description="Explore como vocês interagem e se complementam",
+        unlock_requirements={"level_1_completed": True, "compatibility_report": True},
+        content_unlocked=["Dinâmicas de relacionamento", "Exercícios de comunicação"],
+        exercises_available=["Roleplay de Resolução de Conflitos", "Ritual de Conexão Diária"],
+        estimated_duration_days=14
+    ),
+    JourneyLevel(
+        level=3,
+        title="Profundidade - Intimidade Avançada",
+        description="Desenvolvam intimidade em múltiplas dimensões",
+        unlock_requirements={"level_2_completed": True, "exercises_completed": 3},
+        content_unlocked=["Mapa da Intimidade", "Conselheiro Virtual Avançado"],
+        exercises_available=["Mapa da Intimidade", "Todos os exercícios anteriores"],
+        estimated_duration_days=21
+    ),
+    JourneyLevel(
+        level=4,
+        title="Maestria - Crescimento Contínuo",
+        description="Mantenham e aprofundem continuamente sua conexão",
+        unlock_requirements={"level_3_completed": True, "weeks_active": 4},
+        content_unlocked=["Conselhos personalizados", "Relatórios mensais", "Exercícios avançados"],
+        exercises_available=["Todos + exercícios personalizados"],
+        estimated_duration_days=30
+    )
+]
+
+# Advanced Self-Knowledge Questions
+ADVANCED_SELF_KNOWLEDGE = [
+    AdvancedSelfKnowledgeQuestion(
+        id=1,
+        question="Quando você se sente mais autêntico e verdadeiro consigo mesmo?",
+        category="identity",
+        reflection_prompt="Pense em momentos específicos quando você sentiu que estava sendo completamente você mesmo, sem máscaras ou pretensões.",
+        follow_up_questions=[
+            "O que estava acontecendo ao seu redor nesses momentos?",
+            "Quais pessoas estavam presentes?",
+            "Que atividades você estava fazendo?",
+            "Como você pode criar mais desses momentos na sua vida?"
+        ],
+        interpretation_guide="A autenticidade está ligada ao alinhamento entre valores internos e ações externas. Pessoas Cardinais se sentem autênticas liderando, Fixas mantendo valores, Mutáveis adaptando-se genuinamente."
+    ),
+    AdvancedSelfKnowledgeQuestion(
+        id=2,
+        question="Qual é o legado emocional que você gostaria de deixar no seu relacionamento?",
+        category="purpose",
+        reflection_prompt="Imagine seu parceiro descrevendo o impacto emocional que você teve na vida dele. O que você gostaria que fosse dito?",
+        follow_up_questions=[
+            "Que qualidades emocionais você mais valoriza?",
+            "Como você quer ser lembrado pelo seu parceiro?",
+            "Que diferença você quer fazer na vida dele?",
+            "Que passos você pode dar hoje para construir esse legado?"
+        ],
+        interpretation_guide="O legado emocional reflete seus valores mais profundos. Cardinais querem inspirar, Fixos querem oferecer segurança, Mutáveis querem proporcionar crescimento."
+    )
+]
+
+# Daily Advice Templates
+DAILY_ADVICE_TEMPLATES = {
+    Modality.CARDINAL: [
+        {
+            "advice": "Hoje, pratique liderar através do exemplo ao invés de palavras. Sua energia natural inspira mais do que direcionamentos verbais.",
+            "reflection": "Em que situação hoje você pode influenciar positivamente alguém apenas sendo você mesmo?",
+            "action": "Escolha uma área para liderar pelo exemplo durante todo o dia.",
+            "category": "leadership"
+        },
+        {
+            "advice": "Sua impaciência pode ser transformada em urgência produtiva. Canal essa energia para uma prioridade importante.",
+            "reflection": "Qual projeto ou objetivo está esperando sua energia de iniciação?",
+            "action": "Dedique 30 minutos para dar o primeiro passo em algo importante que estava adiando.",
+            "category": "productivity"
+        }
+    ],
+    Modality.FIXED: [
+        {
+            "advice": "Sua estabilidade é um presente para outros. Hoje, seja conscientemente uma âncora emocional para alguém.",
+            "reflection": "Quem ao seu redor poderia se beneficiar da sua presença estável e confiável?",
+            "action": "Ofereça apoio consistente a uma pessoa que está passando por mudanças.",
+            "category": "support"
+        },
+        {
+            "advice": "Experimente algo pequeno e novo hoje. Sua zona de conforto pode se expandir com passos gentis.",
+            "reflection": "Que mudança pequena e segura você poderia experimentar hoje?",
+            "action": "Faça uma escolha diferente em algo rotineiro (caminho, comida, atividade).",
+            "category": "growth"
+        }
+    ],
+    Modality.MUTABLE: [
+        {
+            "advice": "Sua adaptabilidade é uma força. Hoje, use-a conscientemente para trazer harmonia a uma situação tensa.",
+            "reflection": "Onde sua capacidade de mediar e adaptar pode fazer diferença hoje?",
+            "action": "Identifique um conflito menor e atue como mediador pacífico.",
+            "category": "harmony"
+        },
+        {
+            "advice": "Pratique manter uma posição firme em algo importante para você. Sua flexibilidade não significa ausência de convicções.",
+            "reflection": "Sobre que valores ou princípios você não deveria ser flexível?",
+            "action": "Identifique uma situação onde você precisa ser firme e pratique essa firmeza gentil.",
+            "category": "assertiveness"
+        }
+    ]
+}
+
 # Weekly Missions
 WEEKLY_MISSIONS_TEMPLATE = [
     WeeklyMission(
