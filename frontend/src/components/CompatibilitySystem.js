@@ -727,14 +727,66 @@ export const CompatibilityDashboard = ({ userId, userIsPremium = false }) => {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {partners.map((partner) => (
-            <PartnerProfileCard
-              key={partner.id}
-              partner={partner}
-              onGenerateCompatibility={handleGenerateCompatibility}
-            />
-          ))}
+        <div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {partners.map((partner) => (
+              <PartnerProfileCard
+                key={partner.id}
+                partner={partner}
+                onGenerateCompatibility={handleGenerateCompatibility}
+              />
+            ))}
+            
+            {/* Add Partner Placeholder Card */}
+            {partnerLimits?.can_add_more && (
+              <Card className="border-2 border-dashed border-gray-300 hover:border-purple-400 transition-colors duration-300 cursor-pointer" onClick={handleAddPartnerClick}>
+                <CardContent className="flex flex-col items-center justify-center py-12 text-center">
+                  <div className="bg-purple-100 p-4 rounded-full mb-4">
+                    <Plus className="h-8 w-8 text-purple-600" />
+                  </div>
+                  <h3 className="font-semibold text-gray-800 mb-2">
+                    Adicionar Novo Parceiro
+                  </h3>
+                  <p className="text-sm text-gray-600 mb-4">
+                    {partnerLimits.remaining_slots} {partnerLimits.remaining_slots === 1 ? 'slot disponível' : 'slots disponíveis'}
+                  </p>
+                  <Button variant="outline" className="border-purple-300 text-purple-600 hover:bg-purple-50">
+                    <UserPlus className="mr-2 h-4 w-4" />
+                    Adicionar
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+          
+          {/* Limit Warning for Free Users */}
+          {!partnerLimits?.is_premium && partners.length === 1 && (
+            <Card className="mt-6 bg-gradient-to-r from-yellow-50 to-orange-50 border-2 border-yellow-200">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-4">
+                  <div className="bg-yellow-100 p-3 rounded-full">
+                    <Crown className="h-6 w-6 text-yellow-600" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-yellow-800 mb-1">
+                      Limite de Parceiros Atingido
+                    </h3>
+                    <p className="text-yellow-700 text-sm mb-3">
+                      Usuários gratuitos podem adicionar apenas 1 parceiro. Faça upgrade para Premium e analise até 4 relacionamentos diferentes!
+                    </p>
+                    <Button
+                      onClick={() => setShowUpgradeModal(true)}
+                      size="sm"
+                      className="bg-yellow-600 hover:bg-yellow-700 text-white"
+                    >
+                      <Crown className="mr-2 h-4 w-4" />
+                      Ver Upgrade Premium
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </div>
       )}
 
