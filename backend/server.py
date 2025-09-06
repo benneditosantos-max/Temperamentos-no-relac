@@ -102,6 +102,39 @@ class CompatibilityRequest(BaseModel):
     user1_id: str
     user2_id: str
 
+# Enhanced Partner and Compatibility Models
+class PartnerProfile(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str  # Who added this partner
+    name: str
+    birth_date: str
+    questionnaire_answers: List[QuestionnaireAnswer]
+    zodiac_sign: ZodiacSign
+    temperament: str  # Colérico, Sanguíneo, Melancólico, Fleumático
+    element: str  # Fogo, Ar, Água, Terra
+    quality: str  # Cardinal, Fixo, Mutável
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class PartnerCreate(BaseModel):
+    name: str
+    birth_date: str
+    answers: List[QuestionnaireAnswer]
+
+class EnhancedCompatibilityReport(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    partner_id: str
+    user_profile: Dict[str, str]
+    partner_profile: Dict[str, str]
+    general_affinity: str  # Alto, Médio, Baixo
+    compatibility_score: int
+    potential_conflicts: List[str]
+    strength_points: List[str]
+    weakness_points: List[str]
+    detailed_analysis: Dict[str, str]
+    recommendations: List[str]
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
 # Payment Models
 class PaymentTransaction(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
