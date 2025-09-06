@@ -303,6 +303,19 @@ async def get_user(user_id: str):
     
     return User(**user_data)
 
+@api_router.get("/users", response_model=List[User])
+async def get_users():
+    users = await db.users.find().to_list(length=100)
+    parsed_users = []
+    
+    for user_data in users:
+        # Parse from MongoDB
+        if isinstance(user_data.get('created_at'), str):
+            user_data['created_at'] = datetime.fromisoformat(user_data['created_at'])
+        parsed_users.append(User(**user_data))
+    
+    return parsed_users
+
 @api_router.get("/questionnaire")
 async def get_questionnaire():
     return {"questions": QUESTIONNAIRE_QUESTIONS}
