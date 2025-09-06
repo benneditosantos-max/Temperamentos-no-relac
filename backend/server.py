@@ -728,6 +728,213 @@ DAILY_ADVICE_TEMPLATES = {
     ]
 }
 
+# Advanced Compatibility Matrix
+TEMPERAMENT_COMPATIBILITY = {
+    ("Colérico", "Colérico"): {
+        "affinity": "Médio",
+        "score": 65,
+        "conflicts": ["Disputas pelo controle", "Ambos querem liderar", "Conflitos de ego"],
+        "strengths": ["Alta energia", "Objetivos claros", "Decisões rápidas"],
+        "weaknesses": ["Competitividade excessiva", "Falta de paciência mútua", "Tendência ao confronto"]
+    },
+    ("Colérico", "Sanguíneo"): {
+        "affinity": "Alto",
+        "score": 85,
+        "conflicts": ["Colérico pode achar Sanguíneo desorganizado", "Sanguíneo pode se sentir pressionado"],
+        "strengths": ["Complementaridade perfeita", "Energia + Entusiasmo", "Liderança + Carisma"],
+        "weaknesses": ["Diferentes ritmos de trabalho", "Colérico muito sério vs Sanguíneo muito casual"]
+    },
+    ("Colérico", "Melancólico"): {
+        "affinity": "Médio",
+        "score": 70,
+        "conflicts": ["Ritmos diferentes", "Colérico impaciente vs Melancólico cauteloso"],
+        "strengths": ["Liderança + Análise", "Ação + Reflexão", "Objetivos + Qualidade"],
+        "weaknesses": ["Colérico pode ser muito direto", "Melancólico pode ser muito crítico"]
+    },
+    ("Colérico", "Fleumático"): {
+        "affinity": "Baixo",
+        "score": 55,
+        "conflicts": ["Colérico frustrado com lentidão", "Fleumático sobrecarregado pela intensidade"],
+        "strengths": ["Liderança + Estabilidade", "Ação + Paciência"],
+        "weaknesses": ["Ritmos completamente diferentes", "Comunicação pode ser difícil"]
+    },
+    ("Sanguíneo", "Sanguíneo"): {
+        "affinity": "Alto",
+        "score": 80,
+        "conflicts": ["Desorganização dupla", "Dificuldade para tomar decisões sérias"],
+        "strengths": ["Diversão garantida", "Sociabilidade", "Otimismo mútuo"],
+        "weaknesses": ["Falta de praticidade", "Podem se distrair facilmente"]
+    },
+    ("Sanguíneo", "Melancólico"): {
+        "affinity": "Médio",
+        "score": 75,
+        "conflicts": ["Sanguíneo muito casual vs Melancólico muito sério", "Diferentes abordagens sociais"],
+        "strengths": ["Equilíbrio perfeito", "Espontaneidade + Planejamento", "Social + Profundo"],
+        "weaknesses": ["Sanguíneo pode cansar Melancólico", "Melancólico pode frustrar Sanguíneo"]
+    },
+    ("Sanguíneo", "Fleumático"): {
+        "affinity": "Alto",
+        "score": 85,
+        "conflicts": ["Sanguíneo pode achar Fleumático passivo", "Diferentes níveis de energia"],
+        "strengths": ["Harmonia natural", "Sanguíneo anima, Fleumático acalma", "Complementaridade social"],
+        "weaknesses": ["Sanguíneo pode dominar as decisões", "Fleumático pode se sentir negligenciado"]
+    },
+    ("Melancólico", "Melancólico"): {
+        "affinity": "Médio",
+        "score": 70,
+        "conflicts": ["Críticas mútuas", "Pessimismo duplo", "Perfeccionismo excessivo"],
+        "strengths": ["Compreensão profunda", "Valores similares", "Lealdade mútua"],
+        "weaknesses": ["Podem se isolar socialmente", "Dificuldade para relaxar juntos"]
+    },
+    ("Melancólico", "Fleumático"): {
+        "affinity": "Alto",
+        "score": 90,
+        "conflicts": ["Melancólico pode ser muito crítico", "Fleumático pode evitar discussões necessárias"],
+        "strengths": ["Relacionamento estável", "Respeito mútuo", "Crescimento gradual"],
+        "weaknesses": ["Podem ser muito cautelosos", "Falta de espontaneidade"]
+    },
+    ("Fleumático", "Fleumático"): {
+        "affinity": "Médio",
+        "score": 65,
+        "conflicts": ["Falta de iniciativa", "Decisões podem demorar muito", "Passividade dupla"],
+        "strengths": ["Paz e harmonia", "Evitam conflitos", "Relacionamento tranquilo"],
+        "weaknesses": ["Falta de dinamismo", "Podem estagnar", "Dificuldade para mudanças"]
+    }
+}
+
+ELEMENT_COMPATIBILITY = {
+    ("Fogo", "Fogo"): {"multiplier": 1.1, "description": "Energia intensa, mas pode queimar"},
+    ("Fogo", "Ar"): {"multiplier": 1.3, "description": "Ar alimenta o fogo - combinação poderosa"},
+    ("Fogo", "Terra"): {"multiplier": 0.8, "description": "Terra pode sufocar o fogo"},
+    ("Fogo", "Água"): {"multiplier": 0.6, "description": "Água apaga o fogo - opostos"},
+    ("Ar", "Ar"): {"multiplier": 1.1, "description": "Conexão mental forte"},
+    ("Ar", "Terra"): {"multiplier": 0.7, "description": "Ar dispersa, Terra fixa"},
+    ("Ar", "Água"): {"multiplier": 0.8, "description": "Diferentes formas de fluidez"},
+    ("Terra", "Terra"): {"multiplier": 1.2, "description": "Base sólida e estável"},
+    ("Terra", "Água"): {"multiplier": 1.4, "description": "Água nutre a Terra - complementaridade perfeita"},
+    ("Água", "Água"): {"multiplier": 1.1, "description": "Profundidade emocional intensa"}
+}
+
+QUALITY_COMPATIBILITY = {
+    ("Cardinal", "Cardinal"): {"adjustment": -5, "note": "Ambos querem liderar"},
+    ("Cardinal", "Fixo"): {"adjustment": 10, "note": "Cardinal inicia, Fixo sustenta"},
+    ("Cardinal", "Mutável"): {"adjustment": 5, "note": "Cardinal dirige, Mutável adapta"},
+    ("Fixo", "Fixo"): {"adjustment": 5, "note": "Muito estável, mas pode estagnar"},
+    ("Fixo", "Mutável"): {"adjustment": 15, "note": "Fixo oferece base, Mutável traz mudança"},
+    ("Mutável", "Mutável"): {"adjustment": -10, "note": "Falta de direção clara"}
+}
+
+def determine_zodiac_from_birth_date(birth_date_str: str) -> ZodiacSign:
+    """Determine zodiac sign from birth date"""
+    from datetime import datetime
+    
+    try:
+        birth_date = datetime.strptime(birth_date_str, "%Y-%m-%d")
+        month = birth_date.month
+        day = birth_date.day
+        
+        # Zodiac sign determination logic
+        if (month == 3 and day >= 21) or (month == 4 and day <= 19):
+            return ZodiacSign.ARIES
+        elif (month == 4 and day >= 20) or (month == 5 and day <= 20):
+            return ZodiacSign.TAURUS
+        elif (month == 5 and day >= 21) or (month == 6 and day <= 20):
+            return ZodiacSign.GEMINI
+        elif (month == 6 and day >= 21) or (month == 7 and day <= 22):
+            return ZodiacSign.CANCER
+        elif (month == 7 and day >= 23) or (month == 8 and day <= 22):
+            return ZodiacSign.LEO
+        elif (month == 8 and day >= 23) or (month == 9 and day <= 22):
+            return ZodiacSign.VIRGO
+        elif (month == 9 and day >= 23) or (month == 10 and day <= 22):
+            return ZodiacSign.LIBRA
+        elif (month == 10 and day >= 23) or (month == 11 and day <= 21):
+            return ZodiacSign.SCORPIO
+        elif (month == 11 and day >= 22) or (month == 12 and day <= 21):
+            return ZodiacSign.SAGITTARIUS
+        elif (month == 12 and day >= 22) or (month == 1 and day <= 19):
+            return ZodiacSign.CAPRICORN
+        elif (month == 1 and day >= 20) or (month == 2 and day <= 18):
+            return ZodiacSign.AQUARIUS
+        else:  # Pisces
+            return ZodiacSign.PISCES
+            
+    except Exception:
+        return ZodiacSign.ARIES  # Default fallback
+
+def calculate_enhanced_compatibility(user_profile: Dict, partner_profile: Dict) -> EnhancedCompatibilityReport:
+    """Calculate comprehensive compatibility between two profiles"""
+    
+    # Get temperament compatibility
+    temp_key = (user_profile["temperament"], partner_profile["temperament"])
+    temp_compat = TEMPERAMENT_COMPATIBILITY.get(temp_key, TEMPERAMENT_COMPATIBILITY.get((temp_key[1], temp_key[0])))
+    
+    if not temp_compat:
+        # Fallback for missing combinations
+        temp_compat = {
+            "affinity": "Médio",
+            "score": 70,
+            "conflicts": ["Necessária análise mais detalhada"],
+            "strengths": ["Potencial para crescimento mútuo"],
+            "weaknesses": ["Requer trabalho de comunicação"]
+        }
+    
+    base_score = temp_compat["score"]
+    
+    # Apply element compatibility multiplier
+    element_key = (user_profile["element_pt"], partner_profile["element_pt"])
+    element_compat = ELEMENT_COMPATIBILITY.get(element_key, ELEMENT_COMPATIBILITY.get((element_key[1], element_key[0])))
+    
+    if element_compat:
+        base_score = int(base_score * element_compat["multiplier"])
+    
+    # Apply quality compatibility adjustment
+    quality_key = (user_profile["quality"], partner_profile["quality"])
+    quality_compat = QUALITY_COMPATIBILITY.get(quality_key, QUALITY_COMPATIBILITY.get((quality_key[1], quality_key[0])))
+    
+    if quality_compat:
+        base_score += quality_compat["adjustment"]
+    
+    # Ensure score is within bounds
+    final_score = max(1, min(100, base_score))
+    
+    # Determine general affinity
+    if final_score >= 80:
+        general_affinity = "Alto"
+    elif final_score >= 60:
+        general_affinity = "Médio"  
+    else:
+        general_affinity = "Baixo"
+    
+    # Generate detailed analysis
+    detailed_analysis = {
+        "temperament_analysis": f"Combinação {user_profile['temperament']} + {partner_profile['temperament']}: {temp_compat['affinity']} potencial de harmonia",
+        "element_analysis": f"Elementos {user_profile['element_pt']} + {partner_profile['element_pt']}: {element_compat['description'] if element_compat else 'Necessita análise específica'}",
+        "quality_analysis": f"Qualidades {user_profile['quality']} + {partner_profile['quality']}: {quality_compat['note'] if quality_compat else 'Dinâmica neutra'}"
+    }
+    
+    # Enhanced recommendations
+    recommendations = [
+        f"{user_profile['name']}: Desenvolva {TEMPERAMENT_DESCRIPTIONS[user_profile['temperament']]['traits'][0].lower()}",
+        f"{partner_profile['name']}: Trabalhe em {TEMPERAMENT_DESCRIPTIONS[partner_profile['temperament']]['traits'][1].lower()}",
+        "Pratiquem comunicação baseada na compreensão dos temperamentos",
+        "Usem as diferenças como complementaridade, não como obstáculos"
+    ]
+    
+    return EnhancedCompatibilityReport(
+        user_id="",  # Will be set by caller
+        partner_id="",  # Will be set by caller
+        user_profile=user_profile,
+        partner_profile=partner_profile,
+        general_affinity=general_affinity,
+        compatibility_score=final_score,
+        potential_conflicts=temp_compat["conflicts"],
+        strength_points=temp_compat["strengths"],
+        weakness_points=temp_compat["weaknesses"],
+        detailed_analysis=detailed_analysis,
+        recommendations=recommendations
+    )
+
 # Weekly Missions
 WEEKLY_MISSIONS_TEMPLATE = [
     WeeklyMission(
