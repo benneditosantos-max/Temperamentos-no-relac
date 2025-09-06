@@ -690,13 +690,36 @@ export const CompatibilityDashboard = ({ userId, userIsPremium = false }) => {
             <h3 className="text-xl font-semibold text-gray-800 mb-2">
               Nenhum parceiro adicionado ainda
             </h3>
-            <p className="text-gray-600 mb-6">
+            <p className="text-gray-600 mb-4">
               Adicione seu parceiro(a) para descobrir a compatibilidade entre vocês baseada em 
               temperamentos, elementos e qualidades astrológicas.
             </p>
+            
+            {partnerLimits && (
+              <div className="bg-blue-50 p-4 rounded-lg mb-6 max-w-md mx-auto">
+                <div className="flex items-center justify-center gap-2 mb-2">
+                  {partnerLimits.is_premium ? (
+                    <Crown className="h-5 w-5 text-yellow-500" />
+                  ) : (
+                    <Heart className="h-5 w-5 text-blue-500" />
+                  )}
+                  <span className="font-semibold text-gray-800">
+                    {partnerLimits.is_premium ? "Usuário Premium" : "Usuário Gratuito"}
+                  </span>
+                </div>
+                <p className="text-sm text-gray-600">
+                  {partnerLimits.is_premium 
+                    ? `Você pode adicionar até ${partnerLimits.max_partners} parceiros` 
+                    : `Você pode adicionar ${partnerLimits.max_partners} parceiro. Upgrade para Premium e adicione até 4!`
+                  }
+                </p>
+              </div>
+            )}
+            
             <Button
-              onClick={() => setShowAddPartner(true)}
+              onClick={handleAddPartnerClick}
               className="bg-purple-600 hover:bg-purple-700"
+              disabled={!partnerLimits?.can_add_more}
             >
               <UserPlus className="mr-2 h-4 w-4" />
               Adicionar Primeiro Parceiro(a)
