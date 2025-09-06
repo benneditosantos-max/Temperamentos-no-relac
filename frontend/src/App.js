@@ -733,12 +733,40 @@ const Dashboard = ({ userId }) => {
           />
         )}
 
-        {/* Premium Upgrade Dialog */}
-        <PremiumUpgradeDialog
+        {/* Premium Modals */}
+        <EnhancedPremiumModal
           open={showPremiumUpgrade}
           onOpenChange={setShowPremiumUpgrade}
           userId={userId}
         />
+
+        {/* Self Knowledge Questionnaire Modal */}
+        {showSelfKnowledge && (
+          <Dialog open={showSelfKnowledge} onOpenChange={setShowSelfKnowledge}>
+            <DialogContent className="sm:max-w-4xl">
+              <SelfKnowledgeQuestionnaire 
+                userId={userId} 
+                onComplete={(result) => {
+                  setShowSelfKnowledge(false);
+                  toast.success("Insights de autoconhecimento desbloqueados!");
+                  loadUserData();
+                }}
+              />
+            </DialogContent>
+          </Dialog>
+        )}
+
+        {/* Temperament Profile Modal */}
+        {showTemperamentProfile && temperamentResult && (
+          <Dialog open={showTemperamentProfile} onOpenChange={setShowTemperamentProfile}>
+            <DialogContent className="sm:max-w-4xl">
+              <TemperamentProfileCard 
+                modality={temperamentResult.dominant_modality} 
+                isPreview={false}
+              />
+            </DialogContent>
+          </Dialog>
+        )}
       </div>
     </div>
   );
