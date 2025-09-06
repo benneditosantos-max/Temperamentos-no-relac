@@ -667,6 +667,56 @@ const Dashboard = ({ userId }) => {
           />
         </div>
 
+        {/* Premium Features Section */}
+        {user?.is_premium && (
+          <div className="space-y-8 mb-8">
+            <div className="flex items-center gap-2 mb-6">
+              <Crown className="h-6 w-6 text-yellow-500" />
+              <h2 className="text-2xl font-bold text-gray-900">Recursos Premium</h2>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              <ActionCard
+                icon={<BookOpen className="h-8 w-8" />}
+                title="Perfil Detalhado de Temperamento"
+                description="Análise completa do seu temperamento com dicas personalizadas"
+                buttonText="Ver Perfil Detalhado"
+                onClick={() => setShowTemperamentProfile(true)}
+                completed={temperamentResult !== null}
+                isPremium={true}
+              />
+              
+              <ActionCard
+                icon={<Star className="h-8 w-8" />}
+                title="Questionário de Autoconhecimento"
+                description="Descubra insights profundos sobre sua personalidade"
+                buttonText="Iniciar Autoconhecimento"
+                onClick={() => setShowSelfKnowledge(true)}
+                isPremium={true}
+              />
+            </div>
+
+            {/* Weekly Missions Panel */}
+            <div className="bg-white rounded-2xl shadow-xl p-8">
+              <WeeklyMissionsPanel userId={userId} />
+            </div>
+          </div>
+        )}
+
+        {/* Temperament Profile Preview for Free Users */}
+        {!user?.is_premium && temperamentResult && (
+          <div className="mb-8">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-gray-900">Seu Perfil de Temperamento</h2>
+              <Badge className="bg-yellow-100 text-yellow-800">Preview</Badge>
+            </div>
+            <TemperamentProfileCard 
+              modality={temperamentResult.dominant_modality} 
+              isPreview={true}
+            />
+          </div>
+        )}
+
         {/* Premium Upgrade Card */}
         {!user?.is_premium && (
           <PremiumUpgradeCard onUpgrade={() => setShowPremiumUpgrade(true)} />
