@@ -1013,14 +1013,29 @@ const PaymentSuccess = () => {
 // Main App Component
 function App() {
   const [currentPath, setCurrentPath] = useState(window.location.pathname);
+  const [searchParams, setSearchParams] = useState(new URLSearchParams(window.location.search));
 
   useEffect(() => {
     const handlePopState = () => {
       setCurrentPath(window.location.pathname);
+      setSearchParams(new URLSearchParams(window.location.search));
+    };
+
+    // Also listen for programmatic navigation
+    const handlePathChange = () => {
+      setCurrentPath(window.location.pathname);
+      setSearchParams(new URLSearchParams(window.location.search));
     };
 
     window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
+    
+    // Check for changes periodically as a fallback
+    const intervalId = setInterval(handlePathChange, 100);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+      clearInterval(intervalId);
+    };
   }, []);
 
   // Simple routing logic
@@ -1028,10 +1043,15 @@ function App() {
   const userId = dashboardMatch ? dashboardMatch[1] : null;
 
   if (userId) {
-    return <Dashboard userId={userId} />;
+    return (
+      <>
+        <Dashboard userId={userId} />
+        <Toaster />
+      </>
+    );
   }
 
-  if (currentPath === '/premium/success') {
+  if (currentPath === '/premium/success' || currentPath.includes('/premium/success')) {
     return (
       <>
         <PaymentSuccess />
