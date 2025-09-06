@@ -753,6 +753,77 @@ export const CompatibilityDashboard = ({ userId, userIsPremium = false }) => {
           onClose={() => setSelectedCompatibilityReport(null)}
         />
       )}
+
+      {/* Partner Limit Upgrade Modal */}
+      <Dialog open={showUpgradeModal} onOpenChange={setShowUpgradeModal}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Crown className="h-6 w-6 text-yellow-500" />
+              Limite de Parceiros Atingido
+            </DialogTitle>
+            <DialogDescription>
+              Desbloqueie mais compatibilidades com o Premium
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-6">
+            <div className="text-center">
+              <div className="bg-gradient-to-r from-red-50 to-pink-50 p-6 rounded-lg mb-4">
+                <Users className="h-12 w-12 text-red-500 mx-auto mb-3" />
+                <h3 className="font-semibold text-gray-800 mb-2">Usuários Gratuitos</h3>
+                <p className="text-gray-600 text-sm">Máximo de 1 parceiro</p>
+              </div>
+              
+              <div className="bg-gradient-to-r from-yellow-50 to-orange-50 p-6 rounded-lg border-2 border-yellow-200">
+                <Crown className="h-12 w-12 text-yellow-500 mx-auto mb-3" />
+                <h3 className="font-bold text-yellow-800 mb-2">Usuários Premium</h3>
+                <p className="text-yellow-700 text-sm mb-3">Até 4 parceiros diferentes</p>
+                <Badge className="bg-yellow-100 text-yellow-800">+300% mais compatibilidades!</Badge>
+              </div>
+            </div>
+            
+            <div className="space-y-3">
+              <h4 className="font-semibold text-gray-900">Com Premium você ganha:</h4>
+              <ul className="space-y-2 text-sm">
+                <li className="flex items-center gap-2">
+                  <CheckCircle className="h-4 w-4 text-green-500" />
+                  <span>Até 4 parceiros para análise de compatibilidade</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <CheckCircle className="h-4 w-4 text-green-500" />
+                  <span>Compare diferentes relacionamentos</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <CheckCircle className="h-4 w-4 text-green-500" />
+                  <span>Histórico completo de compatibilidades</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <CheckCircle className="h-4 w-4 text-green-500" />
+                  <span>Relatórios PDF exportáveis</span>
+                </li>
+              </ul>
+            </div>
+            
+            <div className="text-center">
+              <div className="text-3xl font-bold text-gray-900 mb-1">R$ 12</div>
+              <p className="text-gray-600 text-sm mb-4">Pagamento único</p>
+              
+              <Button
+                onClick={() => {
+                  toast.info("Redirecionando para upgrade Premium...");
+                  setShowUpgradeModal(false);
+                  // Here you would trigger the premium upgrade flow
+                }}
+                className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600"
+              >
+                <Crown className="mr-2 h-4 w-4" />
+                Fazer Upgrade Premium
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
