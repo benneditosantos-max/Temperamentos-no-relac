@@ -119,7 +119,7 @@ class PremiumUpgradeRequest(BaseModel):
     user_id: str
     origin_url: str
 
-# Premium Content Models
+# Enhanced Premium Content Models
 class TemperamentProfile(BaseModel):
     modality: Modality
     title: str
@@ -131,6 +131,61 @@ class TemperamentProfile(BaseModel):
     strengths: List[str]
     challenges: List[str]
     growth_tips: List[str]
+    emotional_triggers: List[str]
+    growth_strategies: List[str]
+    daily_practices: List[str]
+    relationship_dynamics: Dict[str, str]
+
+class CoupleExercise(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    title: str
+    category: str  # communication, intimacy, conflict_resolution
+    description: str
+    instructions: List[str]
+    duration_minutes: int
+    difficulty_level: int  # 1-5
+    required_materials: List[str]
+    expected_outcomes: List[str]
+    follow_up_questions: List[str]
+
+class JourneyLevel(BaseModel):
+    level: int
+    title: str
+    description: str
+    unlock_requirements: Dict[str, Any]
+    content_unlocked: List[str]
+    exercises_available: List[str]
+    estimated_duration_days: int
+
+class AdvancedSelfKnowledgeQuestion(BaseModel):
+    id: int
+    question: str
+    category: str
+    reflection_prompt: str
+    follow_up_questions: List[str]
+    interpretation_guide: str
+
+class PersonalizedReport(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    report_type: str  # weekly_progress, monthly_deep_dive, relationship_health
+    insights: List[str]
+    growth_areas: List[str]
+    achievements: List[str]
+    next_steps: List[str]
+    custom_advice: str
+    generated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class DailyAdvice(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    modality: Modality
+    advice_text: str
+    reflection_question: str
+    action_item: str
+    category: str  # self_awareness, communication, growth
+    date: str
+    is_premium: bool = True
 
 class SelfKnowledgeQuestion(BaseModel):
     id: int
