@@ -443,7 +443,14 @@ const Dashboard = ({ userId }) => {
             title="Análise de Compatibilidade"
             description="Compare temperamentos com seu parceiro"
             buttonText="Gerar Relatório"
-            onClick={() => toast.info("Complete o questionário primeiro!")}
+            onClick={() => {
+              if (!user?.badges?.includes('questionnaire_completed')) {
+                toast.info("Complete o questionário primeiro!");
+              } else {
+                // For demo purposes, create a second user and generate compatibility report
+                generateDemoCompatibilityReport();
+              }
+            }}
             disabled={!user?.badges?.includes('questionnaire_completed')}
           />
         </div>
