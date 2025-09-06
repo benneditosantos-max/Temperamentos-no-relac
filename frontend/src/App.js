@@ -693,17 +693,11 @@ const Dashboard = ({ userId }) => {
           
           <ActionCard
             icon={<Heart className="h-8 w-8" />}
-            title="Análise de Compatibilidade"
-            description="Compare temperamentos com seu parceiro"
-            buttonText="Gerar Relatório"
-            onClick={() => {
-              if (!user?.badges?.includes('questionnaire_completed')) {
-                toast.info("Complete o questionário primeiro!");
-              } else {
-                generateDemoCompatibilityReport();
-              }
-            }}
-            disabled={!user?.badges?.includes('questionnaire_completed')}
+            title="Compatibilidade Avançada"
+            description="Sistema completo: Temperamento + Elemento + Qualidade"
+            buttonText="Analisar Casal"
+            onClick={() => setShowCompatibilityDashboard(true)}
+            completed={user?.badges?.includes('first_connection_created')}
           />
           
           <ActionCard
@@ -714,6 +708,11 @@ const Dashboard = ({ userId }) => {
             onClick={handleShareWithPartner}
             disabled={!user?.badges?.includes('report_generated')}
           />
+        </div>
+
+        {/* Compatibility Section */}
+        <div className="bg-white rounded-2xl shadow-xl p-8 mb-8">
+          <CompatibilityDashboard userId={userId} />
         </div>
 
         {/* Premium Features Section */}
