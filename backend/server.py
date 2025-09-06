@@ -1795,6 +1795,29 @@ async def get_user_partners(user_id: str):
     
     return parsed_partners
 
+@api_router.get("/partners/limits/{user_id}")
+async def get_partner_limits(user_id: str):
+    # Get user data
+    user_data = await db.users.find_one({"id": user_id})
+    if not user_data:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
+    
+    # Count existing partners
+    existing_partners_count = await db.partners.count_documents({"user_id": user_id})
+    
+    # Determine limits based on premium status
+    is_premium = user_data.get("is_premium", False)
+    max_partners = 4 if is_premium else 1
+    
+    return {
+        "user_id": user_id,
+        "is_premium": is_premium,
+        "current_partners": existing_partners_count,
+        "max_partners": max_partners,
+        "can_add_more": existing_partners_count < max_partners,
+        "remaining_slots": max(0, max_partners - existing_partners_count)
+    }
+
 @api_router.post("/compatibility/enhanced", response_model=EnhancedCompatibilityReport)
 async def generate_enhanced_compatibility(user_id: str, partner_id: str):
     # Get user data
