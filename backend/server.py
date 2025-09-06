@@ -1727,6 +1727,124 @@ async def generate_personalized_report(user_id: str, report_type: str = "weekly_
     
     return report
 
+# Partner and Enhanced Compatibility Routes
+@api_router.post("/partners", response_model=PartnerProfile)
+async def create_partner(user_id: str, partner_data: PartnerCreate):
+    # Determine zodiac sign from birth date
+    zodiac_sign = determine_zodiac_from_birth_date(partner_data.birth_date)
+    zodiac_data = ZODIAC_DATA[zodiac_sign]
+    
+    # Create partner profile
+    partner = PartnerProfile(
+        user_id=user_id,
+        name=partner_data.name,
+        birth_date=partner_data.birth_date,
+        questionnaire_answers=partner_data.answers,
+        zodiac_sign=zodiac_sign,
+        temperament=zodiac_data["temperament"],
+        element=zodiac_data["element_pt"],
+        quality=zodiac_data["quality"]
+    )
+    
+    # Store in database
+    partner_mongo = partner.dict()
+    partner_mongo['created_at'] = partner_mongo['created_at'].isoformat()
+    await db.partners.insert_one(partner_mongo)
+    
+    # Award points for creating first connection
+    await award_points(user_id, 150, "Primeira Conexão Criada")
+    
+    return partner
+
+@api_router.get("/partners/{user_id}", response_model=List[PartnerProfile])
+async def get_user_partners(user_id: str):
+    partners = await db.partners.find({"user_id": user_id}).to_list(length=None)
+    parsed_partners = []
+    
+    for partner_data in partners:
+        if isinstance(partner_data.get('created_at'), str):
+            partner_data['created_at'] = datetime.fromisoformat(partner_data['created_at'])
+        parsed_partners.append(PartnerProfile(**partner_data))
+    
+    return parsed_partners
+
+@api_router.post("/compatibility/enhanced", response_model=EnhancedCompatibilityReport)
+async def generate_enhanced_compatibility(user_id: str, partner_id: str):
+    # Get user data
+    user_data = await db.users.find_one({"id": user_id})
+    if not user_data:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
+    
+    # Get partner data
+    partner_data = await db.partners.find_one({"id": partner_id})
+    if not partner_data:
+        raise HTTPException(status_code=404, detail="Parceiro não encontrado")
+    
+    # Build user profile
+    user_zodiac_data = ZODIAC_DATA[ZodiacSign(user_data["zodiac_sign"])]
+    user_profile = {
+        "name": user_data["name"],
+        "zodiac_sign": user_zodiac_data["name"],
+        "temperament": user_zodiac_data["temperament"],
+        "element_pt": user_zodiac_data["element_pt"],
+        "quality": user_zodiac_data["quality"]
+    }
+    
+    # Build partner profile
+    partner_profile = {
+        "name": partner_data["name"],
+        "zodiac_sign": ZODIAC_DATA[ZodiacSign(partner_data["zodiac_sign"])]["name"],
+        "temperament": partner_data["temperament"],
+        "element_pt": partner_data["element"],
+        "quality": partner_data["quality"]
+    }
+    
+    # Calculate compatibility
+    compatibility_report = calculate_enhanced_compatibility(user_profile, partner_profile)
+    compatibility_report.user_id = user_id
+    compatibility_report.partner_id = partner_id
+    
+    # Store report
+    report_mongo = compatibility_report.dict()
+    report_mongo['created_at'] = report_mongo['created_at'].isoformat()
+    await db.enhanced_compatibility_reports.insert_one(report_mongo)
+    
+    # Update user badges
+    user_badges = user_data.get('badges', [])
+    if 'first_connection_created' not in user_badges:
+        user_badges.append('first_connection_created')
+        await db.users.update_one(
+            {"id": user_id},
+            {"$set": {"badges": user_badges}}
+        )
+    
+    # Award points
+    await award_points(user_id, 200, "Compatibilidade Avançada Gerada")
+    
+    return compatibility_report
+
+@api_router.get("/compatibility/enhanced/{user_id}/{partner_id}")
+async def get_enhanced_compatibility_report(user_id: str, partner_id: str):
+    report_data = await db.enhanced_compatibility_reports.find_one({
+        "user_id": user_id,
+        "partner_id": partner_id
+    })
+    
+    if not report_data:
+        raise HTTPException(status_code=404, detail="Relatório de compatibilidade não encontrado")
+    
+    if isinstance(report_data.get('created_at'), str):
+        report_data['created_at'] = datetime.fromisoformat(report_data['created_at'])
+    
+    return EnhancedCompatibilityReport(**report_data)
+
+@api_router.get("/temperaments/info")
+async def get_temperament_info():
+    return {
+        "temperaments": TEMPERAMENT_DESCRIPTIONS,
+        "zodiac_mapping": {sign.value: data for sign, data in ZODIAC_DATA.items()}
+    }
+
 async def award_points(user_id: str, points: int, reason: str):
     """Helper function to award points to user"""
     progress_data = await db.user_progress.find_one({"user_id": user_id})
