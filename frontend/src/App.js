@@ -487,6 +487,8 @@ const Dashboard = ({ userId }) => {
   const [showPremiumUpgrade, setShowPremiumUpgrade] = useState(false);
   const [showSelfKnowledge, setShowSelfKnowledge] = useState(false);
   const [showTemperamentProfile, setShowTemperamentProfile] = useState(false);
+  const [showCoupleExercises, setShowCoupleExercises] = useState(false);
+  const [showPersonalizedReports, setShowPersonalizedReports] = useState(false);
   const [temperamentResult, setTemperamentResult] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
