@@ -146,14 +146,25 @@ const Home = () => {
                 Descubra a compatibilidade astrológica entre você e seu parceiro através da análise 
                 dos temperamentos Cardinal, Fixo e Mutável. Fortaleça seu relacionamento com insights personalizados.
               </p>
-              <Button 
-                onClick={() => setShowCreateProfile(true)}
-                size="lg"
-                className="bg-white text-purple-600 hover:bg-gray-50 text-lg px-8 py-4 rounded-xl font-semibold shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
-              >
-                <Sparkles className="mr-2 h-5 w-5" />
-                Começar Jornada
-              </Button>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button 
+                  onClick={() => setShowCreateProfile(true)}
+                  size="lg"
+                  className="bg-white text-purple-600 hover:bg-gray-50 text-lg px-8 py-4 rounded-xl font-semibold shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
+                >
+                  <Sparkles className="mr-2 h-5 w-5" />
+                  Começar Jornada
+                </Button>
+                <Button 
+                  onClick={() => setShowLogin(true)}
+                  size="lg"
+                  variant="outline"
+                  className="border-white text-white hover:bg-white hover:text-purple-600 text-lg px-8 py-4 rounded-xl font-semibold shadow-xl transition-all duration-300"
+                >
+                  <Users className="mr-2 h-5 w-5" />
+                  Já tenho conta
+                </Button>
+              </div>
             </div>
           </div>
         </div>
