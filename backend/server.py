@@ -1248,6 +1248,166 @@ async def get_user_progress(user_id: str):
     
     return UserProgress(**progress_data)
 
+@api_router.get("/premium/couple-exercises")
+async def get_couple_exercises():
+    return {"exercises": [exercise.dict() for exercise in COUPLE_EXERCISES]}
+
+@api_router.get("/premium/couple-exercise/{exercise_id}")
+async def get_couple_exercise(exercise_id: str):
+    # Find exercise by title (simplified for demo)
+    exercise = next((ex for ex in COUPLE_EXERCISES if ex.title.lower().replace(" ", "_") in exercise_id), None)
+    if not exercise:
+        raise HTTPException(status_code=404, detail="Exercício não encontrado")
+    return exercise
+
+@api_router.get("/premium/journey-levels/{user_id}")
+async def get_user_journey_levels(user_id: str):
+    # Get user progress to determine unlocked levels
+    user_data = await db.users.find_one({"id": user_id})
+    progress_data = await db.user_progress.find_one({"user_id": user_id})
+    
+    if not user_data:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
+    
+    # Determine unlocked levels based on user achievements
+    user_badges = user_data.get("badges", [])
+    user_level = progress_data.get("current_level", 1) if progress_data else 1
+    
+    unlocked_levels = []
+    for level in JOURNEY_LEVELS:
+        is_unlocked = True
+        requirements = level.unlock_requirements
+        
+        # Check requirements
+        if "profile_created" in requirements and "profile_created" not in user_badges:
+            is_unlocked = False
+        if "questionnaire_completed" in requirements and "questionnaire_completed" not in user_badges:
+            is_unlocked = False
+        if "compatibility_report" in requirements and "report_generated" not in user_badges:
+            is_unlocked = False
+        
+        level_data = level.dict()
+        level_data["is_unlocked"] = is_unlocked
+        level_data["is_current"] = level.level == user_level
+        unlocked_levels.append(level_data)
+    
+    return {"levels": unlocked_levels, "current_level": user_level}
+
+@api_router.get("/premium/daily-advice/{user_id}")
+async def get_daily_advice(user_id: str):
+    # Get user's dominant modality
+    result_data = await db.questionnaire_results.find_one({"user_id": user_id})
+    if not result_data:
+        # Default advice for users without questionnaire
+        modality = Modality.CARDINAL
+    else:
+        modality = Modality(result_data.get("dominant_modality", "cardinal"))
+    
+    # Get today's date
+    today = datetime.now().strftime("%Y-%m-%d")
+    
+    # Check if advice already exists for today
+    existing_advice = await db.daily_advice.find_one({"user_id": user_id, "date": today})
+    if existing_advice:
+        if isinstance(existing_advice.get('date'), str):
+            return DailyAdvice(**existing_advice)
+    
+    # Generate new advice
+    import random
+    advice_template = random.choice(DAILY_ADVICE_TEMPLATES[modality])
+    
+    daily_advice = DailyAdvice(
+        user_id=user_id,
+        modality=modality,
+        advice_text=advice_template["advice"],
+        reflection_question=advice_template["reflection"],
+        action_item=advice_template["action"],
+        category=advice_template["category"],
+        date=today
+    )
+    
+    # Save to database
+    advice_mongo = daily_advice.dict()
+    await db.daily_advice.insert_one(advice_mongo)
+    
+    return daily_advice
+
+@api_router.get("/premium/advanced-questions")
+async def get_advanced_self_knowledge_questions():
+    return {"questions": [q.dict() for q in ADVANCED_SELF_KNOWLEDGE]}
+
+@api_router.post("/premium/generate-report/{user_id}")
+async def generate_personalized_report(user_id: str, report_type: str = "weekly_progress"):
+    # Get user data and progress
+    user_data = await db.users.find_one({"id": user_id})
+    progress_data = await db.user_progress.find_one({"user_id": user_id})
+    
+    if not user_data:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
+    
+    user_badges = user_data.get("badges", [])
+    total_points = progress_data.get("total_points", 0) if progress_data else 0
+    current_level = progress_data.get("current_level", 1) if progress_data else 1
+    
+    # Generate personalized insights
+    insights = []
+    growth_areas = []
+    achievements = []
+    next_steps = []
+    
+    # Analyze progress
+    if "profile_created" in user_badges:
+        achievements.append("✅ Perfil criado com sucesso - Jornada de autoconhecimento iniciada")
+    if "questionnaire_completed" in user_badges:
+        achievements.append("✅ Temperamento descoberto - Base sólida para crescimento")
+        insights.append("Seu temperamento fornece insights valiosos sobre seus padrões naturais")
+    if "report_generated" in user_badges:
+        achievements.append("✅ Compatibilidade analisada - Entendimento da dinâmica do casal")
+    if "shared_with_partner" in user_badges:
+        achievements.append("✅ Compartilhamento realizado - Transparência no relacionamento")
+    
+    # Growth areas based on level
+    if current_level == 1:
+        growth_areas.append("Autoconhecimento mais profundo através de reflexões diárias")
+        next_steps.append("Complete os exercícios de autoconhecimento avançado")
+    elif current_level >= 2:
+        growth_areas.append("Aprofundamento da comunicação no relacionamento")
+        next_steps.append("Pratique os exercícios de casal semanalmente")
+    
+    # Custom advice based on temperament
+    result_data = await db.questionnaire_results.find_one({"user_id": user_id})
+    if result_data:
+        modality = result_data.get("dominant_modality", "cardinal")
+        if modality == "cardinal":
+            insights.append("Como Cardinal, você tem potencial natural de liderança no relacionamento")
+            growth_areas.append("Desenvolver paciência e habilidades de escuta ativa")
+        elif modality == "fixed":
+            insights.append("Como Fixo, você oferece estabilidade e lealdade ao relacionamento")
+            growth_areas.append("Cultivar flexibilidade e abertura para novas experiências")
+        elif modality == "mutable":
+            insights.append("Como Mutável, você traz adaptabilidade e harmonia ao relacionamento")
+            growth_areas.append("Desenvolver assertividade e manter posições importantes")
+    
+    custom_advice = f"Com {total_points} pontos conquistados e no nível {current_level}, você está no caminho certo para um relacionamento mais consciente e conectado."
+    
+    # Create report
+    report = PersonalizedReport(
+        user_id=user_id,
+        report_type=report_type,
+        insights=insights,
+        growth_areas=growth_areas,
+        achievements=achievements,
+        next_steps=next_steps,
+        custom_advice=custom_advice
+    )
+    
+    # Save to database
+    report_mongo = report.dict()
+    report_mongo['generated_at'] = report_mongo['generated_at'].isoformat()
+    await db.personalized_reports.insert_one(report_mongo)
+    
+    return report
+
 async def award_points(user_id: str, points: int, reason: str):
     """Helper function to award points to user"""
     progress_data = await db.user_progress.find_one({"user_id": user_id})
