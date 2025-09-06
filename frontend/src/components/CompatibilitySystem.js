@@ -601,6 +601,21 @@ export const CompatibilityDashboard = ({ userId, userIsPremium = false }) => {
 
   const handlePartnerAdded = (newPartner) => {
     setPartners([...partners, newPartner]);
+    loadPartnerLimits(); // Reload limits after adding partner
+  };
+
+  const handleAddPartnerClick = () => {
+    if (!partnerLimits?.can_add_more) {
+      if (!partnerLimits?.is_premium) {
+        toast.error("Usuários gratuitos podem adicionar apenas 1 parceiro!");
+        setShowUpgradeModal(true);
+        return;
+      } else {
+        toast.error("Limite máximo de parceiros atingido!");
+        return;
+      }
+    }
+    setShowAddPartner(true);
   };
 
   const handleGenerateCompatibility = async (partner) => {
