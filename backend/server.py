@@ -194,6 +194,146 @@ ZODIAC_DATA = {
     ZodiacSign.PISCES: {"modality": Modality.MUTABLE, "element": "water", "name": "Peixes"}
 }
 
+# Detailed Temperament Profiles
+TEMPERAMENT_PROFILES = {
+    Modality.CARDINAL: TemperamentProfile(
+        modality=Modality.CARDINAL,
+        title="Temperamento Cardinal - O Iniciador",
+        description="Pessoas com temperamento Cardinal são líderes naturais, iniciadores e pioneiros. Elas têm uma energia direcionada para começar projetos, tomar decisões rápidas e liderar mudanças. São movidas pela ação e pelo desejo de criar algo novo.",
+        communication_style="Diretos e assertivos na comunicação. Preferem conversas objetivas e focadas em soluções. Podem parecer impacientes com discussões longas sem direcionamento claro.",
+        conflict_resolution="Enfrentam conflitos de frente, preferindo resolver rapidamente. Tendem a tomar a liderança na busca por soluções práticas e imediatas.",
+        intimacy_approach="Na intimidade, são apaixonados e intensos. Gostam de tomar a iniciativa e criar momentos especiais. Valorizam parceiros que acompanhem sua energia.",
+        decision_making="Tomam decisões rapidamente, baseadas na intuição e na urgência do momento. Preferem agir a ficar analisando por muito tempo.",
+        strengths=["Liderança natural", "Iniciativa", "Coragem para mudanças", "Energia motivadora", "Visão de futuro"],
+        challenges=["Impaciência", "Dificuldade em delegar", "Pode ser dominante", "Ansiedade por resultados", "Falta de persistência em projetos longos"],
+        growth_tips=["Pratique a paciência e a escuta ativa", "Aprenda a delegar responsabilidades", "Desenvolva persistência em projetos de longo prazo", "Equilibre ação com reflexão"]
+    ),
+    Modality.FIXED: TemperamentProfile(
+        modality=Modality.FIXED,
+        title="Temperamento Fixo - O Estabilizador",
+        description="Pessoas com temperamento Fixo são conhecidas pela estabilidade, lealdade e determinação. Elas valorizam segurança, consistência e profundidade nas relações. São o alicerce sólido em qualquer relacionamento.",
+        communication_style="Comunicação calma e ponderada. Preferem conversas profundas e significativas. Podem levar tempo para expressar sentimentos, mas quando o fazem, é com sinceridade.",
+        conflict_resolution="Evitam conflitos desnecessários, mas quando enfrentam problemas, mantêm sua posição com firmeza. Preferem estabilidade a mudanças drásticas.",
+        intimacy_approach="Na intimidade, são leais e dedicados. Constroem conexões profundas e duradouras. Valorizam rituais e tradições no relacionamento.",
+        decision_making="Tomam decisões cuidadosamente, considerando todas as implicações. Preferem manter o que já está funcionando bem.",
+        strengths=["Lealdade inabalável", "Estabilidade emocional", "Determinação", "Confiabilidade", "Profundidade nas relações"],
+        challenges=["Resistência a mudanças", "Teimosia", "Dificuldade para se adaptar", "Possessividade", "Rigidez de pensamento"],
+        growth_tips=["Pratique a flexibilidade em situações menores", "Abra-se para novas experiências", "Aprenda a expressar sentimentos mais abertamente", "Desenvolva tolerância a mudanças"]
+    ),
+    Modality.MUTABLE: TemperamentProfile(
+        modality=Modality.MUTABLE,
+        title="Temperamento Mutável - O Adaptador",
+        description="Pessoas com temperamento Mutável são flexíveis, adaptáveis e versáteis. Elas se ajustam facilmente a mudanças e são excelentes mediadoras. São como água, fluindo e se moldando às circunstâncias.",
+        communication_style="Comunicação flexível e empática. Adaptam seu estilo conforme a situação e a pessoa. São bons ouvintes e mediadores naturais.",
+        conflict_resolution="Preferem evitar conflitos através de compromissos e adaptações. São excelentes em encontrar soluções que agradem a todos.",
+        intimacy_approach="Na intimidade, são adaptáveis e atenciosos às necessidades do parceiro. Criam harmonia e evitam tensões desnecessárias.",
+        decision_making="Consideram múltiplas perspectivas antes de decidir. Podem mudar de opinião conforme novas informações surgem.",
+        strengths=["Adaptabilidade", "Empatia", "Versatilidade", "Capacidade de mediação", "Flexibilidade mental"],
+        challenges=["Indecisão", "Falta de direção clara", "Dificuldade em manter posições", "Evitação de conflitos necessários", "Inconsistência"],
+        growth_tips=["Desenvolva maior assertividade", "Pratique a tomada de decisões firmes", "Aprenda a manter posições importantes", "Equilibre adaptabilidade com consistência"]
+    )
+}
+
+# Self-Knowledge Questions
+SELF_KNOWLEDGE_QUESTIONS = [
+    SelfKnowledgeQuestion(
+        id=1,
+        question="Como você reage quando sente que não é ouvido em uma discussão?",
+        category="communication",
+        options=[
+            {"answer": "Falo mais alto e insisto no meu ponto de vista", "modality": "cardinal", "score": 3},
+            {"answer": "Me calo e espero o momento certo para ser ouvido", "modality": "fixed", "score": 3},
+            {"answer": "Tento encontrar uma forma diferente de me expressar", "modality": "mutable", "score": 3}
+        ]
+    ),
+    SelfKnowledgeQuestion(
+        id=2,
+        question="Quando seu parceiro está passando por um momento difícil, você:",
+        category="intimacy",
+        options=[
+            {"answer": "Tomo a iniciativa para resolver o problema rapidamente", "modality": "cardinal", "score": 3},
+            {"answer": "Ofereço apoio constante e estável", "modality": "fixed", "score": 3},
+            {"answer": "Me adapto às necessidades dele no momento", "modality": "mutable", "score": 3}
+        ]
+    ),
+    SelfKnowledgeQuestion(
+        id=3,
+        question="Em situações de conflito no relacionamento, sua tendência é:",
+        category="conflict",
+        options=[
+            {"answer": "Enfrentar diretamente e buscar solução imediata", "modality": "cardinal", "score": 3},
+            {"answer": "Manter minha posição e esperar que o tempo resolva", "modality": "fixed", "score": 3},
+            {"answer": "Procurar um meio-termo que satisfaça ambos", "modality": "mutable", "score": 3}
+        ]
+    ),
+    SelfKnowledgeQuestion(
+        id=4,
+        question="Quando precisam tomar uma decisão importante juntos, você:",
+        category="decision_making",
+        options=[
+            {"answer": "Lidero o processo e tomo a decisão rapidamente", "modality": "cardinal", "score": 3},
+            {"answer": "Analiso profundamente e mantenho uma posição clara", "modality": "fixed", "score": 3},
+            {"answer": "Considero todas as opções e me adapto à melhor escolha", "modality": "mutable", "score": 3}
+        ]
+    ),
+    SelfKnowledgeQuestion(
+        id=5,
+        question="O que mais te incomoda em um relacionamento?",
+        category="communication",
+        options=[
+            {"answer": "Falta de ação e decisão do parceiro", "modality": "cardinal", "score": 3},
+            {"answer": "Instabilidade e mudanças constantes", "modality": "fixed", "score": 3},
+            {"answer": "Rigidez e falta de flexibilidade", "modality": "mutable", "score": 3}
+        ]
+    ),
+    SelfKnowledgeQuestion(
+        id=6,
+        question="Como você demonstra amor no relacionamento?",
+        category="intimacy",
+        options=[
+            {"answer": "Através de gestos grandiosos e iniciativas românticas", "modality": "cardinal", "score": 3},
+            {"answer": "Com lealdade, consistência e dedicação diária", "modality": "fixed", "score": 3},
+            {"answer": "Adaptando-me às necessidades e desejos do parceiro", "modality": "mutable", "score": 3}
+        ]
+    )
+]
+
+# Weekly Missions
+WEEKLY_MISSIONS_TEMPLATE = [
+    WeeklyMission(
+        title="Descoberta do Eu Interior",
+        description="Complete o questionário de autoconhecimento para descobrir insights profundos sobre sua personalidade",
+        points=100,
+        week_number=1,
+        year=2025,
+        mission_type="self_knowledge"
+    ),
+    WeeklyMission(
+        title="Comunicação Assertiva",
+        description="Pratique uma conversa profunda com seu parceiro usando as técnicas do seu temperamento",
+        points=150,
+        week_number=2,
+        year=2025,
+        mission_type="communication"
+    ),
+    WeeklyMission(
+        title="Exercício de Empatia",
+        description="Identifique e pratique uma característica do temperamento do seu parceiro",
+        points=200,
+        week_number=3,
+        year=2025,
+        mission_type="exercise"
+    ),
+    WeeklyMission(
+        title="Resolução Harmoniosa",
+        description="Aplique as estratégias de resolução de conflitos específicas para sua combinação de temperamentos",
+        points=250,
+        week_number=4,
+        year=2025,
+        mission_type="communication"
+    )
+]
+
 # Questionnaire Questions
 QUESTIONNAIRE_QUESTIONS = [
     {
