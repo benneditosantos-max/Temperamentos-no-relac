@@ -1730,6 +1730,30 @@ async def generate_personalized_report(user_id: str, report_type: str = "weekly_
 # Partner and Enhanced Compatibility Routes
 @api_router.post("/partners", response_model=PartnerProfile)
 async def create_partner(user_id: str, partner_data: PartnerCreate):
+    # Check user status and partner limits
+    user_data = await db.users.find_one({"id": user_id})
+    if not user_data:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
+    
+    # Count existing partners
+    existing_partners_count = await db.partners.count_documents({"user_id": user_id})
+    
+    # Check limits based on premium status
+    is_premium = user_data.get("is_premium", False)
+    max_partners = 4 if is_premium else 1  # Premium: 4 partners, Free: 1 partner
+    
+    if existing_partners_count >= max_partners:
+        if is_premium:
+            raise HTTPException(
+                status_code=400, 
+                detail=f"Limite de {max_partners} parceiros atingido para usuários Premium"
+            )
+        else:
+            raise HTTPException(
+                status_code=400, 
+                detail="Usuários gratuitos podem adicionar apenas 1 parceiro. Faça upgrade para Premium e adicione até 4 parceiros!"
+            )
+    
     # Determine zodiac sign from birth date
     zodiac_sign = determine_zodiac_from_birth_date(partner_data.birth_date)
     zodiac_data = ZODIAC_DATA[zodiac_sign]
@@ -1751,8 +1775,11 @@ async def create_partner(user_id: str, partner_data: PartnerCreate):
     partner_mongo['created_at'] = partner_mongo['created_at'].isoformat()
     await db.partners.insert_one(partner_mongo)
     
-    # Award points for creating first connection
-    await award_points(user_id, 150, "Primeira Conexão Criada")
+    # Award points for creating first connection (only for first partner)
+    if existing_partners_count == 0:
+        await award_points(user_id, 150, "Primeira Conexão Criada")
+    else:
+        await award_points(user_id, 100, f"Parceiro Adicional: {partner.name}")
     
     return partner
 
