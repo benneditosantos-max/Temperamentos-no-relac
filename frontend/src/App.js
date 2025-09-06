@@ -477,7 +477,7 @@ const Dashboard = ({ userId }) => {
         <BadgesSection user={user} />
 
         {/* Actions Section */}
-        <div className="grid md:grid-cols-2 gap-8 mb-8">
+        <div className="grid md:grid-cols-3 gap-6 mb-8">
           <ActionCard
             icon={<Target className="h-8 w-8" />}
             title="Questionário de Temperamento"
@@ -496,11 +496,19 @@ const Dashboard = ({ userId }) => {
               if (!user?.badges?.includes('questionnaire_completed')) {
                 toast.info("Complete o questionário primeiro!");
               } else {
-                // For demo purposes, create a second user and generate compatibility report
                 generateDemoCompatibilityReport();
               }
             }}
             disabled={!user?.badges?.includes('questionnaire_completed')}
+          />
+          
+          <ActionCard
+            icon={<Users className="h-8 w-8" />}
+            title="Compartilhar com Parceiro"
+            description="Convide seu parceiro para descobrir a compatibilidade"
+            buttonText="Compartilhar"
+            onClick={handleShareWithPartner}
+            disabled={!user?.badges?.includes('report_generated')}
           />
         </div>
 
