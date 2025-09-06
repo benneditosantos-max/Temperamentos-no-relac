@@ -714,30 +714,59 @@ const Dashboard = ({ userId }) => {
         {/* Premium Features Section */}
         {user?.is_premium && (
           <div className="space-y-8 mb-8">
-            <div className="flex items-center gap-2 mb-6">
-              <Crown className="h-6 w-6 text-yellow-500" />
-              <h2 className="text-2xl font-bold text-gray-900">Recursos Premium</h2>
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-2">
+                <Crown className="h-8 w-8 text-yellow-500" />
+                <h2 className="text-3xl font-bold text-gray-900">Área Premium</h2>
+                <Badge className="bg-gradient-to-r from-yellow-400 to-orange-400 text-white px-3 py-1 text-sm font-bold">
+                  EXCLUSIVO
+                </Badge>
+              </div>
+              <div className="text-right">
+                <p className="text-sm text-gray-500">Bem-vindo à experiência completa</p>
+                <p className="text-lg font-semibold text-purple-600">
+                  Profundidade • Exclusividade • Personalização
+                </p>
+              </div>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-6">
+            {/* Daily Advice Card */}
+            <DailyAdviceCard userId={userId} />
+
+            {/* Quick Access Premium Actions */}
+            <div className="grid md:grid-cols-3 gap-6">
               <ActionCard
                 icon={<BookOpen className="h-8 w-8" />}
-                title="Perfil Detalhado de Temperamento"
-                description="Análise completa do seu temperamento com dicas personalizadas"
-                buttonText="Ver Perfil Detalhado"
+                title="Perfil Detalhado Premium"
+                description="Gatilhos emocionais, estratégias de crescimento e práticas diárias personalizadas"
+                buttonText="Ver Análise Profunda"
                 onClick={() => setShowTemperamentProfile(true)}
                 completed={temperamentResult !== null}
                 isPremium={true}
               />
               
               <ActionCard
-                icon={<Star className="h-8 w-8" />}
-                title="Questionário de Autoconhecimento"
-                description="Descubra insights profundos sobre sua personalidade"
-                buttonText="Iniciar Autoconhecimento"
-                onClick={() => setShowSelfKnowledge(true)}
+                icon={<Heart className="h-8 w-8" />}
+                title="Exercícios para Casais"
+                description="Dinâmicas guiadas com passo a passo para comunicação e intimidade"
+                buttonText="Explorar Exercícios"
+                onClick={() => setShowCoupleExercises(true)}
                 isPremium={true}
               />
+
+              <ActionCard
+                icon={<Award className="h-8 w-8" />}
+                title="Relatórios Personalizados"
+                description="Análise completa do seu progresso com insights únicos"
+                buttonText="Gerar Relatório"
+                onClick={() => setShowPersonalizedReports(true)}
+                isPremium={true}
+              />
+            </div>
+
+            {/* Journey Levels */}
+            <div className="bg-white rounded-2xl shadow-xl p-8">
+              <JourneyLevelsPanel userId={userId} />
             </div>
 
             {/* Weekly Missions Panel */}
