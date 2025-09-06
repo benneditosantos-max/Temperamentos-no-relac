@@ -402,28 +402,28 @@ def get_dominant_modality(scores: Dict[str, int]) -> tuple:
     return dominant, secondary
 
 def calculate_compatibility(user1: User, user2: User, result1: QuestionnaireResult, result2: QuestionnaireResult) -> CompatibilityReport:
-    # Basic compatibility logic
+    # Enhanced compatibility logic
     sign1_data = ZODIAC_DATA[user1.zodiac_sign]
     sign2_data = ZODIAC_DATA[user2.zodiac_sign]
     
     base_score = 50
     
-    # Same modality bonus
+    # Same modality bonus/penalty
     if result1.dominant_modality == result2.dominant_modality:
-        base_score += 20
+        base_score += 15
     
-    # Element compatibility
+    # Element compatibility (enhanced)
     element_compatibility = {
-        ("fire", "air"): 15,
-        ("fire", "fire"): 10,
-        ("earth", "water"): 15,
-        ("earth", "earth"): 10,
-        ("air", "air"): 10,
-        ("water", "water"): 10,
-        ("fire", "earth"): 5,
-        ("air", "water"): 5,
-        ("fire", "water"): -5,
-        ("earth", "air"): -5
+        ("fire", "air"): 20,    # Fire needs air
+        ("earth", "water"): 20, # Earth needs water
+        ("fire", "fire"): 15,   # High energy
+        ("air", "air"): 15,     # Mental connection
+        ("earth", "earth"): 15, # Stable foundation
+        ("water", "water"): 15, # Emotional depth
+        ("fire", "earth"): 8,   # Complementary but challenging
+        ("air", "water"): 8,    # Different approaches
+        ("fire", "water"): 5,   # Steam - can work with effort
+        ("earth", "air"): 5,    # Different priorities
     }
     
     element_pair = (sign1_data["element"], sign2_data["element"])
@@ -432,33 +432,142 @@ def calculate_compatibility(user1: User, user2: User, result1: QuestionnaireResu
     elif (element_pair[1], element_pair[0]) in element_compatibility:
         base_score += element_compatibility[(element_pair[1], element_pair[0])]
     
-    base_score = max(1, min(100, base_score))
+    base_score = max(15, min(100, base_score))
     
-    # Generate insights based on modalities
+    # Generate detailed insights based on modalities
     strengths = []
     challenges = []
     recommendations = []
+    dynamics = []
     
-    if result1.dominant_modality == Modality.CARDINAL and result2.dominant_modality == Modality.CARDINAL:
-        strengths.append("Ambos são líderes naturais e iniciadores")
-        challenges.append("Pode haver conflito por liderança")
-        recommendations.append("Definam áreas de responsabilidade para cada um")
-    elif result1.dominant_modality == Modality.FIXED and result2.dominant_modality == Modality.FIXED:
-        strengths.append("Relacionamento muito estável e duradouro")
-        challenges.append("Dificuldade para se adaptar a mudanças")
-        recommendations.append("Pratiquem a flexibilidade em pequenas situações")
-    elif result1.dominant_modality == Modality.MUTABLE and result2.dominant_modality == Modality.MUTABLE:
-        strengths.append("Grande adaptabilidade e flexibilidade")
-        challenges.append("Pode faltar direção e decisão")
-        recommendations.append("Estabeleçam metas claras e prazos definidos")
-    else:
-        strengths.append("Equilíbrio perfeito entre diferentes abordagens")
-        recommendations.append("Aproveitem as qualidades complementares de cada um")
+    modality1 = result1.dominant_modality
+    modality2 = result2.dominant_modality
     
+    if modality1 == Modality.CARDINAL and modality2 == Modality.CARDINAL:
+        strengths.extend([
+            "Ambos são líderes naturais com visão de futuro",
+            "Energia alta e motivação mútua para conquistas",
+            "Capacidade de iniciar projetos juntos rapidamente"
+        ])
+        challenges.extend([
+            "Competição por liderança pode gerar conflitos",
+            "Impaciência mútua em discussões longas",
+            "Dificuldade em ouvir o outro quando ambos querem liderar"
+        ])
+        recommendations.extend([
+            "Dividam responsabilidades por área de expertise",
+            "Estabeleçam turnos para liderar diferentes situações",
+            "Pratiquem exercícios de escuta ativa diariamente"
+        ])
+        dynamics.append("Vocês tendem a resolver conflitos rapidamente, mas podem criar novos se não respeitarem o espaço de liderança de cada um.")
+        
+    elif modality1 == Modality.FIXED and modality2 == Modality.FIXED:
+        strengths.extend([
+            "Relacionamento extremamente estável e duradouro",
+            "Lealdade inabalável entre vocês",
+            "Construção sólida de tradições e rituais de casal"
+        ])
+        challenges.extend([
+            "Resistência mútua a mudanças necessárias",
+            "Teimosia pode prolongar conflitos desnecessariamente",
+            "Dificuldade para se adaptar a novos desafios juntos"
+        ])
+        recommendations.extend([
+            "Estabeleçam 'dias de experimentação' mensais",
+            "Pratiquem pequenas mudanças gradualmente",
+            "Celebrem as tradições, mas abracem novidades ocasionalmente"
+        ])
+        dynamics.append("Vocês constroem algo sólido juntos, mas precisam cultivar flexibilidade para crescer como casal.")
+        
+    elif modality1 == Modality.MUTABLE and modality2 == Modality.MUTABLE:
+        strengths.extend([
+            "Adaptabilidade excepcional às mudanças da vida",
+            "Compreensão mútua e empatia natural",
+            "Flexibilidade para resolver problemas criativamente"
+        ])
+        challenges.extend([
+            "Falta de direção clara e metas definidas",
+            "Indecisão mútua pode paralisar decisões importantes",
+            "Evitação de conflitos pode acumular ressentimentos"
+        ])
+        recommendations.extend([
+            "Definam metas trimestrais juntos",
+            "Pratiquem tomar decisões em prazos definidos",
+            "Abordem conflitos pequenos antes que cresçam"
+        ])
+        dynamics.append("Vocês fluem bem juntos, mas precisam criar estrutura para não se perderem em indecisões.")
+        
+    elif (modality1 == Modality.CARDINAL and modality2 == Modality.FIXED) or (modality1 == Modality.FIXED and modality2 == Modality.CARDINAL):
+        cardinal_name = user1.name if modality1 == Modality.CARDINAL else user2.name
+        fixed_name = user2.name if modality1 == Modality.CARDINAL else user1.name
+        
+        strengths.extend([
+            f"{cardinal_name} traz energia e novidades, {fixed_name} oferece estabilidade",
+            "Combinação poderosa de iniciativa e persistência",
+            "O estável apoia o iniciador, criando base sólida para projetos"
+        ])
+        challenges.extend([
+            f"{cardinal_name} pode se frustrar com o ritmo de {fixed_name}",
+            f"{fixed_name} pode se sentir pressionado pela urgência de {cardinal_name}",
+            "Conflitos entre velocidade (Cardinal) e estabilidade (Fixo)"
+        ])
+        recommendations.extend([
+            f"{cardinal_name}: respeite o tempo de processamento de {fixed_name}",
+            f"{fixed_name}: tente ser mais aberto a mudanças propostas por {cardinal_name}",
+            "Encontrem um ritmo que honre ambas as necessidades"
+        ])
+        dynamics.append(f"{cardinal_name} inicia, {fixed_name} sustenta - uma parceria complementar que funciona quando há respeito mútuo pelos ritmos diferentes.")
+        
+    elif (modality1 == Modality.CARDINAL and modality2 == Modality.MUTABLE) or (modality1 == Modality.MUTABLE and modality2 == Modality.CARDINAL):
+        cardinal_name = user1.name if modality1 == Modality.CARDINAL else user2.name
+        mutable_name = user2.name if modality1 == Modality.CARDINAL else user1.name
+        
+        strengths.extend([
+            f"{cardinal_name} lidera com visão, {mutable_name} adapta com sabedoria",
+            "Excelente capacidade de inovação e ajuste",
+            "Dinamismo equilibrado entre ação e flexibilidade"
+        ])
+        challenges.extend([
+            f"{cardinal_name} pode ver {mutable_name} como indeciso",
+            f"{mutable_name} pode se sentir pressionado pela assertividade de {cardinal_name}",
+            "Ritmos diferentes podem causar desencontros"
+        ])
+        recommendations.extend([
+            f"{cardinal_name}: dê espaço para {mutable_name} processar e contribuir",
+            f"{mutable_name}: pratique ser mais direto com suas opiniões",
+            "Combinem sessões de planejamento com momentos de espontaneidade"
+        ])
+        dynamics.append(f"{cardinal_name} propõe direções, {mutable_name} encontra os melhores caminhos - uma dupla criativa e eficiente.")
+        
+    elif (modality1 == Modality.FIXED and modality2 == Modality.MUTABLE) or (modality1 == Modality.MUTABLE and modality2 == Modality.FIXED):
+        fixed_name = user1.name if modality1 == Modality.FIXED else user2.name
+        mutable_name = user2.name if modality1 == Modality.FIXED else user1.name
+        
+        strengths.extend([
+            f"{fixed_name} oferece base sólida, {mutable_name} traz versatilidade",
+            "Equilíbrio perfeito entre estabilidade e adaptabilidade",
+            "Complementaridade natural que cobre diferentes necessidades"
+        ])
+        challenges.extend([
+            f"{fixed_name} pode ver {mutable_name} como inconsistente",
+            f"{mutable_name} pode se sentir limitado pela rigidez de {fixed_name}",
+            "Necessidades diferentes de mudança vs. estabilidade"
+        ])
+        recommendations.extend([
+            f"{fixed_name}: aprecie a flexibilidade de {mutable_name} como um presente",
+            f"{mutable_name}: valorize a constância de {fixed_name} como segurança",
+            "Criem rotinas flexíveis que satisfaçam ambos"
+        ])
+        dynamics.append(f"{fixed_name} é a âncora, {mutable_name} é a vela - juntos navegam com segurança e adaptabilidade.")
+    
+    # Enhanced premium insights
     premium_insights = [
-        "Exercício de comunicação personalizado para seu perfil",
-        "Estratégias específicas para lidar com conflitos",
-        "Plano de desenvolvimento do relacionamento em 30 dias"
+        f"Guia personalizado de comunicação para {modality1.value}-{modality2.value}",
+        f"Exercícios específicos para fortalecer a dinâmica {user1.name}-{user2.name}",
+        "Plano de desenvolvimento do relacionamento em 90 dias",
+        "Estratégias de intimidade baseadas nos temperamentos",
+        "Toolkit de resolução de conflitos personalizado",
+        "Rituais de conexão adaptados ao perfil do casal"
     ]
     
     return CompatibilityReport(
