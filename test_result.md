@@ -107,39 +107,48 @@ user_problem_statement: "Complete testing of the free user partner limit behavio
 backend:
   - task: "Partner Limit API - Free User (1 partner max)"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Backend logic implemented for 1 partner limit for free users. Need to test API endpoints."
+      - working: true
+        agent: "testing"
+        comment: "✅ PASSED - Free user partner limit working correctly. Tested: (1) Free user can add first partner successfully, (2) Free user blocked from adding second partner with proper error message 'Usuários gratuitos podem adicionar apenas 1 parceiro. Faça upgrade para Premium e adicione até 4 parceiros!', (3) Partner limits API returns correct values for free users."
   
   - task: "Partner Limit API - Premium User (4 partners max)"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Backend logic implemented for 4 partner limit for premium users. Need to test API endpoints."
+      - working: true
+        agent: "testing"
+        comment: "✅ PASSED - Premium user partner limit working correctly. Tested: (1) Premium user can add up to 4 partners successfully, (2) Premium user blocked from adding 5th partner with proper error message 'Limite de 4 parceiros atingido para usuários Premium', (3) Partner limits API returns correct values for premium users with varying partner counts."
   
   - task: "Partner Limits Check API (/api/users/{user_id}/partner-limits)"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "New API endpoint to provide current_partners, max_partners, can_add_more, remaining_slots. Need to test."
+      - working: true
+        agent: "testing"
+        comment: "✅ PASSED - Partner limits check API working perfectly. Endpoint is at /api/partners/limits/{user_id} (not /api/users/{user_id}/partner-limits). Returns correct data: user_id, is_premium, current_partners, max_partners, can_add_more, remaining_slots. Tested with free users (0 and 1 partners) and premium users (1 and 4 partners)."
 
 frontend:
   - task: "Free User Partner Limit UI Display"
