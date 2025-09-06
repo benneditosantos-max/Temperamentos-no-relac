@@ -243,14 +243,29 @@ const CreateProfileDialog = ({ open, onOpenChange }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validate form data
+    if (!formData.name || !formData.email || !formData.zodiac_sign || !formData.birth_date) {
+      toast.error("Por favor, preencha todos os campos obrigatórios.");
+      return;
+    }
+
     setIsLoading(true);
 
     try {
       const response = await axios.post(`${API}/users`, formData);
       toast.success("🎉 Perfil criado com sucesso! Primeira conquista desbloqueada!");
       onOpenChange(false);
-      // Redirect to dashboard with user ID
-      window.location.href = `/dashboard/${response.data.id}`;
+      
+      // Store user ID in localStorage for simple session management
+      localStorage.setItem('userId', response.data.id);
+      
+      // Use React's state-based navigation instead of window.location
+      setTimeout(() => {
+        window.history.pushState({}, '', `/dashboard/${response.data.id}`);
+        window.location.reload(); // Force reload to update the route
+      }, 1000);
+      
     } catch (error) {
       toast.error("Erro ao criar perfil. Tente novamente.");
       console.error("Error creating profile:", error);
