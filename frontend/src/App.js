@@ -437,6 +437,25 @@ const Dashboard = ({ userId }) => {
     }
   };
 
+  const handleShareWithPartner = async () => {
+    try {
+      await axios.post(`${API}/users/${userId}/share`);
+      toast.success("🎉 Conquista desbloqueada: Compartilhou com parceiro!");
+      
+      // Copy link to clipboard
+      const shareLink = `${window.location.origin}?ref=${userId}`;
+      await navigator.clipboard.writeText(shareLink);
+      toast.info("Link copiado para área de transferência!");
+      
+      // Reload user data to get updated badges
+      loadUserData();
+      
+    } catch (error) {
+      console.error("Error sharing with partner:", error);
+      toast.error("Erro ao compartilhar. Tente novamente.");
+    }
+  };
+
   if (isLoading) {
     return <div className="min-h-screen flex items-center justify-center">
       <div className="text-center">
