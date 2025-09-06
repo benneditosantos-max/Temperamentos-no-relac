@@ -791,13 +791,16 @@ const BadgeItem = ({ icon, title, earned, color }) => (
 );
 
 // Action Card Component
-const ActionCard = ({ icon, title, description, buttonText, onClick, completed, disabled }) => (
-  <Card className="hover:shadow-xl transition-all duration-300 border-0 bg-white">
+const ActionCard = ({ icon, title, description, buttonText, onClick, completed, disabled, isPremium }) => (
+  <Card className={`hover:shadow-xl transition-all duration-300 border-0 ${
+    isPremium ? 'bg-gradient-to-br from-yellow-50 to-purple-50 border-2 border-yellow-200' : 'bg-white'
+  }`}>
     <CardHeader>
       <div className="flex items-center gap-3 mb-2">
-        <div className="p-2 bg-purple-100 rounded-lg text-purple-600">
+        <div className={`p-2 rounded-lg ${isPremium ? 'bg-yellow-100 text-yellow-600' : 'bg-purple-100 text-purple-600'}`}>
           {icon}
         </div>
+        {isPremium && <Crown className="h-5 w-5 text-yellow-500" />}
         {completed && <Badge className="bg-green-100 text-green-800">Concluído</Badge>}
       </div>
       <CardTitle className="text-xl">{title}</CardTitle>
@@ -809,7 +812,11 @@ const ActionCard = ({ icon, title, description, buttonText, onClick, completed, 
       <Button 
         onClick={onClick}
         disabled={disabled}
-        className="w-full bg-purple-600 hover:bg-purple-700 disabled:opacity-50"
+        className={`w-full disabled:opacity-50 ${
+          isPremium 
+            ? 'bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white' 
+            : 'bg-purple-600 hover:bg-purple-700'
+        }`}
       >
         {buttonText}
       </Button>
