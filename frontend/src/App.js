@@ -388,6 +388,55 @@ const Dashboard = ({ userId }) => {
     }
   };
 
+  const generateDemoCompatibilityReport = async () => {
+    try {
+      // Create a demo partner user
+      const partnerData = {
+        name: "Partner Demo",
+        email: "partner@demo.com",
+        zodiac_sign: "scorpio",
+        birth_date: "1992-11-05"
+      };
+      
+      const partnerResponse = await axios.post(`${API}/users`, partnerData);
+      const partnerId = partnerResponse.data.id;
+      
+      // Submit questionnaire for partner (Fixed dominant)
+      const partnerAnswers = [
+        {"question_id": 1, "answer": "Penso bem e mantenho minha posição", "score": 3},
+        {"question_id": 2, "answer": "Valoriza estabilidade e lealdade", "score": 3},
+        {"question_id": 3, "answer": "Mantém sua posição com firmeza", "score": 3},
+        {"question_id": 4, "answer": "Prefiro estabilidade e resisto a mudanças", "score": 3},
+        {"question_id": 5, "answer": "Oferece suporte sólido e constante", "score": 3}
+      ];
+      
+      await axios.post(`${API}/questionnaire/submit`, {
+        user_id: partnerId,
+        answers: partnerAnswers
+      });
+      
+      // Generate compatibility report
+      const compatibilityResponse = await axios.post(`${API}/compatibility`, {
+        user1_id: userId,
+        user2_id: partnerId
+      });
+      
+      const report = compatibilityResponse.data;
+      
+      toast.success("🎉 Relatório de compatibilidade gerado! Nova conquista desbloqueada!");
+      
+      // Show report results
+      alert(`Compatibilidade: ${report.compatibility_score}%\n\nPontos Fortes:\n${report.strengths.join('\n')}\n\nDesafios:\n${report.challenges.join('\n')}\n\nRecomendações:\n${report.recommendations.join('\n')}`);
+      
+      // Reload user data to get updated badges
+      loadUserData();
+      
+    } catch (error) {
+      console.error("Error generating compatibility report:", error);
+      toast.error("Erro ao gerar relatório. Tente novamente.");
+    }
+  };
+
   if (isLoading) {
     return <div className="min-h-screen flex items-center justify-center">
       <div className="text-center">
