@@ -510,6 +510,20 @@ const Dashboard = ({ userId }) => {
     }
   };
 
+  const loadTemperamentResult = async () => {
+    try {
+      // Try to get the latest questionnaire result for this user
+      // For now, we'll simulate this - in a real app, you'd have an API endpoint
+      const mockResult = {
+        dominant_modality: 'cardinal', // This would come from the actual result
+        secondary_modality: 'fixed'
+      };
+      setTemperamentResult(mockResult);
+    } catch (error) {
+      console.error("Error loading temperament result:", error);
+    }
+  };
+
   const generateDemoCompatibilityReport = async () => {
     try {
       // Create a demo partner user
