@@ -795,17 +795,25 @@ const PremiumUpgradeDialog = ({ open, onOpenChange, userId }) => {
   const handleUpgrade = async () => {
     setIsProcessing(true);
     try {
-      // Simulate payment process
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Get current origin URL
+      const originUrl = window.location.origin;
       
-      await axios.post(`${API}/users/${userId}/upgrade-premium`);
-      toast.success("🎉 Upgrade realizado com sucesso! Bem-vindo ao Premium!");
-      onOpenChange(false);
-      window.location.reload();
+      // Create checkout session
+      const response = await axios.post(`${API}/payments/checkout/session`, {
+        user_id: userId,
+        origin_url: originUrl
+      });
+      
+      // Redirect to Stripe Checkout
+      if (response.data.url) {
+        window.location.href = response.data.url;
+      } else {
+        throw new Error("No checkout URL received");
+      }
+      
     } catch (error) {
-      toast.error("Erro no processamento do pagamento");
-      console.error("Error upgrading to premium:", error);
-    } finally {
+      toast.error("Erro ao processar pagamento. Tente novamente.");
+      console.error("Error processing payment:", error);
       setIsProcessing(false);
     }
   };
