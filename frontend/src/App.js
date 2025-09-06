@@ -30,6 +30,9 @@ import {
   DailyAdviceCard,
   PersonalizedReportPanel
 } from "./components/AdvancedPremium";
+import {
+  CompatibilityDashboard
+} from "./components/CompatibilitySystem";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
