@@ -266,7 +266,38 @@ class UserProgress(BaseModel):
     achievements: List[str] = []
     last_activity: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
-# Zodiac Sign Data
+# Classical Temperaments Mapping
+CLASSICAL_TEMPERAMENTS = {
+    "fire": "Colérico",      # Impulsivo, líder, energético
+    "air": "Sanguíneo",      # Social, otimista, comunicativo  
+    "earth": "Melancólico",  # Analítico, perfeccionista, prático
+    "water": "Fleumático"    # Calmo, diplomático, empático
+}
+
+TEMPERAMENT_DESCRIPTIONS = {
+    "Colérico": {
+        "description": "Líder natural, decidido e ambicioso. Gosta de controle e ação.",
+        "traits": ["Determinado", "Independente", "Competitivo", "Direto", "Orientado a objetivos"],
+        "challenges": ["Impaciência", "Dominante", "Teimoso", "Crítico", "Workaholic"]
+    },
+    "Sanguíneo": {
+        "description": "Sociável, otimista e carismático. Ama pessoas e novas experiências.",
+        "traits": ["Entusiasmado", "Persuasivo", "Espontâneo", "Otimista", "Criativo"],
+        "challenges": ["Desorganizado", "Impulsivo", "Falador", "Emocional", "Procrastinador"]
+    },
+    "Melancólico": {
+        "description": "Pensativo, detalhista e perfeccionista. Valoriza qualidade e precisão.",
+        "traits": ["Analítico", "Leal", "Organizado", "Sensível", "Perfeccionista"],
+        "challenges": ["Pessimista", "Crítico", "Moody", "Rígido", "Indeciso"]
+    },
+    "Fleumático": {
+        "description": "Calmo, diplomático e estável. Busca harmonia e evita conflitos.",
+        "traits": ["Paciente", "Confiável", "Diplomático", "Eficiente", "Observador"],
+        "challenges": ["Indeciso", "Passivo", "Teimoso", "Procrastinador", "Evita confrontos"]
+    }
+}
+
+# Enhanced Zodiac Sign Data with Complete Mapping
 ZODIAC_DATA = {
     ZodiacSign.ARIES: {"modality": Modality.CARDINAL, "element": "fire", "name": "Áries"},
     ZodiacSign.TAURUS: {"modality": Modality.FIXED, "element": "earth", "name": "Touro"},
