@@ -566,14 +566,17 @@ const InsightCard = ({ title, items, icon, color, bgColor }) => {
 };
 
 // Main Compatibility Dashboard
-export const CompatibilityDashboard = ({ userId }) => {
+export const CompatibilityDashboard = ({ userId, userIsPremium = false }) => {
   const [partners, setPartners] = useState([]);
+  const [partnerLimits, setPartnerLimits] = useState(null);
   const [showAddPartner, setShowAddPartner] = useState(false);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [selectedCompatibilityReport, setSelectedCompatibilityReport] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     loadPartners();
+    loadPartnerLimits();
   }, [userId]);
 
   const loadPartners = async () => {
@@ -584,6 +587,15 @@ export const CompatibilityDashboard = ({ userId }) => {
       console.error("Error loading partners:", error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const loadPartnerLimits = async () => {
+    try {
+      const response = await axios.get(`${API}/partners/limits/${userId}`);
+      setPartnerLimits(response.data);
+    } catch (error) {
+      console.error("Error loading partner limits:", error);
     }
   };
 
