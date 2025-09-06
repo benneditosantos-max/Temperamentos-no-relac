@@ -335,7 +335,32 @@ TEMPERAMENT_PROFILES = {
         decision_making="Consideram múltiplas perspectivas antes de decidir. Podem mudar de opinião conforme novas informações surgem.",
         strengths=["Adaptabilidade", "Empatia", "Versatilidade", "Capacidade de mediação", "Flexibilidade mental"],
         challenges=["Indecisão", "Falta de direção clara", "Dificuldade em manter posições", "Evitação de conflitos necessários", "Inconsistência"],
-        growth_tips=["Desenvolva maior assertividade", "Pratique a tomada de decisões firmes", "Aprenda a manter posições importantes", "Equilibre adaptabilidade com consistência"]
+        growth_tips=["Desenvolva maior assertividade", "Pratique a tomada de decisões firmes", "Aprenda a manter posições importantes", "Equilibre adaptabilidade com consistência"],
+        emotional_triggers=[
+            "Pressão para tomar posições rígidas",
+            "Ambientes muito estruturados ou inflexíveis",
+            "Conflitos diretos e confrontos agressivos",
+            "Críticas à sua 'falta de consistência'",
+            "Situações que exigem compromisso de longo prazo imediato"
+        ],
+        growth_strategies=[
+            "Desenvolva o 'núcleo firme': identifique 3 valores inegociáveis pessoais",
+            "Pratique a técnica 'sim decidido': tome uma decisão pequena por dia e mantenha-a",
+            "Crie rituais de consistência: 3 hábitos pequenos que pratica diariamente",
+            "Desenvolva assertividade com o exercício 'opinião própria': expresse sua visão antes de ouvir outros",
+            "Use o 'método das âncoras': estabeleça pontos fixos na rotina para criar estabilidade"
+        ],
+        daily_practices=[
+            "Manhã: Defina uma prioridade pessoal que não será negociada hoje",
+            "Tarde: Pratique expressar uma opinião própria antes de pedir outras perspectivas",
+            "Noite: Identifique uma decisão que tomou e manteve durante o dia",
+            "Semanal: Escolha um compromisso pequeno e cumpra-o por 7 dias seguidos"
+        ],
+        relationship_dynamics={
+            "with_cardinal": "O Cardinal dirige, o Mutável refina. Estabeleçam momentos para que o Mutável também lidere.",
+            "with_fixed": "O Fixo oferece estrutura, o Mutável traz leveza. Respeitem os ritmos diferentes.",
+            "with_mutable": "Grande harmonia mas pode faltar direção. Definam metas claras e prazos juntos."
+        }
     )
 }
 
