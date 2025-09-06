@@ -101,3 +101,101 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: "Complete testing of the free user partner limit behavior in the 'Temperamentos no Relacionamento' application. Specifically test the user experience when a free user attempts to add a second partner after reaching their limit of one, and verify the premium upgrade modal appears correctly."
+
+backend:
+  - task: "Partner Limit API - Free User (1 partner max)"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Backend logic implemented for 1 partner limit for free users. Need to test API endpoints."
+  
+  - task: "Partner Limit API - Premium User (4 partners max)"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Backend logic implemented for 4 partner limit for premium users. Need to test API endpoints."
+  
+  - task: "Partner Limits Check API (/api/users/{user_id}/partner-limits)"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "New API endpoint to provide current_partners, max_partners, can_add_more, remaining_slots. Need to test."
+
+frontend:
+  - task: "Free User Partner Limit UI Display"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "UI updated to show 'Gratuito' badge, 'X de Y parceiros', and remaining slots. Need to test display."
+  
+  - task: "Premium Upgrade Dialog on Partner Limit"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Premium upgrade dialog should appear when free user tries to add second partner. Need to test."
+  
+  - task: "Partner Addition Flow - Free User First Partner"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Free user should be able to add their first partner successfully. Need to test."
+
+metadata:
+  created_by: "main_agent"
+  version: "1.0"
+  test_sequence: 0
+  run_ui: false
+
+test_plan:
+  current_focus:
+    - "Partner Limit API - Free User (1 partner max)"
+    - "Partner Limit API - Premium User (4 partners max)"
+    - "Partner Limits Check API (/api/users/{user_id}/partner-limits)"
+    - "Free User Partner Limit UI Display"
+    - "Premium Upgrade Dialog on Partner Limit"
+    - "Partner Addition Flow - Free User First Partner"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "main"
+    message: "Initial testing data created. All partner limit related features need comprehensive testing. Backend APIs implemented but not tested. Frontend UI partially updated but user flow needs validation. Priority is testing the complete user experience for free users hitting partner limits."
