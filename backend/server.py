@@ -299,18 +299,66 @@ TEMPERAMENT_DESCRIPTIONS = {
 
 # Enhanced Zodiac Sign Data with Complete Mapping
 ZODIAC_DATA = {
-    ZodiacSign.ARIES: {"modality": Modality.CARDINAL, "element": "fire", "name": "Áries"},
-    ZodiacSign.TAURUS: {"modality": Modality.FIXED, "element": "earth", "name": "Touro"},
-    ZodiacSign.GEMINI: {"modality": Modality.MUTABLE, "element": "air", "name": "Gêmeos"},
-    ZodiacSign.CANCER: {"modality": Modality.CARDINAL, "element": "water", "name": "Câncer"},
-    ZodiacSign.LEO: {"modality": Modality.FIXED, "element": "fire", "name": "Leão"},
-    ZodiacSign.VIRGO: {"modality": Modality.MUTABLE, "element": "earth", "name": "Virgem"},
-    ZodiacSign.LIBRA: {"modality": Modality.CARDINAL, "element": "air", "name": "Libra"},
-    ZodiacSign.SCORPIO: {"modality": Modality.FIXED, "element": "water", "name": "Escorpião"},
-    ZodiacSign.SAGITTARIUS: {"modality": Modality.MUTABLE, "element": "fire", "name": "Sagitário"},
-    ZodiacSign.CAPRICORN: {"modality": Modality.CARDINAL, "element": "earth", "name": "Capricórnio"},
-    ZodiacSign.AQUARIUS: {"modality": Modality.FIXED, "element": "air", "name": "Aquário"},
-    ZodiacSign.PISCES: {"modality": Modality.MUTABLE, "element": "water", "name": "Peixes"}
+    ZodiacSign.ARIES: {
+        "modality": Modality.CARDINAL, "element": "fire", "name": "Áries",
+        "temperament": "Colérico", "quality": "Cardinal", "element_pt": "Fogo",
+        "dates": "21/03 - 19/04"
+    },
+    ZodiacSign.TAURUS: {
+        "modality": Modality.FIXED, "element": "earth", "name": "Touro",
+        "temperament": "Melancólico", "quality": "Fixo", "element_pt": "Terra",
+        "dates": "20/04 - 20/05"
+    },
+    ZodiacSign.GEMINI: {
+        "modality": Modality.MUTABLE, "element": "air", "name": "Gêmeos",
+        "temperament": "Sanguíneo", "quality": "Mutável", "element_pt": "Ar",
+        "dates": "21/05 - 20/06"
+    },
+    ZodiacSign.CANCER: {
+        "modality": Modality.CARDINAL, "element": "water", "name": "Câncer",
+        "temperament": "Fleumático", "quality": "Cardinal", "element_pt": "Água",
+        "dates": "21/06 - 22/07"
+    },
+    ZodiacSign.LEO: {
+        "modality": Modality.FIXED, "element": "fire", "name": "Leão",
+        "temperament": "Colérico", "quality": "Fixo", "element_pt": "Fogo",
+        "dates": "23/07 - 22/08"
+    },
+    ZodiacSign.VIRGO: {
+        "modality": Modality.MUTABLE, "element": "earth", "name": "Virgem",
+        "temperament": "Melancólico", "quality": "Mutável", "element_pt": "Terra",
+        "dates": "23/08 - 22/09"
+    },
+    ZodiacSign.LIBRA: {
+        "modality": Modality.CARDINAL, "element": "air", "name": "Libra",
+        "temperament": "Sanguíneo", "quality": "Cardinal", "element_pt": "Ar",
+        "dates": "23/09 - 22/10"
+    },
+    ZodiacSign.SCORPIO: {
+        "modality": Modality.FIXED, "element": "water", "name": "Escorpião",
+        "temperament": "Fleumático", "quality": "Fixo", "element_pt": "Água",
+        "dates": "23/10 - 21/11"
+    },
+    ZodiacSign.SAGITTARIUS: {
+        "modality": Modality.MUTABLE, "element": "fire", "name": "Sagitário",
+        "temperament": "Colérico", "quality": "Mutável", "element_pt": "Fogo",
+        "dates": "22/11 - 21/12"
+    },
+    ZodiacSign.CAPRICORN: {
+        "modality": Modality.CARDINAL, "element": "earth", "name": "Capricórnio",
+        "temperament": "Melancólico", "quality": "Cardinal", "element_pt": "Terra",
+        "dates": "22/12 - 19/01"
+    },
+    ZodiacSign.AQUARIUS: {
+        "modality": Modality.FIXED, "element": "air", "name": "Aquário",
+        "temperament": "Sanguíneo", "quality": "Fixo", "element_pt": "Ar",
+        "dates": "20/01 - 18/02"
+    },
+    ZodiacSign.PISCES: {
+        "modality": Modality.MUTABLE, "element": "water", "name": "Peixes",
+        "temperament": "Fleumático", "quality": "Mutável", "element_pt": "Água",
+        "dates": "19/02 - 20/03"
+    }
 }
 
 # Enhanced Detailed Temperament Profiles
