@@ -189,9 +189,13 @@ frontend:
 
 metadata:
   created_by: "main_agent"
-  version: "1.0"
-  test_sequence: 0
+  version: "1.1"
+  test_sequence: 1
   run_ui: false
+  last_backend_test: "2025-09-06T23:34:15Z"
+  backend_test_status: "complete"
+  total_backend_tests: 25
+  backend_success_rate: "100%"
 
 test_plan:
   current_focus:
