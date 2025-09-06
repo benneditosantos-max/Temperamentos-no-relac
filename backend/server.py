@@ -119,6 +119,65 @@ class PremiumUpgradeRequest(BaseModel):
     user_id: str
     origin_url: str
 
+# Premium Content Models
+class TemperamentProfile(BaseModel):
+    modality: Modality
+    title: str
+    description: str
+    communication_style: str
+    conflict_resolution: str
+    intimacy_approach: str
+    decision_making: str
+    strengths: List[str]
+    challenges: List[str]
+    growth_tips: List[str]
+
+class SelfKnowledgeQuestion(BaseModel):
+    id: int
+    question: str
+    options: List[Dict[str, Any]]
+    category: str  # communication, conflict, intimacy, decision_making
+
+class SelfKnowledgeAnswer(BaseModel):
+    question_id: int
+    answer: str
+    category: str
+    score: int
+
+class SelfKnowledgeResult(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    answers: List[SelfKnowledgeAnswer]
+    insights: Dict[str, str]  # category -> insight
+    completed_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class WeeklyMission(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    title: str
+    description: str
+    points: int
+    week_number: int
+    year: int
+    mission_type: str  # self_knowledge, communication, exercise
+    is_active: bool = True
+
+class UserMission(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    mission_id: str
+    completed: bool = False
+    completed_at: Optional[datetime] = None
+    points_earned: int = 0
+
+class UserProgress(BaseModel):
+    user_id: str
+    total_points: int = 0
+    current_level: int = 1
+    missions_completed: int = 0
+    weekly_streak: int = 0
+    achievements: List[str] = []
+    last_activity: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
 # Zodiac Sign Data
 ZODIAC_DATA = {
     ZodiacSign.ARIES: {"modality": Modality.CARDINAL, "element": "fire", "name": "Áries"},
