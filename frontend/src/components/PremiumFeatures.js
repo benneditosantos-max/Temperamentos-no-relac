@@ -538,7 +538,7 @@ export const EnhancedPremiumModal = ({ open, onOpenChange, userId }) => {
             ) : (
               <>
                 <Crown className="mr-2 h-5 w-5" />
-                Fazer Upgrade para Premium – R$ 9,97
+                Fazer Upgrade para Premium – $9.97
               </>
             )}
           </Button>
