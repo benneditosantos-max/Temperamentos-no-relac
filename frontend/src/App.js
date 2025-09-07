@@ -28,7 +28,8 @@ import {
   CoupleExercisesPanel,
   JourneyLevelsPanel,
   DailyAdviceCard,
-  PersonalizedReportPanel
+  PersonalizedReportPanel,
+  RelationshipCoach
 } from "./components/AdvancedPremium";
 import {
   CompatibilityDashboard
