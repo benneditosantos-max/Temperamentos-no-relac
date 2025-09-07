@@ -29,7 +29,8 @@ import {
   JourneyLevelsPanel,
   DailyAdviceCard,
   PersonalizedReportPanel,
-  RelationshipCoach
+  RelationshipCoach,
+  IndividualExerciseCards
 } from "./components/AdvancedPremium";
 import {
   CompatibilityDashboard
