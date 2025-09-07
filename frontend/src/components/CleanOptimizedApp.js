@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { Toaster } from "./ui/sonner";
 import { 
   Heart, Trophy, Users, CheckCircle, Crown, Sparkles, Target, 
-  Award, Download, Send, MessageHeart, Lightbulb,
+  Award, Download, Send, MessageCircleHeart, Lightbulb,
   Brain, RefreshCw
 } from "lucide-react";
 
