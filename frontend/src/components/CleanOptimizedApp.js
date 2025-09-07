@@ -62,6 +62,50 @@ export const CleanOptimizedTemperamentApp = () => {
     return names[sign] || sign;
   };
 
+  // Função para simular dados de compatibilidade
+  const generateCompatibilityData = (userResult, partnerName = "Seu Parceiro") => {
+    const partnerTemperaments = ['Colérico', 'Melancólico', 'Sanguíneo', 'Fleumático'];
+    const randomPartner = partnerTemperaments[Math.floor(Math.random() * partnerTemperaments.length)];
+    
+    // Calcula score baseado na compatibilidade dos temperamentos
+    const compatibilityMatrix = {
+      'Colérico': { 'Colérico': 65, 'Melancólico': 78, 'Sanguíneo': 85, 'Fleumático': 72 },
+      'Melancólico': { 'Colérico': 78, 'Melancólico': 70, 'Sanguíneo': 68, 'Fleumático': 82 },
+      'Sanguíneo': { 'Colérico': 85, 'Melancólico': 68, 'Sanguíneo': 75, 'Fleumático': 79 },
+      'Fleumático': { 'Colérico': 72, 'Melancólico': 82, 'Sanguíneo': 79, 'Fleumático': 71 }
+    };
+
+    const userTemp = userResult?.temperament || 'Colérico';
+    const score = compatibilityMatrix[userTemp]?.[randomPartner] || 75;
+
+    return {
+      userTemperament: userTemp,
+      partnerTemperament: randomPartner,
+      partnerName: partnerName,
+      score: score,
+      insights: {
+        strengths: "Comunicação natural e objetivos compartilhados",
+        challenges: "Diferentes ritmos de vida e tomada de decisão",
+        suggestions: "Pratiquem momentos de qualidade sem distrações externas"
+      }
+    };
+  };
+
+  const handleShareWithPartner = () => {
+    if (!temperamentResult) {
+      toast.error("Complete o diagnóstico primeiro para compartilhar!");
+      return;
+    }
+
+    const compatibility = generateCompatibilityData(
+      temperamentResult, 
+      formData.partner_name || "Seu Parceiro"
+    );
+    
+    setCompatibilityData(compatibility);
+    setShowShareModal(true);
+  };
+
   if (currentStep === 'home') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-pink-50 to-orange-50">
