@@ -6,6 +6,8 @@ import { Badge } from "./ui/badge";
 import { Progress } from "./ui/progress";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "./ui/dialog";
 import { Separator } from "./ui/separator";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import { Label } from "./ui/label";
 import { toast } from "sonner";
 import { 
   BookOpen, Target, Trophy, Star, Crown, Award, Calendar, CheckCircle, Lock, Download,
