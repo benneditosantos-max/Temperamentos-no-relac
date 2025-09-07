@@ -1376,6 +1376,14 @@ function App() {
     );
   }
 
+  if (currentPath === '/share-test') {
+    return (
+      <>
+        <ShareTest />
+      </>
+    );
+  }
+
   if (currentPath === '/premium/success' || currentPath.includes('/premium/success')) {
     return (
       <>
