@@ -738,6 +738,9 @@ const Dashboard = ({ userId }) => {
             {/* Daily Advice Card */}
             <DailyAdviceCard userId={userId} />
 
+            {/* Relationship Coach */}
+            <RelationshipCoach userId={userId} />
+
             {/* Quick Access Premium Actions */}
             <div className="grid md:grid-cols-3 gap-6">
               <ActionCard
