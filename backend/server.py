@@ -52,6 +52,7 @@ class BadgeType(str, Enum):
     QUESTIONNAIRE_COMPLETED = "questionnaire_completed"
     REPORT_GENERATED = "report_generated"
     SHARED_WITH_PARTNER = "shared_with_partner"
+    FIRST_CONNECTION_CREATED = "first_connection_created"
 
 # Models
 class User(BaseModel):
