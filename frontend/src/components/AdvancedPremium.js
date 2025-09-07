@@ -1413,6 +1413,25 @@ Escolha uma pequena mudança que você pode implementar nos próximos 3 dias par
     return names[temperament] || temperament;
   };
 
+  // Função auxiliar para obter nome do signo zodiacal
+  const getZodiacName = (zodiacSign) => {
+    const names = {
+      'aries': 'Áries',
+      'taurus': 'Touro', 
+      'gemini': 'Gêmeos',
+      'cancer': 'Câncer',
+      'leo': 'Leão',
+      'virgo': 'Virgem',
+      'libra': 'Libra',
+      'scorpio': 'Escorpião',
+      'sagittarius': 'Sagitário',
+      'capricorn': 'Capricórnio',
+      'aquarius': 'Aquário',
+      'pisces': 'Peixes'
+    };
+    return names[zodiacSign] || zodiacSign;
+  };
+
   const saveInsightsAndAction = () => {
     if (insightNotes.trim() || actionPlan.trim()) {
       const session = {
