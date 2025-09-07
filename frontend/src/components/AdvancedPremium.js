@@ -438,11 +438,48 @@ export const CoupleExercisesPanel = ({ userId }) => {
 };
 
 // Exercise Detail Content
-const ExerciseDetailContent = ({ exercise }) => {
+const ExerciseDetailContent = ({ exercise, userId, onComplete }) => {
+  const [showFeedbackForm, setShowFeedbackForm] = useState(false);
+  const [feedback, setFeedback] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const colors = {
     communication: "from-blue-50 to-indigo-50",
     conflict_resolution: "from-red-50 to-pink-50", 
     intimacy: "from-purple-50 to-pink-50"
+  };
+
+  const handleComplete = async () => {
+    if (!feedback.trim()) {
+      toast.error("Por favor, escreva um feedback sobre o exercício");
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const response = await axios.post(`${API}/premium/complete-exercise`, null, {
+        params: {
+          user_id: userId,
+          exercise_title: exercise.title,
+          feedback: feedback
+        }
+      });
+
+      toast.success(`🎉 ${response.data.message} (+${response.data.points_earned} pontos)`);
+      
+      if (response.data.next_unlocked) {
+        toast.success(`🔓 Novo exercício desbloqueado: ${response.data.next_unlocked}!`);
+      }
+
+      setShowFeedbackForm(false);
+      setFeedback('');
+      if (onComplete) onComplete();
+    } catch (error) {
+      console.error("Error completing exercise:", error);
+      toast.error(error.response?.data?.detail || "Erro ao completar exercício");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
