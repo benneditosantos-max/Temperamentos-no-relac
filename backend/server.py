@@ -2093,6 +2093,16 @@ async def stripe_webhook(request: Request):
         logger.error(f"Error processing webhook: {str(e)}")
         raise HTTPException(status_code=500, detail="Webhook processing failed")
 
+# Health check endpoint (without /api prefix)
+@app.get("/health")
+async def health_check():
+    return {"status": "ok", "message": "Backend is running"}
+
+# Health check endpoint (with /api prefix)
+@api_router.get("/health")
+async def api_health_check():
+    return {"status": "ok", "message": "API is running"}
+
 # Include the router in the main app
 app.include_router(api_router)
 
