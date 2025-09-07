@@ -43,25 +43,6 @@ export const EnhancedTemperamentProfile = ({ modality, isPreview = false, userDa
     return mapping[astrologicalModality] || 'Cardinal';
   };
 
-  // Função auxiliar para obter nome do signo zodiacal
-  const getZodiacName = (zodiacSign) => {
-    const names = {
-      'aries': 'Áries',
-      'taurus': 'Touro', 
-      'gemini': 'Gêmeos',
-      'cancer': 'Câncer',
-      'leo': 'Leão',
-      'virgo': 'Virgem',
-      'libra': 'Libra',
-      'scorpio': 'Escorpião',
-      'sagittarius': 'Sagitário',
-      'capricorn': 'Capricórnio',
-      'aquarius': 'Aquário',
-      'pisces': 'Peixes'
-    };
-    return names[zodiacSign] || zodiacSign;
-  };
-
   useEffect(() => {
     loadProfile();
   }, [modality]);
