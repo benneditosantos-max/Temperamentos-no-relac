@@ -25,7 +25,6 @@ import {
 } from "./components/PremiumFeatures";
 import {
   EnhancedTemperamentProfile,
-  CoupleExercisesPanel,
   JourneyLevelsPanel,
   DailyAdviceCard,
   PersonalizedReportPanel,
