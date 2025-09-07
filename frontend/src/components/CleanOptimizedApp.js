@@ -26,6 +26,8 @@ export const CleanOptimizedTemperamentApp = () => {
   const [temperamentResult, setTemperamentResult] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [gamificationScore, setGamificationScore] = useState(0);
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [compatibilityData, setCompatibilityData] = useState(null);
 
   const calculateTemperament = (data) => {
     const birth = new Date(data.birthDate);
