@@ -529,7 +529,23 @@ export const CleanOptimizedTemperamentApp = () => {
     );
   }
 
-  return <div>Carregando...</div>;
+  return (
+    <>
+      <div>Carregando...</div>
+      
+      {/* Modal de Compartilhamento */}
+      <ShareWithPartnerModal
+        open={showShareModal}
+        onOpenChange={setShowShareModal}
+        userTemperament={compatibilityData?.userTemperament}
+        partnerTemperament={compatibilityData?.partnerTemperament}
+        compatibility={{ score: compatibilityData?.score }}
+        isPremium={false} // Pode ser dinâmico baseado no status do usuário
+        userName={formData.name || "Você"}
+        partnerName={compatibilityData?.partnerName || "Seu Parceiro"}
+      />
+    </>
+  );
 };
 
 export default CleanOptimizedTemperamentApp;
