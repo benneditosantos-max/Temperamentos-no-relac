@@ -1689,3 +1689,273 @@ Escolha uma pequena mudança que você pode implementar nos próximos 3 dias par
     </Card>
   );
 };
+// Individual Exercise Cards Component
+export const IndividualExerciseCards = ({ userId }) => {
+  const [exercises, setExercises] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [selectedExercise, setSelectedExercise] = useState(null);
+  const [showExerciseDetail, setShowExerciseDetail] = useState(false);
+
+  useEffect(() => {
+    loadExercises();
+  }, [userId]);
+
+  const loadExercises = async () => {
+    try {
+      const response = await axios.get(`${API}/premium/couple-exercises/${userId}`);
+      setExercises(response.data.exercises);
+    } catch (error) {
+      console.error("Error loading exercises:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const openExerciseDetail = (exercise) => {
+    setSelectedExercise(exercise);
+    setShowExerciseDetail(true);
+  };
+
+  if (isLoading) {
+    return (
+      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {[1, 2, 3, 4].map((i) => (
+          <div key={i} className="animate-pulse">
+            <div className="bg-gray-200 h-64 rounded-xl"></div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  // Define category colors and icons
+  const categoryColors = {
+    communication: {
+      bg: "from-blue-100 to-indigo-100",
+      border: "border-blue-200",
+      icon: "text-blue-600",
+      gradient: "from-blue-50 to-indigo-50"
+    },
+    conflict_resolution: {
+      bg: "from-red-100 to-pink-100", 
+      border: "border-red-200",
+      icon: "text-red-600",
+      gradient: "from-red-50 to-pink-50"
+    },
+    intimacy: {
+      bg: "from-purple-100 to-pink-100",
+      border: "border-purple-200", 
+      icon: "text-purple-600",
+      gradient: "from-purple-50 to-pink-50"
+    }
+  };
+
+  const categoryIcons = {
+    communication: MessageCircle,
+    conflict_resolution: Shield,
+    intimacy: Heart
+  };
+
+  const difficultyConfig = {
+    1: { 
+      label: "Iniciante", 
+      color: "bg-green-100 text-green-800",
+      bgGradient: "from-green-50 to-emerald-50",
+      borderColor: "border-green-200"
+    },
+    2: { 
+      label: "Fácil", 
+      color: "bg-blue-100 text-blue-800",
+      bgGradient: "from-blue-50 to-sky-50",
+      borderColor: "border-blue-200"
+    },
+    3: { 
+      label: "Intermediário", 
+      color: "bg-yellow-100 text-yellow-800",
+      bgGradient: "from-yellow-50 to-amber-50",
+      borderColor: "border-yellow-200"
+    },
+    4: { 
+      label: "Avançado", 
+      color: "bg-orange-100 text-orange-800",
+      bgGradient: "from-orange-50 to-red-50",
+      borderColor: "border-orange-200"
+    },
+    5: { 
+      label: "Super Avançado", 
+      color: "bg-red-100 text-red-800",
+      bgGradient: "from-red-50 to-rose-50",
+      borderColor: "border-red-200"
+    }
+  };
+
+  return (
+    <>
+      <div className="mb-8">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="p-3 bg-gradient-to-r from-purple-100 to-pink-100 rounded-xl">
+            <Heart className="h-8 w-8 text-purple-600" />
+          </div>
+          <div>
+            <h3 className="text-2xl font-bold text-gray-900">Exercícios para Casais</h3>
+            <p className="text-gray-600">Dinâmicas guiadas para fortalecer sua conexão</p>
+          </div>
+        </div>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {exercises.map((exercise, index) => {
+            const colors = categoryColors[exercise.category] || categoryColors.communication;
+            const IconComponent = categoryIcons[exercise.category] || MessageCircle;
+            const difficulty = difficultyConfig[exercise.difficulty_level] || difficultyConfig[1];
+            
+            const isLocked = !exercise.is_unlocked;
+            const isCompleted = exercise.is_completed;
+
+            return (
+              <Card 
+                key={index} 
+                className={`relative overflow-hidden transition-all duration-300 hover:shadow-xl ${
+                  isLocked 
+                    ? 'border-2 border-gray-200 bg-gray-50 opacity-75' 
+                    : `border-2 ${difficulty.borderColor} bg-gradient-to-br ${difficulty.bgGradient}`
+                }`}
+              >
+                <CardContent className="p-6">
+                  {/* Header with Icon and Status */}
+                  <div className="flex items-start justify-between mb-4">
+                    <div className={`p-3 rounded-xl ${isLocked ? 'bg-gray-200' : `bg-gradient-to-r ${colors.bg}`}`}>
+                      {isLocked ? (
+                        <Lock className="h-6 w-6 text-gray-400" />
+                      ) : (
+                        <IconComponent className={`h-6 w-6 ${colors.icon}`} />
+                      )}
+                    </div>
+                    
+                    <div className="flex flex-col items-end gap-2">
+                      {isCompleted && (
+                        <div className="flex items-center gap-1 text-green-600">
+                          <CheckCircle className="h-4 w-4" />
+                          <span className="text-xs font-medium">Completo</span>
+                        </div>
+                      )}
+                      {isLocked && (
+                        <div className="flex items-center gap-1 text-gray-400">
+                          <Lock className="h-4 w-4" />
+                          <span className="text-xs font-medium">Bloqueado</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Title and Description */}
+                  <div className="mb-4">
+                    <h4 className={`text-lg font-bold mb-2 ${isLocked ? 'text-gray-500' : 'text-gray-900'}`}>
+                      {exercise.title}
+                    </h4>
+                    <p className={`text-sm leading-relaxed ${isLocked ? 'text-gray-400' : 'text-gray-600'}`}>
+                      {isLocked 
+                        ? 'Complete o exercício anterior com feedback para desbloquear'
+                        : exercise.description
+                      }
+                    </p>
+                  </div>
+
+                  {/* Meta Information */}
+                  <div className="space-y-3 mb-4">
+                    <Badge className={difficulty.color}>{difficulty.label}</Badge>
+                    
+                    {!isLocked && (
+                      <div className="flex items-center gap-4 text-sm text-gray-500">
+                        <div className="flex items-center gap-1">
+                          <Timer className="h-4 w-4" />
+                          <span>{exercise.duration_minutes} min</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Target className="h-4 w-4" />
+                          <span>{exercise.expected_outcomes.length} resultados</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Action Button */}
+                  <Button
+                    onClick={() => openExerciseDetail(exercise)}
+                    disabled={isLocked}
+                    className={`w-full ${
+                      isLocked 
+                        ? "bg-gray-300 cursor-not-allowed hover:bg-gray-300" 
+                        : "bg-purple-600 hover:bg-purple-700"
+                    }`}
+                  >
+                    {isLocked ? (
+                      <>
+                        <Lock className="mr-2 h-4 w-4" />
+                        Bloqueado
+                      </>
+                    ) : isCompleted ? (
+                      <>
+                        <CheckCircle className="mr-2 h-4 w-4" />
+                        Ver Novamente
+                      </>
+                    ) : (
+                      <>
+                        <Play className="mr-2 h-4 w-4" />
+                        Começar Exercício
+                      </>
+                    )}
+                  </Button>
+
+                  {/* Progress Indicator for Locked Items */}
+                  {isLocked && (
+                    <div className="mt-3 text-center">
+                      <p className="text-xs text-gray-500">
+                        Complete o nível {exercise.difficulty_level - 1} primeiro
+                      </p>
+                    </div>
+                  )}
+                </CardContent>
+
+                {/* Completion Badge Overlay */}
+                {isCompleted && (
+                  <div className="absolute top-2 right-2">
+                    <div className="bg-green-500 text-white px-2 py-1 rounded-full text-xs font-bold flex items-center gap-1">
+                      <Award className="h-3 w-3" />
+                      ✓
+                    </div>
+                  </div>
+                )}
+              </Card>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Exercise Detail Dialog */}
+      {showExerciseDetail && selectedExercise && (
+        <Dialog open={showExerciseDetail} onOpenChange={setShowExerciseDetail}>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="text-2xl flex items-center gap-2">
+                <Heart className="h-6 w-6 text-purple-600" />
+                {selectedExercise.title}
+              </DialogTitle>
+              <DialogDescription className="text-lg">
+                {selectedExercise.description}
+              </DialogDescription>
+            </DialogHeader>
+            
+            <ExerciseDetailContent 
+              exercise={selectedExercise} 
+              userId={userId}
+              onComplete={() => {
+                setShowExerciseDetail(false);
+                loadExercises(); // Reload to update progress
+              }}
+            />
+          </DialogContent>
+        </Dialog>
+      )}
+    </>
+  );
+};
