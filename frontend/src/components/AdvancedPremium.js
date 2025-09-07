@@ -1301,9 +1301,10 @@ Escolha uma pequena mudança que você pode implementar nos próximos 3 dias par
                         <SelectValue placeholder="Selecione o temperamento (opcional)" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="cardinal">Cardinal - Líder, iniciador</SelectItem>
-                        <SelectItem value="fixed">Fixo - Estável, leal</SelectItem>
-                        <SelectItem value="mutable">Mutável - Adaptável, flexível</SelectItem>
+                        <SelectItem value="colerico">Colérico - Dominante, decidido</SelectItem>
+                        <SelectItem value="melancolico">Melancólico - Analítico, perfeccionista</SelectItem>
+                        <SelectItem value="sanguineo">Sanguíneo - Sociável, otimista</SelectItem>
+                        <SelectItem value="fleumatico">Fleumático - Calmo, diplomático</SelectItem>
                         <SelectItem value="unknown">Não sei</SelectItem>
                       </SelectContent>
                     </Select>
