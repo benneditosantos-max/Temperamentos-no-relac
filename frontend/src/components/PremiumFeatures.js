@@ -470,7 +470,7 @@ export const EnhancedPremiumModal = ({ open, onOpenChange, userId }) => {
         <div className="space-y-6">
           {/* Price */}
           <div className="text-center py-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg">
-            <div className="text-4xl font-bold text-purple-800 mb-2">R$ 12</div>
+            <div className="text-4xl font-bold text-purple-800 mb-2">R$ 9,97</div>
             <p className="text-purple-600">Pagamento único • Acesso vitalício</p>
           </div>
           
