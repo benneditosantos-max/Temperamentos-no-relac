@@ -33,7 +33,7 @@ export const OptimizedTemperamentApp = () => {
 
   // 🎨 COMPONENTE: TELA INICIAL OTIMIZADA
   const HomePage = () => (
-    <div className="min-h-screen bg-gradient-to-br from-rose-50 via-peach-50 to-amber-50">
+    <div className="min-h-screen" style={{background: 'linear-gradient(135deg, #fff1f2, #fef7ed, #fffbeb)'}}>
       {/* Header com animação */}
       <div className="text-center py-16 px-4">
         <div className="animate-pulse-heart mb-6">
