@@ -81,6 +81,11 @@ export const EnhancedTemperamentProfile = ({ modality, isPreview = false, userDa
           <div>
             <CardTitle className={`text-3xl ${colors.accent} font-bold`}>
               Análise Profunda - {getClassicTemperament(modality)} {getAstrologicalName(modality)}
+              {userData && userData.zodiac_sign && (
+                <span className="text-sm font-normal text-gray-600 block mt-1">
+                  Baseado em {getZodiacName(userData.zodiac_sign)} ({userData.birth_date})
+                </span>
+              )}
             </CardTitle>
             <CardDescription className={`${colors.accent} mt-2 text-lg leading-relaxed`}>
               {profile.description}
