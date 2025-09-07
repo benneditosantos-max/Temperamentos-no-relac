@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./App.css";
 import "./styles/OptimizedStyles.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import OptimizedTemperamentApp from "./components/OptimizedApp";
+import { SimpleOptimizedTemperamentApp } from "./components/SimpleOptimizedApp";
 import axios from "axios";
 import { Button } from "./components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./components/ui/card";
