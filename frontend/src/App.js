@@ -754,15 +754,6 @@ const Dashboard = ({ userId }) => {
                 completed={temperamentResult !== null}
                 isPremium={true}
               />
-              
-              <ActionCard
-                icon={<Heart className="h-8 w-8" />}
-                title="Exercícios para Casais"
-                description="Dinâmicas guiadas com passo a passo para comunicação e intimidade"
-                buttonText="Explorar Exercícios"
-                onClick={() => setShowCoupleExercises(true)}
-                isPremium={true}
-              />
 
               <ActionCard
                 icon={<Award className="h-8 w-8" />}
@@ -773,6 +764,9 @@ const Dashboard = ({ userId }) => {
                 isPremium={true}
               />
             </div>
+
+            {/* Individual Exercise Cards */}
+            <IndividualExerciseCards userId={userId} />
 
             {/* Journey Levels */}
             <div className="bg-white rounded-2xl shadow-xl p-8">
