@@ -80,7 +80,7 @@ export const EnhancedTemperamentProfile = ({ modality, isPreview = false }) => {
         <div className="flex items-center justify-between">
           <div>
             <CardTitle className={`text-3xl ${colors.accent} font-bold`}>
-              {profile.title}
+              Análise Profunda - {getClassicTemperament(modality)} {getAstrologicalName(modality)}
             </CardTitle>
             <CardDescription className={`${colors.accent} mt-2 text-lg leading-relaxed`}>
               {profile.description}
