@@ -12,7 +12,7 @@ import { toast } from "sonner";
 import { 
   BookOpen, Target, Trophy, Star, Crown, Award, Calendar, CheckCircle, Lock, Download,
   Heart, Brain, Zap, Shield, Users, MessageCircle, Lightbulb, TrendingUp, Map, Timer,
-  Save, PenTool
+  Save, PenTool, Play
 } from "lucide-react";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
