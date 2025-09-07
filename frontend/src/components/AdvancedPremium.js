@@ -282,7 +282,7 @@ export const CoupleExercisesPanel = ({ userId }) => {
 
   const loadExercises = async () => {
     try {
-      const response = await axios.get(`${API}/premium/couple-exercises`);
+      const response = await axios.get(`${API}/premium/couple-exercises/${userId}`);
       setExercises(response.data.exercises);
     } catch (error) {
       console.error("Error loading exercises:", error);
