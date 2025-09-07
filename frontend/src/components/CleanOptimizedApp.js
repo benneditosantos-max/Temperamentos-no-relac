@@ -352,7 +352,7 @@ export const CleanOptimizedTemperamentApp = () => {
                   className="w-full bg-gradient-to-r from-pink-500 to-rose-500 text-white py-4 text-lg rounded-full shadow-lg"
                   size="lg"
                 >
-                  <MessageHeart className="mr-2 h-5 w-5" />
+                  <MessageCircleHeart className="mr-2 h-5 w-5" />
                   Compartilhar com meu amor
                 </Button>
                 
