@@ -611,6 +611,31 @@ COUPLE_EXERCISES = [
             "Em que áreas gostariam de crescer mais?",
             "Como vão implementar o plano nas próximas semanas?"
         ]
+    ),
+    CoupleExercise(
+        title="Arquitetura da Vida Compartilhada",
+        category="intimacy",
+        description="Desenhem juntos a arquitetura completa do relacionamento que desejam construir nos próximos 5-10 anos",
+        instructions=[
+            "Criem um ambiente cerimonial: velas, música suave, sem distrações por 90 minutos",
+            "Dividam uma cartolina grande em 6 áreas: Amor & Intimidade, Crescimento Pessoal, Família & Filhos, Carreira & Dinheiro, Aventuras & Sonhos, Legado & Propósito",
+            "Em cada área, escrevam/desenhem: Onde estamos hoje? Onde queremos chegar? Quais são nossos medos? Quais são nossas esperanças?",
+            "Para cada área, definam 3 valores inegociáveis e 3 sonhos compartilhados",
+            "Criem um 'Contrato de Crescimento': prometam apoiar ativamente o crescimento um do outro, mesmo quando for desconfortável",
+            "Estabeleçam rituais trimestrais para revisar e ajustar esta 'arquitetura'",
+            "Terminem criando uma declaração de missão do relacionamento (1-2 frases poderosas)",
+            "Assinem juntos e guardem como documento sagrado do relacionamento"
+        ],
+        duration_minutes=90,
+        difficulty_level=5,
+        required_materials=["Cartolina grande", "Canetas coloridas", "Velas", "Ambiente íntimo", "90 minutos ininterruptos"],
+        expected_outcomes=["Visão compartilhada profunda", "Alinhamento de valores e sonhos", "Compromisso consciente de crescimento mútuo", "Rituais de conexão estabelecidos"],
+        follow_up_questions=[
+            "Que diferenças entre suas visões individuais mais os surpreenderam?",
+            "Quais compromissos vão exigir mais coragem e crescimento de cada um?",
+            "Como pretendem honrar este 'contrato sagrado' nos momentos difíceis?",
+            "Que rituais específicos vão implementar para manter viva esta visão?"
+        ]
     )
 ]
 
