@@ -858,7 +858,7 @@ export const CompatibilityDashboard = ({ userId, userIsPremium = false }) => {
             </div>
             
             <div className="text-center">
-              <div className="text-3xl font-bold text-gray-900 mb-1">R$ 9,97</div>
+              <div className="text-3xl font-bold text-gray-900 mb-1">$9.97</div>
               <p className="text-gray-600 text-sm mb-4">Pagamento único</p>
               
               <Button
