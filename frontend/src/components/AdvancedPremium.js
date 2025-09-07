@@ -848,3 +848,214 @@ const PersonalizedReportDisplay = ({ report }) => {
     </Card>
   );
 };
+
+// Personal Reflection Assistant Component
+const PersonalReflectionAssistant = ({ exerciseTitle }) => {
+  const [showReflection, setShowReflection] = useState(false);
+  const [reflectionText, setReflectionText] = useState('');
+  const [currentStep, setCurrentStep] = useState(0);
+  const [savedReflections, setSavedReflections] = useState([]);
+
+  const guidedQuestions = [
+    "O que este exercício revelou sobre meu temperamento e minhas reações?",
+    "Como isso impacta meus relacionamentos atuais?", 
+    "Que padrões consigo identificar nas minhas interações?",
+    "Que mudanças posso aplicar a partir desta reflexão?"
+  ];
+
+  const handleSaveReflection = () => {
+    if (reflectionText.trim()) {
+      const newReflection = {
+        id: Date.now(),
+        exercise: exerciseTitle,
+        text: reflectionText,
+        date: new Date().toLocaleDateString('pt-BR'),
+        time: new Date().toLocaleTimeString('pt-BR')
+      };
+      
+      setSavedReflections([...savedReflections, newReflection]);
+      setReflectionText('');
+      toast.success("Reflexão registrada com sucesso! 🌟");
+    }
+  };
+
+  const nextStep = () => {
+    if (currentStep < guidedQuestions.length - 1) {
+      setCurrentStep(currentStep + 1);
+    }
+  };
+
+  const prevStep = () => {
+    if (currentStep > 0) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
+  return (
+    <div className="bg-gradient-to-r from-emerald-50 to-teal-50 p-6 rounded-xl border-2 border-emerald-200">
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-3">
+          <div className="p-2 bg-emerald-100 rounded-full">
+            <Brain className="h-6 w-6 text-emerald-600" />
+          </div>
+          <div>
+            <h4 className="text-xl font-bold text-gray-900">Assistente de Reflexões Pessoais</h4>
+            <p className="text-emerald-700 text-sm">Registre suas respostas e insights após o exercício</p>
+          </div>
+        </div>
+        
+        <Button
+          onClick={() => setShowReflection(!showReflection)}
+          variant="outline"
+          className="border-emerald-300 text-emerald-700 hover:bg-emerald-100"
+        >
+          {showReflection ? 'Ocultar' : 'Começar Reflexão'}
+        </Button>
+      </div>
+
+      {showReflection && (
+        <div className="space-y-6">
+          {/* Welcome Message */}
+          <div className="bg-white p-5 rounded-lg shadow-sm border-l-4 border-emerald-400">
+            <div className="flex items-start gap-3">
+              <Heart className="h-6 w-6 text-emerald-500 flex-shrink-0 mt-1" />
+              <div>
+                <h5 className="font-bold text-gray-800 mb-2">Olá! Vamos refletir juntos 🤗</h5>
+                <p className="text-gray-700 leading-relaxed">
+                  Este é seu espaço seguro para registrar pensamentos e insights após completar o exercício 
+                  "<strong>{exerciseTitle}</strong>". Escreva suas respostas de forma sincera e sem julgamentos. 
+                  Cada reflexão é um passo importante no seu crescimento pessoal e no fortalecimento dos seus relacionamentos.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Guided Questions Navigation */}
+          <div className="bg-white p-5 rounded-lg shadow-sm">
+            <div className="flex items-center justify-between mb-4">
+              <h5 className="font-bold text-gray-800">Perguntas Guiadas para Reflexão</h5>
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-gray-500">
+                  {currentStep + 1} de {guidedQuestions.length}
+                </span>
+                <div className="flex gap-1">
+                  {guidedQuestions.map((_, index) => (
+                    <div
+                      key={index}
+                      className={`w-2 h-2 rounded-full ${
+                        index === currentStep ? 'bg-emerald-500' : 'bg-gray-300'
+                      }`}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-emerald-50 p-4 rounded-lg border border-emerald-200 mb-4">
+              <div className="flex items-start gap-3">
+                <Lightbulb className="h-5 w-5 text-emerald-600 flex-shrink-0 mt-1" />
+                <p className="text-gray-800 font-medium leading-relaxed">
+                  {guidedQuestions[currentStep]}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex justify-between">
+              <Button
+                onClick={prevStep}
+                disabled={currentStep === 0}
+                variant="outline"
+                size="sm"
+                className="border-emerald-300 text-emerald-700"
+              >
+                ← Anterior
+              </Button>
+              
+              <Button
+                onClick={nextStep}
+                disabled={currentStep === guidedQuestions.length - 1}
+                variant="outline"
+                size="sm"
+                className="border-emerald-300 text-emerald-700"
+              >
+                Próxima →
+              </Button>
+            </div>
+          </div>
+
+          {/* Reflection Text Area */}
+          <div className="bg-white p-5 rounded-lg shadow-sm">
+            <div className="flex items-center gap-2 mb-3">
+              <PenTool className="h-5 w-5 text-emerald-600" />
+              <h5 className="font-bold text-gray-800">Registre Seus Pensamentos</h5>
+            </div>
+            
+            <p className="text-sm text-gray-600 mb-4">
+              Use este espaço para registrar livremente seus pensamentos, insights e sentimentos. 
+              Não há respostas certas ou erradas - apenas sua verdade pessoal.
+            </p>
+            
+            <textarea
+              value={reflectionText}
+              onChange={(e) => setReflectionText(e.target.value)}
+              placeholder="Escreva aqui suas reflexões sobre o exercício e como ele se relaciona com sua pergunta atual..."
+              className="w-full h-32 p-4 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+            />
+            
+            <div className="flex justify-between items-center mt-4">
+              <p className="text-xs text-gray-500">
+                {reflectionText.length} caracteres • Sem limite de palavras
+              </p>
+              
+              <Button
+                onClick={handleSaveReflection}
+                disabled={!reflectionText.trim()}
+                className="bg-emerald-600 hover:bg-emerald-700"
+              >
+                <Save className="mr-2 h-4 w-4" />
+                Registrar Reflexão
+              </Button>
+            </div>
+          </div>
+
+          {/* Saved Reflections */}
+          {savedReflections.length > 0 && (
+            <div className="bg-white p-5 rounded-lg shadow-sm">
+              <div className="flex items-center gap-2 mb-4">
+                <BookOpen className="h-5 w-5 text-emerald-600" />
+                <h5 className="font-bold text-gray-800">Suas Reflexões Registradas</h5>
+                <Badge className="bg-emerald-100 text-emerald-800">{savedReflections.length}</Badge>
+              </div>
+              
+              <div className="space-y-3 max-h-60 overflow-y-auto">
+                {savedReflections.map((reflection) => (
+                  <div key={reflection.id} className="bg-emerald-50 p-4 rounded-lg border border-emerald-100">
+                    <div className="flex justify-between items-start mb-2">
+                      <h6 className="font-medium text-gray-800 text-sm">Reflexão - {reflection.exercise}</h6>
+                      <span className="text-xs text-gray-500">{reflection.date} às {reflection.time}</span>
+                    </div>
+                    <p className="text-gray-700 text-sm leading-relaxed">{reflection.text}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Encouragement Message */}
+          <div className="bg-gradient-to-r from-emerald-100 to-teal-100 p-5 rounded-lg border border-emerald-200">
+            <div className="flex items-start gap-3">
+              <CheckCircle className="h-6 w-6 text-emerald-600 flex-shrink-0 mt-1" />
+              <div>
+                <h5 className="font-bold text-gray-800 mb-2">Parabéns pelo seu compromisso! 🌟</h5>
+                <p className="text-gray-700 leading-relaxed">
+                  Cada reflexão registrada é um investimento no seu crescimento pessoal e na qualidade dos seus relacionamentos. 
+                  Continue explorando os outros exercícios e aprofundando seu autoconhecimento. Você está no caminho certo!
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
