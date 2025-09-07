@@ -19,7 +19,7 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
 // Enhanced Temperament Profile with Deep Insights
-export const EnhancedTemperamentProfile = ({ modality, isPreview = false }) => {
+export const EnhancedTemperamentProfile = ({ modality, isPreview = false, userData = null }) => {
   const [profile, setProfile] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
