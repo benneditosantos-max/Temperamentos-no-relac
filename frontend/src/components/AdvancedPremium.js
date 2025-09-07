@@ -429,7 +429,14 @@ export const CoupleExercisesPanel = ({ userId }) => {
               </DialogDescription>
             </DialogHeader>
             
-            <ExerciseDetailContent exercise={selectedExercise} />
+            <ExerciseDetailContent 
+              exercise={selectedExercise} 
+              userId={userId}
+              onComplete={() => {
+                setShowExerciseDetail(false);
+                loadExercises(); // Reload to update progress
+              }}
+            />
           </DialogContent>
         </Dialog>
       )}
