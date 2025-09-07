@@ -500,8 +500,13 @@ const Dashboard = ({ userId }) => {
   useEffect(() => {
     loadUserData();
     loadQuestionnaire();
-    loadTemperamentResult();
   }, [userId]);
+
+  useEffect(() => {
+    if (user) {
+      loadTemperamentResult();
+    }
+  }, [user]);
 
   const loadUserData = async () => {
     try {
