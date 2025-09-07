@@ -23,6 +23,26 @@ export const EnhancedTemperamentProfile = ({ modality, isPreview = false }) => {
   const [profile, setProfile] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Mapeamento de temperamentos astrológicos para clássicos
+  const getClassicTemperament = (astrologicalModality) => {
+    const mapping = {
+      'cardinal': 'Colérico',
+      'fixed': 'Melancólico', 
+      'mutable': 'Sanguíneo'
+    };
+    return mapping[astrologicalModality] || 'Fleumático';
+  };
+
+  // Mapeamento para os complementares astrológicos
+  const getAstrologicalName = (astrologicalModality) => {
+    const mapping = {
+      'cardinal': 'Cardinal',
+      'fixed': 'Fixo',
+      'mutable': 'Mutável'
+    };
+    return mapping[astrologicalModality] || 'Cardinal';
+  };
+
   useEffect(() => {
     loadProfile();
   }, [modality]);
