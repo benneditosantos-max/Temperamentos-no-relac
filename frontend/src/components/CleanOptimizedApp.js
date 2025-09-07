@@ -395,7 +395,7 @@ export const CleanOptimizedTemperamentApp = () => {
 
               <div className="space-y-4">
                 <Button 
-                  onClick={() => setCurrentStep('sharing')}
+                  onClick={handleShareWithPartner}
                   className="w-full bg-gradient-to-r from-pink-500 to-rose-500 text-white py-4 text-lg rounded-full shadow-lg"
                   size="lg"
                 >
