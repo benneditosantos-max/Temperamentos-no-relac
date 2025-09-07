@@ -526,15 +526,86 @@ const Dashboard = ({ userId }) => {
 
   const loadTemperamentResult = async () => {
     try {
-      // Try to get the latest questionnaire result for this user
-      // For now, we'll simulate this - in a real app, you'd have an API endpoint
-      const mockResult = {
-        dominant_modality: 'cardinal', // This would come from the actual result
-        secondary_modality: 'fixed'
-      };
-      setTemperamentResult(mockResult);
+      if (user && user.birth_date) {
+        // Calculate temperament based on user's birth date
+        const temperament = calculateTemperamentFromBirthDate(user.birth_date);
+        setTemperamentResult(temperament);
+      } else {
+        // Fallback for users without birth date
+        const mockResult = {
+          dominant_modality: 'cardinal',
+          secondary_modality: 'fixed'
+        };
+        setTemperamentResult(mockResult);
+      }
     } catch (error) {
       console.error("Error loading temperament result:", error);
+    }
+  };
+
+  const calculateTemperamentFromBirthDate = (birthDate) => {
+    try {
+      const birth = new Date(birthDate);
+      const month = birth.getMonth() + 1; // getMonth() returns 0-11
+      const day = birth.getDate();
+
+      // Determine zodiac sign from birth date
+      let zodiacSign = '';
+      if ((month === 3 && day >= 21) || (month === 4 && day <= 19)) {
+        zodiacSign = 'aries';
+      } else if ((month === 4 && day >= 20) || (month === 5 && day <= 20)) {
+        zodiacSign = 'taurus';
+      } else if ((month === 5 && day >= 21) || (month === 6 && day <= 20)) {
+        zodiacSign = 'gemini';
+      } else if ((month === 6 && day >= 21) || (month === 7 && day <= 22)) {
+        zodiacSign = 'cancer';
+      } else if ((month === 7 && day >= 23) || (month === 8 && day <= 22)) {
+        zodiacSign = 'leo';
+      } else if ((month === 8 && day >= 23) || (month === 9 && day <= 22)) {
+        zodiacSign = 'virgo';
+      } else if ((month === 9 && day >= 23) || (month === 10 && day <= 22)) {
+        zodiacSign = 'libra';
+      } else if ((month === 10 && day >= 23) || (month === 11 && day <= 21)) {
+        zodiacSign = 'scorpio';
+      } else if ((month === 11 && day >= 22) || (month === 12 && day <= 21)) {
+        zodiacSign = 'sagittarius';
+      } else if ((month === 12 && day >= 22) || (month === 1 && day <= 19)) {
+        zodiacSign = 'capricorn';
+      } else if ((month === 1 && day >= 20) || (month === 2 && day <= 18)) {
+        zodiacSign = 'aquarius';
+      } else {
+        zodiacSign = 'pisces';
+      }
+
+      // Map zodiac sign to modality (temperament)
+      const zodiacToModality = {
+        'aries': 'cardinal',     // Áries - Cardinal, Fogo, Colérico
+        'taurus': 'fixed',       // Touro - Fixo, Terra, Melancólico
+        'gemini': 'mutable',     // Gêmeos - Mutável, Ar, Sanguíneo
+        'cancer': 'cardinal',    // Câncer - Cardinal, Água, Fleumático
+        'leo': 'fixed',          // Leão - Fixo, Fogo, Colérico
+        'virgo': 'mutable',      // Virgem - Mutável, Terra, Melancólico
+        'libra': 'cardinal',     // Libra - Cardinal, Ar, Sanguíneo
+        'scorpio': 'fixed',      // Escorpião - Fixo, Água, Fleumático
+        'sagittarius': 'mutable', // Sagitário - Mutável, Fogo, Colérico
+        'capricorn': 'cardinal', // Capricórnio - Cardinal, Terra, Melancólico
+        'aquarius': 'fixed',     // Aquário - Fixo, Ar, Sanguíneo
+        'pisces': 'mutable'      // Peixes - Mutável, Água, Fleumático
+      };
+
+      const modality = zodiacToModality[zodiacSign] || 'cardinal';
+
+      return {
+        dominant_modality: modality,
+        zodiac_sign: zodiacSign,
+        birth_date: birthDate
+      };
+    } catch (error) {
+      console.error("Error calculating temperament:", error);
+      return {
+        dominant_modality: 'cardinal',
+        zodiac_sign: 'aries'
+      };
     }
   };
 
