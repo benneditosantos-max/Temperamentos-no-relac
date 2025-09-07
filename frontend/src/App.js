@@ -1367,6 +1367,15 @@ function App() {
     );
   }
 
+  if (currentPath === '/otimizado') {
+    return (
+      <>
+        <OptimizedTemperamentApp />
+        <Toaster />
+      </>
+    );
+  }
+
   if (currentPath === '/premium/success' || currentPath.includes('/premium/success')) {
     return (
       <>
