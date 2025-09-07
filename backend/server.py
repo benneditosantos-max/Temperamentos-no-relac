@@ -1604,9 +1604,30 @@ async def get_user_progress(user_id: str):
     
     return UserProgress(**progress_data)
 
-@api_router.get("/premium/couple-exercises")
-async def get_couple_exercises():
-    return {"exercises": [exercise.dict() for exercise in COUPLE_EXERCISES]}
+@api_router.get("/premium/couple-exercises/{user_id}")
+async def get_couple_exercises_with_progress(user_id: str):
+    # Get user's exercise progress
+    user_progress = await db.exercise_progress.find({"user_id": user_id}).to_list(length=None)
+    
+    exercises_with_progress = []
+    for exercise in COUPLE_EXERCISES:
+        # Find progress for this exercise
+        progress = next((p for p in user_progress if p["exercise_title"] == exercise.title), None)
+        
+        # Determine if exercise is unlocked based on gamification rules
+        is_unlocked = is_exercise_unlocked(exercise.difficulty_level, user_progress)
+        
+        exercise_data = exercise.dict()
+        exercise_data.update({
+            "is_unlocked": is_unlocked,
+            "is_completed": progress["completed"] if progress else False,
+            "has_feedback": bool(progress and progress.get("feedback")) if progress else False,
+            "completed_at": progress.get("completed_at") if progress else None
+        })
+        
+        exercises_with_progress.append(exercise_data)
+    
+    return {"exercises": exercises_with_progress}
 
 @api_router.get("/premium/couple-exercise/{exercise_id}")
 async def get_couple_exercise(exercise_id: str):
@@ -1615,6 +1636,78 @@ async def get_couple_exercise(exercise_id: str):
     if not exercise:
         raise HTTPException(status_code=404, detail="Exercício não encontrado")
     return exercise
+
+@api_router.post("/premium/complete-exercise")
+async def complete_exercise(user_id: str, exercise_title: str, feedback: str):
+    # Find the exercise
+    exercise = next((ex for ex in COUPLE_EXERCISES if ex.title == exercise_title), None)
+    if not exercise:
+        raise HTTPException(status_code=404, detail="Exercício não encontrado")
+    
+    # Check if exercise is unlocked
+    user_progress = await db.exercise_progress.find({"user_id": user_id}).to_list(length=None)
+    if not is_exercise_unlocked(exercise.difficulty_level, user_progress):
+        raise HTTPException(status_code=403, detail="Exercício ainda não está desbloqueado")
+    
+    # Check if already completed
+    existing_progress = await db.exercise_progress.find_one({
+        "user_id": user_id,
+        "exercise_title": exercise_title
+    })
+    
+    if existing_progress and existing_progress.get("completed"):
+        raise HTTPException(status_code=400, detail="Exercício já foi completado")
+    
+    # Create or update progress
+    progress_data = {
+        "user_id": user_id,
+        "exercise_title": exercise_title,
+        "difficulty_level": exercise.difficulty_level,
+        "completed": True,
+        "feedback": feedback,
+        "completed_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    if existing_progress:
+        await db.exercise_progress.update_one(
+            {"user_id": user_id, "exercise_title": exercise_title},
+            {"$set": progress_data}
+        )
+    else:
+        progress_data["created_at"] = datetime.now(timezone.utc).isoformat()
+        await db.exercise_progress.insert_one(progress_data)
+    
+    # Award points based on difficulty level
+    points = exercise.difficulty_level * 50  # 50, 100, 150, 200, 250 points
+    await award_points(user_id, points, f"Exercício Completado: {exercise_title}")
+    
+    return {
+        "message": "Exercício completado com sucesso!",
+        "points_earned": points,
+        "next_unlocked": get_next_unlocked_exercise(exercise.difficulty_level)
+    }
+
+def is_exercise_unlocked(difficulty_level: int, user_progress: List[Dict]) -> bool:
+    """Check if an exercise is unlocked based on gamification rules"""
+    if difficulty_level == 1:  # Iniciante is always unlocked
+        return True
+    
+    # For other levels, check if previous level is completed with feedback
+    previous_level = difficulty_level - 1
+    previous_completed = any(
+        p["difficulty_level"] == previous_level and 
+        p["completed"] and 
+        p.get("feedback") 
+        for p in user_progress
+    )
+    
+    return previous_completed
+
+def get_next_unlocked_exercise(completed_difficulty: int) -> Optional[str]:
+    """Get the title of the next exercise that was unlocked"""
+    next_level = completed_difficulty + 1
+    next_exercise = next((ex for ex in COUPLE_EXERCISES if ex.difficulty_level == next_level), None)
+    return next_exercise.title if next_exercise else None
 
 @api_router.get("/premium/journey-levels/{user_id}")
 async def get_user_journey_levels(user_id: str):
