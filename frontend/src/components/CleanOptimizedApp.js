@@ -12,6 +12,7 @@ import {
   Award, Download, Send, MessageCircleHeart, Lightbulb,
   Brain, RefreshCw
 } from "lucide-react";
+import ShareWithPartnerModal from "./ShareWithPartner";
 
 export const CleanOptimizedTemperamentApp = () => {
   const [currentStep, setCurrentStep] = useState('home');
