@@ -429,7 +429,7 @@ export const CleanOptimizedTemperamentApp = () => {
           <Card className="shadow-2xl border-0">
             <CardHeader className="text-center bg-gradient-to-r from-pink-400 to-rose-400 text-white rounded-t-lg">
               <CardTitle className="text-2xl flex items-center justify-center gap-2">
-                <MessageHeart className="h-6 w-6" />
+                <MessageCircleHeart className="h-6 w-6" />
                 Convide seu amor
               </CardTitle>
               <CardDescription className="text-pink-100">Crie um convite especial</CardDescription>
