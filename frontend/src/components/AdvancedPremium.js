@@ -467,6 +467,9 @@ const ExerciseDetailContent = ({ exercise }) => {
           ))}
         </div>
       </div>
+
+      {/* Personal Reflection Assistant */}
+      <PersonalReflectionAssistant exerciseTitle={exercise.title} />
     </div>
   );
 };
