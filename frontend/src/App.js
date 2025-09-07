@@ -1370,7 +1370,7 @@ function App() {
   if (currentPath === '/otimizado') {
     return (
       <>
-        <SimpleOptimizedTemperamentApp />
+        <WorkingOptimizedTemperamentApp />
       </>
     );
   }
