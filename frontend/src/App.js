@@ -911,6 +911,7 @@ const Dashboard = ({ userId }) => {
               <EnhancedTemperamentProfile 
                 modality={temperamentResult.dominant_modality} 
                 isPreview={false}
+                userData={user}
               />
             </DialogContent>
           </Dialog>
