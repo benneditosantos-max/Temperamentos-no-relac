@@ -845,23 +845,7 @@ const Dashboard = ({ userId }) => {
           </Dialog>
         )}
 
-        {/* Couple Exercises Modal */}
-        {showCoupleExercises && (
-          <Dialog open={showCoupleExercises} onOpenChange={setShowCoupleExercises}>
-            <DialogContent className="sm:max-w-6xl max-h-[90vh] overflow-y-auto">
-              <DialogHeader>
-                <DialogTitle className="text-2xl flex items-center gap-2">
-                  <Heart className="h-6 w-6 text-purple-500" />
-                  Exercícios Premium para Casais
-                </DialogTitle>
-                <DialogDescription>
-                  Dinâmicas guiadas para fortalecer comunicação, resolver conflitos e aprofundar intimidade
-                </DialogDescription>
-              </DialogHeader>
-              <CoupleExercisesPanel userId={userId} />
-            </DialogContent>
-          </Dialog>
-        )}
+
 
         {/* Personalized Reports Modal */}
         {showPersonalizedReports && (
