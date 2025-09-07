@@ -970,7 +970,7 @@ const PremiumUpgradeCard = ({ onUpgrade }) => (
     <CardContent>
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-3xl font-bold text-gray-900">R$ 9,97</p>
+          <p className="text-3xl font-bold text-gray-900">$9.97</p>
           <p className="text-sm text-gray-600">Pagamento único</p>
         </div>
         <Button 
