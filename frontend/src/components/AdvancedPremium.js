@@ -332,43 +332,84 @@ export const CoupleExercisesPanel = ({ userId }) => {
         {exercises.map((exercise, index) => {
           const colors = categoryColors[exercise.category] || categoryColors.communication;
           const IconComponent = categoryIcons[exercise.category] || MessageCircle;
-          const difficulty = difficultyLabels[exercise.difficulty_level] || difficultyLabels[1];
+          const difficulty = {
+            1: { label: "Iniciante", color: "bg-green-100 text-green-800" },
+            2: { label: "Fácil", color: "bg-blue-100 text-blue-800" },
+            3: { label: "Intermediário", color: "bg-yellow-100 text-yellow-800" },
+            4: { label: "Avançado", color: "bg-orange-100 text-orange-800" },
+            5: { label: "Super Avançado", color: "bg-red-100 text-red-800" }
+          }[exercise.difficulty_level] || { label: "Iniciante", color: "bg-green-100 text-green-800" };
+
+          const isLocked = !exercise.is_unlocked;
+          const isCompleted = exercise.is_completed;
 
           return (
-            <Card key={index} className={`border-2 ${colors.border} hover:shadow-xl transition-all duration-300`}>
+            <Card key={index} className={`border-2 ${isLocked ? 'border-gray-200 bg-gray-50' : colors.border} hover:shadow-xl transition-all duration-300 ${isLocked ? 'opacity-60' : ''}`}>
               <CardContent className="p-6">
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-3">
-                      <div className={`p-2 bg-gradient-to-r ${colors.bg} rounded-lg`}>
-                        <IconComponent className={`h-6 w-6 ${colors.icon}`} />
+                      <div className={`p-2 ${isLocked ? 'bg-gray-200' : `bg-gradient-to-r ${colors.bg}`} rounded-lg`}>
+                        {isLocked ? (
+                          <Lock className="h-6 w-6 text-gray-400" />
+                        ) : (
+                          <IconComponent className={`h-6 w-6 ${colors.icon}`} />
+                        )}
                       </div>
-                      <h4 className="text-xl font-bold text-gray-900">{exercise.title}</h4>
+                      <div className="flex items-center gap-2">
+                        <h4 className={`text-xl font-bold ${isLocked ? 'text-gray-500' : 'text-gray-900'}`}>
+                          {exercise.title}
+                        </h4>
+                        {isCompleted && (
+                          <CheckCircle className="h-5 w-5 text-green-500" />
+                        )}
+                      </div>
                     </div>
-                    <p className="text-gray-600 leading-relaxed mb-4">{exercise.description}</p>
+                    <p className={`leading-relaxed mb-4 ${isLocked ? 'text-gray-400' : 'text-gray-600'}`}>
+                      {isLocked ? 'Complete o exercício anterior com feedback para desbloquear' : exercise.description}
+                    </p>
                     
                     <div className="flex items-center gap-4 mb-4">
                       <Badge className={difficulty.color}>{difficulty.label}</Badge>
-                      <div className="flex items-center gap-1 text-gray-500">
-                        <Timer className="h-4 w-4" />
-                        <span>{exercise.duration_minutes} min</span>
-                      </div>
-                      <Badge variant="outline" className="capitalize">
-                        {exercise.category.replace('_', ' ')}
-                      </Badge>
+                      {!isLocked && (
+                        <>
+                          <div className="flex items-center gap-1 text-gray-500">
+                            <Timer className="h-4 w-4" />
+                            <span>{exercise.duration_minutes} min</span>
+                          </div>
+                          <Badge variant="outline" className="capitalize">
+                            {exercise.category.replace('_', ' ')}
+                          </Badge>
+                        </>
+                      )}
+                      {isLocked && (
+                        <Badge variant="outline" className="text-gray-500 border-gray-300">
+                          🔒 Bloqueado
+                        </Badge>
+                      )}
+                      {isCompleted && (
+                        <Badge className="bg-green-100 text-green-800">
+                          ✅ Completado
+                        </Badge>
+                      )}
                     </div>
                   </div>
                 </div>
 
                 <div className="flex justify-between items-center">
                   <div className="text-sm text-gray-500">
-                    <span className="font-medium">{exercise.expected_outcomes.length}</span> resultados esperados
+                    {isLocked ? (
+                      <span>Complete o nível anterior primeiro</span>
+                    ) : (
+                      <span><span className="font-medium">{exercise.expected_outcomes.length}</span> resultados esperados</span>
+                    )}
                   </div>
                   <Button
                     onClick={() => openExerciseDetail(exercise)}
-                    className="bg-purple-600 hover:bg-purple-700"
+                    disabled={isLocked}
+                    className={isLocked ? "bg-gray-300 cursor-not-allowed" : "bg-purple-600 hover:bg-purple-700"}
                   >
-                    Ver Detalhes
+                    {isLocked ? "🔒 Bloqueado" : "Ver Detalhes"}
                   </Button>
                 </div>
               </CardContent>
