@@ -551,6 +551,102 @@ const ExerciseDetailContent = ({ exercise, userId, onComplete }) => {
 
       {/* Personal Reflection Assistant */}
       <PersonalReflectionAssistant exerciseTitle={exercise.title} />
+
+      {/* Exercise Completion Section */}
+      {!exercise.is_completed && !showFeedbackForm && (
+        <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-6 rounded-xl border-2 border-green-200">
+          <div className="text-center">
+            <Trophy className="h-12 w-12 text-green-600 mx-auto mb-4" />
+            <h4 className="text-xl font-bold text-gray-800 mb-2">Pronto para Completar o Exercício?</h4>
+            <p className="text-gray-700 mb-4">
+              Depois de praticar este exercício, compartilhe seu feedback para desbloquear o próximo nível!
+            </p>
+            <Button
+              onClick={() => setShowFeedbackForm(true)}
+              className="bg-green-600 hover:bg-green-700"
+            >
+              <Award className="mr-2 h-4 w-4" />
+              Marcar como Completado
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* Feedback Form */}
+      {showFeedbackForm && (
+        <div className="bg-white p-6 rounded-xl shadow-sm border-2 border-purple-200">
+          <div className="flex items-center gap-2 mb-4">
+            <MessageCircle className="h-6 w-6 text-purple-600" />
+            <h4 className="text-xl font-bold text-gray-800">Compartilhe sua Experiência</h4>
+          </div>
+          
+          <p className="text-gray-600 mb-4">
+            Para desbloquear o próximo exercício, nos conte como foi sua experiência com este exercício:
+          </p>
+
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="exercise-feedback" className="font-medium text-gray-800">
+                Como foi praticar este exercício? *
+              </Label>
+              <textarea
+                id="exercise-feedback"
+                value={feedback}
+                onChange={(e) => setFeedback(e.target.value)}
+                placeholder="Compartilhe suas impressões, descobertas, desafios e resultados obtidos com este exercício..."
+                className="w-full h-32 p-4 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 mt-2"
+                required
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                Mínimo de 50 caracteres • {feedback.length}/1000
+              </p>
+            </div>
+
+            <div className="flex justify-between items-center pt-4">
+              <Button
+                onClick={() => {setShowFeedbackForm(false); setFeedback('');}}
+                variant="outline"
+                className="border-gray-300 text-gray-700"
+              >
+                Cancelar
+              </Button>
+              
+              <Button
+                onClick={handleComplete}
+                disabled={isSubmitting || feedback.length < 50}
+                className="bg-purple-600 hover:bg-purple-700"
+              >
+                {isSubmitting ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    Salvando...
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle className="mr-2 h-4 w-4" />
+                    Completar Exercício
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Already Completed */}
+      {exercise.is_completed && (
+        <div className="bg-gradient-to-r from-green-100 to-emerald-100 p-6 rounded-xl border-2 border-green-200">
+          <div className="flex items-center gap-3">
+            <CheckCircle className="h-8 w-8 text-green-600 flex-shrink-0" />
+            <div>
+              <h4 className="font-bold text-gray-800 mb-1">✅ Exercício Completado!</h4>
+              <p className="text-gray-700">
+                Parabéns! Você já completou este exercício e desbloqueou novos níveis. Continue sua jornada de crescimento!
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
