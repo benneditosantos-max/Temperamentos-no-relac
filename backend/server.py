@@ -64,7 +64,7 @@ class User(BaseModel):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     is_premium: bool = False
     progress_percentage: int = 0
-    badges: List[BadgeType] = []
+    badges: List[str] = []
 
 class UserCreate(BaseModel):
     name: str
