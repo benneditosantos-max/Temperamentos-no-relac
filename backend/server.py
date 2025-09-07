@@ -2066,8 +2066,8 @@ async def create_checkout_session(request: PremiumUpgradeRequest, http_request: 
         webhook_url = f"{host_url}/api/webhook/stripe"
         stripe_checkout = StripeCheckout(api_key=stripe_api_key, webhook_url=webhook_url)
         
-        # Fixed Premium package price - R$ 12.00
-        PREMIUM_PACKAGE_PRICE = 12.00
+        # Fixed Premium package price - R$ 9.97
+        PREMIUM_PACKAGE_PRICE = 9.97
         
         # Build success and cancel URLs from origin_url
         success_url = f"{request.origin_url}/premium/success?session_id={{CHECKOUT_SESSION_ID}}"
