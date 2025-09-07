@@ -1108,32 +1108,78 @@ export const RelationshipCoach = ({ userId }) => {
   };
 
   const generateCoachResponse = () => {
-    // Análise baseada no temperamento do usuário
+    // Mapear temperamento astrológico para clássico (temporário até ajustar backend)
+    const mapToClassicTemperament = (astrologicalTemp) => {
+      switch (astrologicalTemp) {
+        case 'cardinal': return 'colerico';
+        case 'fixed': return 'melancolico';
+        case 'mutable': return 'sanguineo';
+        default: return 'colerico';
+      }
+    };
+
+    const userClassicTemperament = mapToClassicTemperament(userTemperament);
+    
+    // Análise baseada no temperamento clássico do usuário
     let temperamentInsight = '';
     let practicalAdvice = '';
+    let compatibilityAnalysis = '';
     
-    switch (userTemperament) {
-      case 'cardinal':
-        temperamentInsight = 'Como Cardinal, você tem tendência a liderar e iniciar mudanças no relacionamento. Isso pode ser uma força, mas também pode criar tensão se não for bem balanceado.';
-        practicalAdvice = 'Pratique a escuta ativa e permita que seu parceiro também tome iniciativas. Pergunte "Como você gostaria de resolver isso?" antes de propor soluções.';
+    switch (userClassicTemperament) {
+      case 'colerico':
+        temperamentInsight = 'Como Colérico, você é naturalmente dominante, decidido e orientado para resultados. Você tende a liderar no relacionamento, mas pode ser impaciente ou controlador.';
+        practicalAdvice = 'Pratique a paciência e escuta ativa. Permita que seu parceiro também tome decisões. Pergunte "Como você gostaria de resolver isso?" antes de impor soluções.';
         break;
-      case 'fixed':
-        temperamentInsight = 'Seu temperamento Fixo traz estabilidade e lealdade ao relacionamento, mas pode criar resistência a mudanças necessárias.';
-        practicalAdvice = 'Trabalhe na flexibilidade emocional. Quando surgir resistência, pergunte-se: "Esta rigidez está protegendo ou limitando nossa conexão?"';
+      case 'melancolico':
+        temperamentInsight = 'Seu temperamento Melancólico faz você ser analítico, perfeccionista e profundamente reflexivo. Você valoriza qualidade e profundidade, mas pode ser crítico ou pessimista.';
+        practicalAdvice = 'Trabalhe em expressar appreciation pelo seu parceiro. Foque nas qualidades positivas antes de apontar o que precisa melhorar. Pratique gratidão diária.';
         break;
-      case 'mutable':
-        temperamentInsight = 'Como Mutável, você se adapta facilmente, mas pode ter dificuldade em manter posições firmes quando necessário.';
-        practicalAdvice = 'Pratique expressar suas necessidades claramente. Use frases como "Isso é importante para mim porque..." para comunicar seus limites.';
+      case 'sanguineo':
+        temperamentInsight = 'Como Sanguíneo, você é sociável, otimista e espontâneo. Você traz alegria ao relacionamento, mas pode ser desorganizado ou superficial em questões importantes.';
+        practicalAdvice = 'Desenvolva consistência e follow-through. Quando prometer algo ao seu parceiro, cumpra. Crie rotinas que fortaleçam a intimidade além da diversão.';
+        break;
+      case 'fleumatico':
+        temperamentInsight = 'Seu temperamento Fleumático traz calma, diplomacia e estabilidade ao relacionamento. Você é um grande pacificador, mas pode evitar confrontos necessários.';
+        practicalAdvice = 'Pratique expressar suas necessidades e limites claramente. Use frases como "Isso é importante para mim porque..." para comunicar sem confronto.';
         break;
       default:
         temperamentInsight = 'Cada temperamento traz características únicas ao relacionamento.';
         practicalAdvice = 'Focamos em desenvolver comunicação empática e compreensão mútua.';
     }
 
+    // Análise de compatibilidade se temperamento do parceiro foi informado
+    if (partnerTemperament && partnerTemperament !== 'unknown') {
+      const isComplementary = (
+        (userClassicTemperament === 'colerico' && partnerTemperament === 'fleumatico') ||
+        (userClassicTemperament === 'fleumatico' && partnerTemperament === 'colerico') ||
+        (userClassicTemperament === 'sanguineo' && partnerTemperament === 'melancolico') ||
+        (userClassicTemperament === 'melancolico' && partnerTemperament === 'sanguineo')
+      );
+
+      const isSimilar = userClassicTemperament === partnerTemperament;
+
+      if (isComplementary) {
+        compatibilityAnalysis = `
+
+**Análise de Compatibilidade - ALTA/MÉDIA (Bom Equilíbrio):**
+Vocês formam uma combinação complementar! Seu temperamento ${getTemperamentName(userClassicTemperament)} equilibra perfeitamente com o ${getTemperamentName(partnerTemperament)} do seu parceiro. Esta dinâmica pode criar um relacionamento muito balanceado, onde suas forças compensam as fraquezas um do outro.`;
+      } else if (isSimilar) {
+        compatibilityAnalysis = `
+
+**Análise de Compatibilidade - MÉDIA:**
+Vocês compartilham o mesmo temperamento ${getTemperamentName(userClassicTemperament)}. Isso significa grande compreensão mútua, mas cuidado para não intensificar os pontos fracos do temperamento. Trabalhem em desenvolver as qualidades que vocês naturalmente não possuem.`;
+      } else {
+        compatibilityAnalysis = `
+
+**Análise de Compatibilidade - MÉDIA/BAIXA:**
+Seu temperamento ${getTemperamentName(userClassicTemperament)} e o ${getTemperamentName(partnerTemperament)} do seu parceiro podem criar alguns desafios, mas também oportunidades de crescimento. O segredo está em valorizar as diferenças e aprender com elas.`;
+      }
+    }
+
     const response = `Olá! Como seu Coach de Relacionamento, vou te ajudar a navegar este desafio.
 
 **Análise da Situação:**
-${temperamentInsight}
+${temperamentInsight}${compatibilityAnalysis}
 
 **Estratégia Recomendada:**
 ${practicalAdvice}
@@ -1142,11 +1188,23 @@ ${practicalAdvice}
 • Como você reagiu a esta situação e qual foi o gatilho emocional?
 • Que padrões você percebe que se repetem em seu relacionamento?
 • Se você fosse seu parceiro, como gostaria de ser abordado nesta situação?
+• Como sua personalidade ${getTemperamentName(userClassicTemperament)} influencia esta dinâmica?
 
 **Ação Prática:**
-Escolha uma pequena mudança que você pode implementar nos próximos 3 dias para melhorar esta dinâmica.`;
+Escolha uma pequena mudança que você pode implementar nos próximos 3 dias para melhorar esta dinâmica, considerando seu perfil ${getTemperamentName(userClassicTemperament)}.`;
 
     setCoachResponse(response);
+  };
+
+  // Função auxiliar para obter nome do temperamento
+  const getTemperamentName = (temperament) => {
+    const names = {
+      'colerico': 'Colérico',
+      'melancolico': 'Melancólico',
+      'sanguineo': 'Sanguíneo',
+      'fleumatico': 'Fleumático'
+    };
+    return names[temperament] || temperament;
   };
 
   const saveInsightsAndAction = () => {
