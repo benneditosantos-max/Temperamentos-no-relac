@@ -2543,7 +2543,12 @@ async def get_user_exercise_completions(user_id: str):
         "user_id": user_id
     }).to_list(length=None)
     
-    return {"completions": completions}
+    # Convert ObjectId to string for JSON serialization
+    for completion in completions:
+        if "_id" in completion:
+            completion["_id"] = str(completion["_id"])
+    
+    return completions
 
 # Temperament Questionnaire Endpoints
 @api_router.get("/temperament-questionnaire")
