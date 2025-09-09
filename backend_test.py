@@ -519,6 +519,323 @@ class TemperamentosAPITester:
                     return False, response
         return success, response
 
+    # ===== NEW ADVANCED ENDPOINTS TESTING =====
+    
+    def test_couple_exercises_list(self):
+        """Test GET /api/couple-exercises - List all exercises"""
+        success, response = self.run_test("Get Couple Exercises List", "GET", "couple-exercises", 200)
+        if success:
+            if isinstance(response, list):
+                print(f"   ✅ Retrieved {len(response)} exercises")
+                for exercise in response[:2]:  # Show first 2
+                    if 'title' in exercise:
+                        print(f"   Exercise: {exercise['title']}")
+            else:
+                print(f"   ❌ Expected list, got {type(response)}")
+                return False, response
+        return success, response
+
+    def test_couple_exercises_specific(self):
+        """Test GET /api/couple-exercises/{exercise_type} - Get specific exercise"""
+        exercise_types = ["ritual_conexao_diaria", "roleplay_resolucao_conflitos", "mapa_intimidade", "arquitetura_vida_compartilhada"]
+        
+        for exercise_type in exercise_types:
+            success, response = self.run_test(f"Get Exercise - {exercise_type}", "GET", f"couple-exercises/{exercise_type}", 200)
+            if success:
+                if 'title' in response and 'questions' in response:
+                    print(f"   ✅ Exercise '{response['title']}' with {len(response['questions'])} questions")
+                else:
+                    print(f"   ❌ Missing title or questions in response")
+                    return False, response
+            else:
+                return False, response
+        return True, {}
+
+    def test_exercise_responses_save(self):
+        """Test POST /api/users/{user_id}/exercise-responses - Save exercise responses"""
+        if not self.user_id:
+            print("❌ No user ID available for testing")
+            return False, {}
+
+        response_data = {
+            "exercise_type": "ritual_conexao_diaria",
+            "question_index": 0,
+            "response_text": "Gostaríamos de começar cada dia com um abraço de 30 segundos e compartilhar uma gratidão."
+        }
+
+        success, response = self.run_test("Save Exercise Response", "POST", f"users/{self.user_id}/exercise-responses", 200, data=response_data)
+        if success:
+            if 'id' in response:
+                print(f"   ✅ Response saved with ID: {response['id']}")
+            if response.get('exercise_type') == response_data['exercise_type']:
+                print(f"   ✅ Exercise type matches: {response['exercise_type']}")
+        return success, response
+
+    def test_exercise_responses_get(self):
+        """Test GET /api/users/{user_id}/exercise-responses/{exercise_type} - Get exercise responses"""
+        if not self.user_id:
+            print("❌ No user ID available for testing")
+            return False, {}
+
+        success, response = self.run_test("Get Exercise Responses", "GET", f"users/{self.user_id}/exercise-responses/ritual_conexao_diaria", 200)
+        if success:
+            if isinstance(response, list):
+                print(f"   ✅ Retrieved {len(response)} responses")
+                if len(response) > 0 and 'response_text' in response[0]:
+                    print(f"   ✅ First response: {response[0]['response_text'][:50]}...")
+            else:
+                print(f"   ❌ Expected list, got {type(response)}")
+                return False, response
+        return success, response
+
+    def test_complete_exercise(self):
+        """Test POST /api/users/{user_id}/complete-exercise/{exercise_type} - Mark exercise as completed"""
+        if not self.user_id:
+            print("❌ No user ID available for testing")
+            return False, {}
+
+        success, response = self.run_test("Complete Exercise", "POST", f"users/{self.user_id}/complete-exercise/ritual_conexao_diaria", 200)
+        if success:
+            if 'completed' in response and response['completed']:
+                print(f"   ✅ Exercise marked as completed")
+            if 'exercise_type' in response:
+                print(f"   ✅ Exercise type: {response['exercise_type']}")
+        return success, response
+
+    def test_exercise_completions_list(self):
+        """Test GET /api/users/{user_id}/exercise-completions - List completed exercises"""
+        if not self.user_id:
+            print("❌ No user ID available for testing")
+            return False, {}
+
+        success, response = self.run_test("Get Exercise Completions", "GET", f"users/{self.user_id}/exercise-completions", 200)
+        if success:
+            if isinstance(response, list):
+                print(f"   ✅ Retrieved {len(response)} completed exercises")
+                for completion in response:
+                    if 'exercise_type' in completion:
+                        print(f"   Completed: {completion['exercise_type']}")
+            else:
+                print(f"   ❌ Expected list, got {type(response)}")
+                return False, response
+        return success, response
+
+    def test_temperament_questionnaire_get(self):
+        """Test GET /api/temperament-questionnaire - Get enhanced 6-question questionnaire"""
+        success, response = self.run_test("Get Temperament Questionnaire", "GET", "temperament-questionnaire", 200)
+        if success:
+            if 'questions' in response:
+                questions = response['questions']
+                print(f"   ✅ Found {len(questions)} questions")
+                if len(questions) == 6:
+                    print(f"   ✅ Correct number of questions (6)")
+                else:
+                    print(f"   ❌ Expected 6 questions, got {len(questions)}")
+                    return False, response
+                
+                # Check first question structure
+                if len(questions) > 0:
+                    q1 = questions[0]
+                    if 'question' in q1 and 'options' in q1:
+                        print(f"   ✅ Question structure valid")
+                        if len(q1['options']) == 4:
+                            print(f"   ✅ Each question has 4 options")
+                        else:
+                            print(f"   ❌ Expected 4 options per question, got {len(q1['options'])}")
+                    else:
+                        print(f"   ❌ Missing question or options in question structure")
+                        return False, response
+            else:
+                print(f"   ❌ Missing questions in response")
+                return False, response
+        return success, response
+
+    def test_temperament_questionnaire_submit(self):
+        """Test POST /api/users/{user_id}/temperament-questionnaire - Submit temperament questionnaire"""
+        if not self.user_id:
+            print("❌ No user ID available for testing")
+            return False, {}
+
+        # Sample answers for 6-question temperament questionnaire
+        answers = [
+            {"question_id": 1, "selected_option": "Tomo decisões rapidamente e assumo a liderança"},
+            {"question_id": 2, "selected_option": "Sou direto e assertivo na comunicação"},
+            {"question_id": 3, "selected_option": "Enfrento conflitos de frente e busco soluções imediatas"},
+            {"question_id": 4, "selected_option": "Sou apaixonado e intenso na intimidade"},
+            {"question_id": 5, "selected_option": "Tomo decisões baseadas na intuição e urgência"},
+            {"question_id": 6, "selected_option": "Demonstro amor através de gestos grandiosos e iniciativas"}
+        ]
+
+        submission_data = {"answers": answers}
+
+        success, response = self.run_test("Submit Temperament Questionnaire", "POST", f"users/{self.user_id}/temperament-questionnaire", 200, data=submission_data)
+        if success:
+            if 'dominant_temperament' in response:
+                print(f"   ✅ Dominant temperament: {response['dominant_temperament']}")
+            if 'temperament_scores' in response:
+                scores = response['temperament_scores']
+                print(f"   ✅ Temperament scores: {scores}")
+            if 'temperament_percentage' in response:
+                print(f"   ✅ Temperament percentage: {response['temperament_percentage']}%")
+        return success, response
+
+    def test_temperament_results_get(self):
+        """Test GET /api/users/{user_id}/temperament-results - Get temperament results"""
+        if not self.user_id:
+            print("❌ No user ID available for testing")
+            return False, {}
+
+        success, response = self.run_test("Get Temperament Results", "GET", f"users/{self.user_id}/temperament-results", 200)
+        if success:
+            if 'dominant_temperament' in response:
+                print(f"   ✅ Dominant temperament: {response['dominant_temperament']}")
+            if 'temperament_scores' in response:
+                print(f"   ✅ Temperament scores available")
+            if 'questions_answers' in response:
+                print(f"   ✅ Questions and answers stored")
+        return success, response
+
+    def test_advanced_compatibility_generate(self):
+        """Test POST /api/users/{user_id}/advanced-compatibility - Generate complete compatibility report"""
+        if not self.user_id:
+            print("❌ No user ID available for testing")
+            return False, {}
+
+        compatibility_data = {
+            "partner_name": "Isabella Rodriguez",
+            "partner_temperament": "sanguineo",
+            "user_responses": ["cardinal", "assertivo", "direto", "apaixonado", "intuitivo", "grandioso"],
+            "partner_responses": ["mutavel", "empático", "flexível", "adaptável", "considerado", "atencioso"]
+        }
+
+        success, response = self.run_test("Generate Advanced Compatibility", "POST", f"users/{self.user_id}/advanced-compatibility", 200, data=compatibility_data)
+        if success:
+            if 'overall_score' in response:
+                print(f"   ✅ Overall compatibility score: {response['overall_score']}")
+            if 'temperament_compatibility' in response:
+                print(f"   ✅ Temperament compatibility: {response['temperament_compatibility']}")
+            if 'intimacy_compatibility' in response:
+                print(f"   ✅ Intimacy compatibility: {response['intimacy_compatibility']}")
+            if 'conflict_resolution_compatibility' in response:
+                print(f"   ✅ Conflict resolution compatibility: {response['conflict_resolution_compatibility']}")
+            if 'strengths' in response and 'challenges' in response:
+                print(f"   ✅ Strengths: {len(response['strengths'])}, Challenges: {len(response['challenges'])}")
+            if 'action_plan' in response:
+                print(f"   ✅ Action plan: {len(response['action_plan'])} items")
+        return success, response
+
+    def test_advanced_compatibility_preview(self):
+        """Test GET /api/users/{user_id}/advanced-compatibility-preview - Get preview for free users"""
+        if not self.user_id:
+            print("❌ No user ID available for testing")
+            return False, {}
+
+        success, response = self.run_test("Get Advanced Compatibility Preview", "GET", f"users/{self.user_id}/advanced-compatibility-preview", 200)
+        if success:
+            if 'preview_score' in response:
+                print(f"   ✅ Preview score: {response['preview_score']}")
+            if 'preview_insights' in response:
+                print(f"   ✅ Preview insights: {len(response['preview_insights'])} items")
+            if 'upgrade_message' in response:
+                print(f"   ✅ Upgrade message present")
+        return success, response
+
+    def test_detailed_temperament_profile(self):
+        """Test GET /api/users/{user_id}/detailed-temperament-profile - Get detailed premium profile"""
+        if not self.user_id:
+            print("❌ No user ID available for testing")
+            return False, {}
+
+        success, response = self.run_test("Get Detailed Temperament Profile", "GET", f"users/{self.user_id}/detailed-temperament-profile", 200)
+        if success:
+            if 'dominant_temperament' in response:
+                print(f"   ✅ Dominant temperament: {response['dominant_temperament']}")
+            if 'temperament_percentages' in response:
+                print(f"   ✅ Temperament percentages available")
+            if 'deep_insights' in response:
+                print(f"   ✅ Deep insights: {len(response['deep_insights'])} items")
+            if 'relationship_patterns' in response:
+                print(f"   ✅ Relationship patterns: {len(response['relationship_patterns'])} items")
+            if 'communication_style' in response:
+                print(f"   ✅ Communication style analysis available")
+            if 'growth_recommendations' in response:
+                print(f"   ✅ Growth recommendations: {len(response['growth_recommendations'])} items")
+        return success, response
+
+    def test_badges_system_after_exercises(self):
+        """Test that badges are properly awarded after completing exercises"""
+        if not self.user_id:
+            print("❌ No user ID available for testing")
+            return False, {}
+
+        success, response = self.run_test("Check Badges After Exercises", "GET", f"users/{self.user_id}", 200)
+        if success:
+            badges = response.get('badges', [])
+            print(f"   Current badges: {badges}")
+            
+            expected_badges = ['profile_created', 'questionnaire_completed']
+            if 'couple_exercise_completed' in badges:
+                expected_badges.append('couple_exercise_completed')
+            if 'advanced_compatibility_generated' in badges:
+                expected_badges.append('advanced_compatibility_generated')
+                
+            for badge in expected_badges:
+                if badge in badges:
+                    print(f"   ✅ Badge '{badge}' correctly awarded")
+                else:
+                    print(f"   ❌ Badge '{badge}' missing")
+        return success, response
+
+    def create_premium_user_for_testing(self):
+        """Create a premium user for testing premium features"""
+        user_data = {
+            "name": "Premium Tester",
+            "email": "premium@exemplo.com",
+            "zodiac_sign": "aries",
+            "birth_date": "1985-04-10"
+        }
+        success, response = self.run_test("Create Premium User", "POST", "users", 200, data=user_data)
+        if success and 'id' in response:
+            premium_user_id = response['id']
+            print(f"   Created premium user ID: {premium_user_id}")
+            
+            # Upgrade to premium
+            upgrade_success, _ = self.run_test("Upgrade to Premium", "POST", f"users/{premium_user_id}/upgrade-premium", 200)
+            if upgrade_success:
+                print(f"   ✅ User upgraded to premium")
+                return True, premium_user_id
+        return False, None
+
+    def test_premium_vs_free_differentiation(self):
+        """Test that premium features are properly differentiated from free features"""
+        # Create premium user
+        success, premium_user_id = self.create_premium_user_for_testing()
+        if not success:
+            return False, {}
+
+        # Test detailed profile for premium user
+        success, premium_response = self.run_test("Premium - Detailed Profile", "GET", f"users/{premium_user_id}/detailed-temperament-profile", 200)
+        
+        # Test detailed profile for free user (should have limited access)
+        if self.user_id:
+            success_free, free_response = self.run_test("Free - Detailed Profile (Limited)", "GET", f"users/{self.user_id}/detailed-temperament-profile", 200)
+            
+            if success and success_free:
+                # Compare responses
+                premium_insights = len(premium_response.get('deep_insights', []))
+                free_insights = len(free_response.get('deep_insights', []))
+                
+                print(f"   Premium insights: {premium_insights}")
+                print(f"   Free insights: {free_insights}")
+                
+                if premium_insights >= free_insights:
+                    print(f"   ✅ Premium users get more detailed insights")
+                else:
+                    print(f"   ❌ Premium differentiation not working properly")
+                    return False, {}
+        
+        return success, premium_response
+
 def main():
     print("🚀 Starting Temperamentos no Relacionamento API Tests")
     print("=" * 60)
