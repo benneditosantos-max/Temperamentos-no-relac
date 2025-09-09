@@ -822,7 +822,17 @@ const Dashboard = ({ userId }) => {
             <RelationshipCoach userId={userId} />
 
             {/* Quick Access Premium Actions */}
-            <div className="grid md:grid-cols-3 gap-6">
+            <div className="grid md:grid-cols-4 gap-6">
+              <ActionCard
+                icon={<Crown className="h-8 w-8" />}
+                title="Hub Premium Avançado"
+                description="Central de funcionalidades exclusivas com exercícios, questionários e análises"
+                buttonText="Acessar Hub"
+                onClick={() => window.location.href = `/advanced-premium/${userId}`}
+                isPremium={true}
+                gradient="from-pink-500 to-rose-500"
+              />
+
               <ActionCard
                 icon={<BookOpen className="h-8 w-8" />}
                 title="Perfil Detalhado Premium"
@@ -840,6 +850,16 @@ const Dashboard = ({ userId }) => {
                 buttonText="Gerar Relatório"
                 onClick={() => setShowPersonalizedReports(true)}
                 isPremium={true}
+              />
+
+              <ActionCard
+                icon={<Heart className="h-8 w-8" />}
+                title="Exercícios de Casal"
+                description="Fortaleça sua conexão através de exercícios práticos e reflexões profundas"
+                buttonText="Começar Exercícios"
+                onClick={() => window.location.href = `/advanced-premium/${userId}`}
+                isPremium={true}
+                gradient="from-purple-500 to-indigo-500"
               />
             </div>
 
