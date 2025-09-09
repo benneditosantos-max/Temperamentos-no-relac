@@ -150,6 +150,156 @@ backend:
         agent: "testing"
         comment: "✅ PASSED - Partner limits check API working perfectly. Endpoint is at /api/partners/limits/{user_id} (not /api/users/{user_id}/partner-limits). Returns correct data: user_id, is_premium, current_partners, max_partners, can_add_more, remaining_slots. Tested with free users (0 and 1 partners) and premium users (1 and 4 partners)."
 
+  - task: "Couple Exercises API - List All Exercises"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "Testing GET /api/couple-exercises endpoint to list all available exercises."
+      - working: true
+        agent: "testing"
+        comment: "✅ PASSED - Couple exercises list endpoint working correctly. Returns list of 4 exercises: ritual_conexao_diaria, roleplay_resolucao_conflitos, mapa_intimidade, arquitetura_vida_compartilhada. Each exercise includes type, title, description, and questions_count. Fixed ObjectId serialization issue."
+
+  - task: "Couple Exercises API - Get Specific Exercise"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "Testing GET /api/couple-exercises/{exercise_type} endpoint for specific exercises."
+      - working: true
+        agent: "testing"
+        comment: "✅ PASSED - All 4 exercise types working correctly. Each returns title, description, and 6 questions. Tested: ritual_conexao_diaria (Ritual de Conexão Diária), roleplay_resolucao_conflitos (Roleplay de Resolução de Conflitos), mapa_intimidade (Mapa da Intimidade), arquitetura_vida_compartilhada (Arquitetura da Vida Compartilhada)."
+
+  - task: "Exercise Responses API - Save and Retrieve"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "Testing POST /api/users/{user_id}/exercise-responses and GET /api/users/{user_id}/exercise-responses/{exercise_type} endpoints."
+      - working: true
+        agent: "testing"
+        comment: "✅ PASSED - Exercise responses working correctly. POST saves responses with exercise_type, question_index, response_text. GET retrieves all responses for specific exercise type. Fixed ObjectId serialization issue. Returns proper list format with response IDs and content."
+
+  - task: "Exercise Completion API"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "Testing POST /api/users/{user_id}/complete-exercise/{exercise_type} and GET /api/users/{user_id}/exercise-completions endpoints."
+      - working: true
+        agent: "testing"
+        comment: "✅ PASSED - Exercise completion working correctly. Requires all 6 questions to be answered before marking as complete. POST returns completion_id when successful. GET returns list of completed exercises. Proper validation ensures exercise integrity."
+
+  - task: "Enhanced Temperament Questionnaire API"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "Testing GET /api/temperament-questionnaire and POST /api/users/{user_id}/temperament-questionnaire endpoints."
+      - working: true
+        agent: "testing"
+        comment: "✅ PASSED - Enhanced temperament questionnaire working perfectly. GET returns 6 questions with 4 options each. POST processes answers and returns dominant_temperament (colerico, sanguineo, melancolico, fleumatico), temperament_percentage, and practical_tip. Proper temperament calculation implemented."
+
+  - task: "Temperament Results API"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "Testing GET /api/users/{user_id}/temperament-results endpoint."
+      - working: true
+        agent: "testing"
+        comment: "✅ PASSED - Temperament results API working correctly. Returns user's latest temperament questionnaire results including dominant_temperament, temperament_scores, and questions_answers. Fixed ObjectId serialization issue. Proper error handling for users without results."
+
+  - task: "Advanced Compatibility Analysis API"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "Testing POST /api/users/{user_id}/advanced-compatibility and GET /api/users/{user_id}/advanced-compatibility-preview endpoints."
+      - working: true
+        agent: "testing"
+        comment: "✅ PASSED - Advanced compatibility analysis working excellently. POST generates comprehensive reports with overall_score (85), temperament_compatibility (80), intimacy_compatibility (85), conflict_resolution_compatibility (70), strengths, challenges, and action_plan. GET preview provides limited insights for free users with upgrade_message. Proper premium differentiation."
+
+  - task: "Detailed Temperament Profile API - Premium"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "Testing GET /api/users/{user_id}/detailed-temperament-profile endpoint for premium users."
+      - working: true
+        agent: "testing"
+        comment: "✅ PASSED - Detailed temperament profile working correctly for premium users. Requires completed temperament questionnaire and premium status. Returns dominant_temperament, temperament_percentages, deep_insights (3 items), relationship_patterns (3 items), communication_style, conflict_resolution_style, intimacy_preferences, and growth_recommendations (3 items). Proper premium access control with 403 error for free users."
+
+  - task: "Badges System Integration"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "Testing badge system integration with new advanced features."
+      - working: true
+        agent: "testing"
+        comment: "✅ PASSED - Badges system working correctly with advanced features. Automatically awards: profile_created, questionnaire_completed, advanced_compatibility_generated badges. Proper badge tracking and display. Integration with progress percentage system working."
+
+  - task: "Premium vs Free Feature Differentiation"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "Testing proper differentiation between premium and free user features."
+      - working: true
+        agent: "testing"
+        comment: "✅ PASSED - Premium vs free differentiation working correctly. Free users get limited compatibility preview with upgrade prompts. Premium users access full detailed temperament profiles, advanced compatibility reports, and all exercise features. Proper 403 errors for unauthorized access. Premium upgrade functionality working."
+
 frontend:
   - task: "Free User Partner Limit UI Display"
     implemented: true
