@@ -51,7 +51,16 @@ const CoupleExercises = ({ userId, isPremium = false }) => {
   const loadExercises = async () => {
     try {
       const response = await axios.get(`${backendUrl}/api/couple-exercises`);
-      setExercises(response.data);
+      // Backend returns list format, convert to object format for compatibility
+      const exercisesObj = {};
+      response.data.forEach(exercise => {
+        exercisesObj[exercise.type] = {
+          title: exercise.title,
+          description: exercise.description,
+          questions_count: exercise.questions_count
+        };
+      });
+      setExercises(exercisesObj);
     } catch (error) {
       console.error('Error loading exercises:', error);
       toast.error('Erro ao carregar exercícios');
