@@ -133,9 +133,20 @@ const CoupleExercises = ({ userId, isPremium = false }) => {
     }
   };
 
+  const loadExerciseDetails = async (exerciseType) => {
+    try {
+      const response = await axios.get(`${backendUrl}/api/couple-exercises/${exerciseType}`);
+      setExerciseDetails(response.data);
+    } catch (error) {
+      console.error('Error loading exercise details:', error);
+      toast.error('Erro ao carregar detalhes do exercício');
+    }
+  };
+
   const openExercise = (exerciseType) => {
     setSelectedExercise(exerciseType);
     setCurrentQuestionIndex(0);
+    loadExerciseDetails(exerciseType);
     loadExerciseResponses(exerciseType);
   };
 
