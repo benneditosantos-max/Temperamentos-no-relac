@@ -217,7 +217,7 @@ const CoupleExercises = ({ userId, isPremium = false }) => {
                   <div className="space-y-4">
                     <div>
                       <div className="flex justify-between text-sm text-gray-600 mb-2">
-                        <span>{exerciseData.questions.length} perguntas</span>
+                        <span>{exerciseData.questions_count || 6} perguntas</span>
                         <span>{isCompleted ? '100%' : '0%'} completo</span>
                       </div>
                       <Progress 
