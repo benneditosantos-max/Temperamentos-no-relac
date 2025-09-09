@@ -1345,6 +1345,122 @@ def calculate_compatibility(user1: User, user2: User, result1: QuestionnaireResu
         premium_insights=premium_insights
     )
 
+# Exercise Questions and Data
+COUPLE_EXERCISES_DATA = {
+    ExerciseType.RITUAL_CONEXAO: {
+        "title": "Ritual de Conexão Diária",
+        "description": "Estabeleça um momento especial para se conectar todos os dias",
+        "questions": [
+            "Como vocês gostariam de começar cada dia juntos? Descreva um ritual matinal ideal.",
+            "Qual momento do dia seria perfeito para pararem tudo e se conectarem por 10 minutos?",
+            "O que cada um pode fazer para mostrar presença e atenção total ao outro durante esse ritual?",
+            "Que palavras de afirmação ou gratidão gostariam de compartilhar diariamente?",
+            "Como podem tornar esse ritual especial mesmo em dias corridos ou difíceis?",
+            "Que sinais físicos (abraço, toque, olhar) fariam parte desse momento de conexão?"
+        ]
+    },
+    ExerciseType.ROLEPLAY_CONFLITOS: {
+        "title": "Roleplay de Resolução de Conflitos",
+        "description": "Pratiquem formas saudáveis de lidar com desentendimentos",
+        "questions": [
+            "Descreva um conflito recorrente entre vocês e como costumam reagir inicialmente.",
+            "Se você fosse o mediador de vocês dois, que conselhos daria para cada um?",
+            "Como vocês podem criar um 'tempo de pausa' quando os ânimos se exaltam?",
+            "Que frases vocês podem usar para desarmar a tensão e abrir espaço para diálogo?",
+            "Como cada um pode expressar suas necessidades sem culpar ou atacar o outro?",
+            "Que compromissos vocês podem fazer para transformar conflitos em oportunidades de crescimento?"
+        ]
+    },
+    ExerciseType.MAPA_INTIMIDADE: {
+        "title": "Mapa da Intimidade",
+        "description": "Explorem diferentes dimensões da intimidade no relacionamento",
+        "questions": [
+            "O que intimidade significa para cada um de vocês? Como definem esse conceito?",
+            "Em que momentos vocês se sentem mais próximos e conectados um com o outro?",
+            "Que tipo de intimidade vocês gostariam de explorar mais? (emocional, física, intelectual, espiritual)",
+            "Como vocês podem criar mais espaços de vulnerabilidade e abertura?",
+            "Que barreiras ainda existem para uma intimidade mais profunda entre vocês?",
+            "Como podem equilibrar intimidade com espaço pessoal e individualidade?"
+        ]
+    },
+    ExerciseType.ARQUITETURA_VIDA: {
+        "title": "Arquitetura da Vida Compartilhada",
+        "description": "Construam juntos a visão do futuro que desejam",
+        "questions": [
+            "Como vocês imaginam suas vidas daqui a 5 anos? Que sonhos compartilham?",
+            "Que valores são fundamentais para ambos na construção dessa vida em comum?",
+            "Como podem alinhar suas metas individuais com os objetivos do casal?",
+            "Que tipo de ambiente e estilo de vida querem criar juntos?",
+            "Como pretendem lidar com as mudanças e desafios que surgirem no caminho?",
+            "Que legado ou impacto vocês querem deixar como casal no mundo?"
+        ]
+    }
+}
+
+# Temperament Questionnaire Questions
+TEMPERAMENT_QUESTIONNAIRE = [
+    {
+        "id": 1,
+        "question": "Como você tende a reagir em situações de pressão ou estresse?",
+        "options": [
+            {"text": "Tomo decisões rápidas e assumo o controle", "temperament": "colerico", "weight": 3},
+            {"text": "Busco apoio dos outros e expresso meus sentimentos", "temperament": "sanguineo", "weight": 3},
+            {"text": "Analiso cuidadosamente antes de agir", "temperament": "melancolico", "weight": 3},
+            {"text": "Mantenho a calma e evito confrontos", "temperament": "fleumatico", "weight": 3}
+        ]
+    },
+    {
+        "id": 2,
+        "question": "Qual é seu estilo preferido de comunicação em relacionamentos?",
+        "options": [
+            {"text": "Direto e objetivo, vou direto ao ponto", "temperament": "colerico", "weight": 3},
+            {"text": "Expressivo e caloroso, gosto de histórias", "temperament": "sanguineo", "weight": 3},
+            {"text": "Reflexivo e profundo, valorizo conversas significativas", "temperament": "melancolico", "weight": 3},
+            {"text": "Tranquilo e harmonioso, evito discussões", "temperament": "fleumatico", "weight": 3}
+        ]
+    },
+    {
+        "id": 3,
+        "question": "Como você costuma tomar decisões importantes?",
+        "options": [
+            {"text": "Rapidamente, baseado na lógica e eficiência", "temperament": "colerico", "weight": 3},
+            {"text": "Conversando com pessoas próximas para obter opiniões", "temperament": "sanguineo", "weight": 3},
+            {"text": "Analisando todos os detalhes e possíveis consequências", "temperament": "melancolico", "weight": 3},
+            {"text": "Com calma, buscando consenso e evitando riscos", "temperament": "fleumatico", "weight": 3}
+        ]
+    },
+    {
+        "id": 4,
+        "question": "O que mais te motiva em um relacionamento?",
+        "options": [
+            {"text": "Alcançar objetivos juntos e superar desafios", "temperament": "colerico", "weight": 3},
+            {"text": "Diversão, aventura e conexão emocional", "temperament": "sanguineo", "weight": 3},
+            {"text": "Profundidade, compreensão mútua e lealdade", "temperament": "melancolico", "weight": 3},
+            {"text": "Harmonia, estabilidade e paz", "temperament": "fleumatico", "weight": 3}
+        ]
+    },
+    {
+        "id": 5,
+        "question": "Como você lida com conflitos no relacionamento?",
+        "options": [
+            {"text": "Enfrento diretamente para resolver rapidamente", "temperament": "colerico", "weight": 3},
+            {"text": "Expresso meus sentimentos e busco reconciliação", "temperament": "sanguineo", "weight": 3},
+            {"text": "Reflito profundamente e busco entender as causas", "temperament": "melancolico", "weight": 3},
+            {"text": "Prefiro evitar e esperar que as coisas se resolvam", "temperament": "fleumatico", "weight": 3}
+        ]
+    },
+    {
+        "id": 6,
+        "question": "Qual ambiente você considera ideal para um encontro romântico?",
+        "options": [
+            {"text": "Um lugar onde possamos planejar nosso futuro juntos", "temperament": "colerico", "weight": 3},
+            {"text": "Um ambiente animado com muitas pessoas e atividades", "temperament": "sanguineo", "weight": 3},
+            {"text": "Um local íntimo e especial, só nós dois", "temperament": "melancolico", "weight": 3},
+            {"text": "Um lugar tranquilo e aconchegante, sem pressa", "temperament": "fleumatico", "weight": 3}
+        ]
+    }
+]
+
 # API Routes
 @api_router.get("/")
 async def root():
