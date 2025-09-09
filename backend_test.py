@@ -837,8 +837,8 @@ class TemperamentosAPITester:
         return success, premium_response
 
 def main():
-    print("🚀 Starting Temperamentos no Relacionamento API Tests")
-    print("=" * 60)
+    print("🚀 Starting Temperamentos no Relacionamento API Tests - ADVANCED ENDPOINTS")
+    print("=" * 80)
     
     tester = TemperamentosAPITester()
     
@@ -853,7 +853,25 @@ def main():
         ("Get Zodiac Signs", tester.test_zodiac_signs)
     ]
     
-    # Partner Limit Tests - Core functionality being tested
+    # NEW ADVANCED ENDPOINTS TESTS - Main focus of this testing session
+    advanced_endpoints_tests = [
+        ("🔥 Couple Exercises - List All", tester.test_couple_exercises_list),
+        ("🔥 Couple Exercises - Specific Types", tester.test_couple_exercises_specific),
+        ("🔥 Exercise Responses - Save", tester.test_exercise_responses_save),
+        ("🔥 Exercise Responses - Get", tester.test_exercise_responses_get),
+        ("🔥 Complete Exercise", tester.test_complete_exercise),
+        ("🔥 Exercise Completions - List", tester.test_exercise_completions_list),
+        ("🔥 Temperament Questionnaire - Get (6 questions)", tester.test_temperament_questionnaire_get),
+        ("🔥 Temperament Questionnaire - Submit", tester.test_temperament_questionnaire_submit),
+        ("🔥 Temperament Results - Get", tester.test_temperament_results_get),
+        ("🔥 Advanced Compatibility - Generate", tester.test_advanced_compatibility_generate),
+        ("🔥 Advanced Compatibility - Preview (Free)", tester.test_advanced_compatibility_preview),
+        ("🔥 Detailed Temperament Profile - Premium", tester.test_detailed_temperament_profile),
+        ("🔥 Badges System - After Exercises", tester.test_badges_system_after_exercises),
+        ("🔥 Premium vs Free - Differentiation", tester.test_premium_vs_free_differentiation)
+    ]
+    
+    # Partner Limit Tests - Previously tested functionality
     partner_limit_tests = [
         ("Partner Limits - Free User (0 partners)", tester.test_partner_limits_free_user_zero_partners),
         ("Add First Partner - Free User", tester.test_add_first_partner_free_user),
@@ -876,10 +894,13 @@ def main():
         ("Share with Partner", tester.test_share_with_partner)
     ]
     
-    # Combine all tests
-    tests = basic_tests + partner_limit_tests + additional_tests
+    # Combine all tests - Focus on advanced endpoints first
+    tests = basic_tests + advanced_endpoints_tests + partner_limit_tests + additional_tests
     
     failed_tests = []
+    
+    print(f"\n🎯 PRIORITY: Testing {len(advanced_endpoints_tests)} NEW ADVANCED ENDPOINTS")
+    print("=" * 80)
     
     for test_name, test_func in tests:
         try:
@@ -892,17 +913,29 @@ def main():
             tester.tests_run += 1
     
     # Print results
-    print("\n" + "=" * 60)
-    print(f"📊 TEST RESULTS")
+    print("\n" + "=" * 80)
+    print(f"📊 ADVANCED ENDPOINTS TEST RESULTS")
     print(f"Tests passed: {tester.tests_passed}/{tester.tests_run}")
     print(f"Success rate: {(tester.tests_passed/tester.tests_run)*100:.1f}%")
     
-    if failed_tests:
-        print(f"\n❌ Failed tests:")
-        for test in failed_tests:
+    # Separate advanced endpoint results
+    advanced_failed = [test for test in failed_tests if "🔥" in test]
+    other_failed = [test for test in failed_tests if "🔥" not in test]
+    
+    if advanced_failed:
+        print(f"\n❌ FAILED ADVANCED ENDPOINTS ({len(advanced_failed)}):")
+        for test in advanced_failed:
             print(f"   - {test}")
-    else:
-        print(f"\n🎉 All tests passed!")
+    
+    if other_failed:
+        print(f"\n❌ Other failed tests ({len(other_failed)}):")
+        for test in other_failed:
+            print(f"   - {test}")
+    
+    if not failed_tests:
+        print(f"\n🎉 ALL TESTS PASSED! All advanced endpoints working correctly!")
+    elif not advanced_failed:
+        print(f"\n✅ ALL ADVANCED ENDPOINTS WORKING! {len(other_failed)} other issues found.")
     
     return 0 if len(failed_tests) == 0 else 1
 
