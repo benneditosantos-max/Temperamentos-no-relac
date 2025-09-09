@@ -72,7 +72,8 @@ const CoupleExercises = ({ userId, isPremium = false }) => {
   const loadCompletedExercises = async () => {
     try {
       const response = await axios.get(`${backendUrl}/api/users/${userId}/exercise-completions`);
-      setCompletedExercises(response.data.completions.map(c => c.exercise_type));
+      // Backend returns direct array now
+      setCompletedExercises(response.data.map(c => c.exercise_type));
     } catch (error) {
       console.error('Error loading completed exercises:', error);
     }
