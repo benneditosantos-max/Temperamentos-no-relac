@@ -9,10 +9,17 @@ import { Separator } from "./ui/separator";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { Label } from "./ui/label";
 import { toast } from "sonner";
+
+// Import new enhanced components
+import CoupleExercises from "./CoupleExercises";
+import EnhancedTemperamentQuestionnaire from "./EnhancedTemperamentQuestionnaire";
+import AdvancedCompatibilityReport from "./AdvancedCompatibilityReport";
+import DetailedTemperamentProfile from "./DetailedTemperamentProfile";
+
 import { 
   BookOpen, Target, Trophy, Star, Crown, Award, Calendar, CheckCircle, Lock, Download,
   Heart, Brain, Zap, Shield, Users, MessageCircle, Lightbulb, TrendingUp, Map, Timer,
-  Save, PenTool, Play
+  Save, PenTool, Play, Home
 } from "lucide-react";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
