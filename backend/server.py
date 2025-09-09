@@ -2630,6 +2630,10 @@ async def get_user_temperament_results(user_id: str):
     if not results:
         raise HTTPException(status_code=404, detail="No temperament results found")
     
+    # Convert ObjectId to string for JSON serialization
+    if "_id" in results:
+        results["_id"] = str(results["_id"])
+    
     return results
 
 # Advanced Compatibility Analysis
