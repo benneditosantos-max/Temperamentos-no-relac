@@ -2499,7 +2499,12 @@ async def get_user_exercise_responses(user_id: str, exercise_type: ExerciseType)
         "exercise_type": exercise_type
     }).to_list(length=None)
     
-    return {"responses": responses}
+    # Convert ObjectId to string for JSON serialization
+    for response in responses:
+        if "_id" in response:
+            response["_id"] = str(response["_id"])
+    
+    return responses
 
 @api_router.post("/users/{user_id}/complete-exercise/{exercise_type}")
 async def complete_exercise(user_id: str, exercise_type: ExerciseType):
