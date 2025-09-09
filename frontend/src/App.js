@@ -1385,6 +1385,19 @@ function App() {
     );
   }
 
+  // Advanced Premium Hub route
+  const advancedPremiumMatch = currentPath.match(/^\/advanced-premium\/(.+)$/);
+  const advancedUserId = advancedPremiumMatch ? advancedPremiumMatch[1] : null;
+  
+  if (advancedUserId) {
+    return (
+      <>
+        <AdvancedPremiumHub userId={advancedUserId} isPremium={true} />
+        <Toaster />
+      </>
+    );
+  }
+
   return (
     <>
       <Home />
