@@ -2010,3 +2010,236 @@ export const IndividualExerciseCards = ({ userId }) => {
     </>
   );
 };
+
+// Main Enhanced Premium Component
+export const AdvancedPremiumHub = ({ userId, isPremium = false }) => {
+  const [activeSection, setActiveSection] = useState('overview');
+  const [userAchievements, setUserAchievements] = useState([]);
+
+  const sections = [
+    { 
+      id: 'overview', 
+      title: 'Visão Geral', 
+      icon: Target, 
+      description: 'Dashboard de suas conquistas e progresso'
+    },
+    { 
+      id: 'couple-exercises', 
+      title: 'Exercícios para Casais', 
+      icon: Heart, 
+      description: 'Fortaleça sua conexão através de exercícios práticos',
+      premium: false // First exercise free
+    },
+    { 
+      id: 'temperament-questionnaire', 
+      title: 'Questionário de Temperamento', 
+      icon: Brain, 
+      description: 'Descubra seu perfil de temperamento com 6 perguntas',
+      premium: false
+    },
+    { 
+      id: 'advanced-compatibility', 
+      title: 'Compatibilidade Avançada', 
+      icon: Users, 
+      description: 'Análise detalhada da dinâmica do casal',
+      premium: true
+    },
+    { 
+      id: 'detailed-profile', 
+      title: 'Perfil Detalhado Premium', 
+      icon: Crown, 
+      description: 'Análise profunda do seu temperamento',
+      premium: true
+    }
+  ];
+
+  const loadUserAchievements = async () => {
+    try {
+      const response = await axios.get(`${API}/users/${userId}/exercise-completions`);
+      setUserAchievements(response.data.completions || []);
+    } catch (error) {
+      console.error('Error loading achievements:', error);
+    }
+  };
+
+  useEffect(() => {
+    loadUserAchievements();
+  }, [userId]);
+
+  const renderActiveSection = () => {
+    switch (activeSection) {
+      case 'couple-exercises':
+        return <CoupleExercises userId={userId} isPremium={isPremium} />;
+      
+      case 'temperament-questionnaire':
+        return (
+          <EnhancedTemperamentQuestionnaire 
+            userId={userId} 
+            isPremium={isPremium}
+            onComplete={(result) => {
+              toast.success('Questionário completado com sucesso!');
+              // Could redirect to detailed profile if premium
+            }}
+          />
+        );
+      
+      case 'advanced-compatibility':
+        return <AdvancedCompatibilityReport userId={userId} isPremium={isPremium} />;
+      
+      case 'detailed-profile':
+        return <DetailedTemperamentProfile userId={userId} isPremium={isPremium} />;
+      
+      default:
+        return (
+          <div className="space-y-6">
+            {/* Overview Dashboard */}
+            <div className="text-center">
+              <h2 className="text-3xl font-bold text-gray-800 mb-2">
+                Área Premium Avançada
+              </h2>
+              <p className="text-gray-600">
+                Explore funcionalidades exclusivas para aprofundar seu autoconhecimento
+              </p>
+            </div>
+
+            {/* Quick Stats */}
+            <div className="grid md:grid-cols-3 gap-6">
+              <Card>
+                <CardContent className="p-6 text-center">
+                  <div className="text-3xl font-bold text-pink-600 mb-2">
+                    {userAchievements.length}
+                  </div>
+                  <p className="text-gray-600">Exercícios Completados</p>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardContent className="p-6 text-center">
+                  <div className="text-3xl font-bold text-blue-600 mb-2">
+                    {isPremium ? '100%' : '25%'}
+                  </div>
+                  <p className="text-gray-600">Funcionalidades Disponíveis</p>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardContent className="p-6 text-center">
+                  <div className="text-3xl font-bold text-green-600 mb-2">
+                    {isPremium ? 'Premium' : 'Free'}
+                  </div>
+                  <p className="text-gray-600">Status da Conta</p>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Recent Achievements */}
+            {userAchievements.length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Trophy className="h-5 w-5 text-yellow-500" />
+                    Conquistas Recentes
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {userAchievements.slice(0, 3).map((achievement, index) => (
+                      <div key={index} className="flex items-center gap-3 p-3 bg-green-50 rounded-lg">
+                        <CheckCircle className="h-5 w-5 text-green-600" />
+                        <div>
+                          <p className="font-medium text-green-800">
+                            Exercício Completado
+                          </p>
+                          <p className="text-sm text-green-600">
+                            {new Date(achievement.completed_at).toLocaleDateString('pt-BR')}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Quick Actions */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Próximos Passos Recomendados</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <Button
+                    onClick={() => setActiveSection('temperament-questionnaire')}
+                    className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white p-6 h-auto"
+                  >
+                    <div className="text-center">
+                      <Brain className="h-8 w-8 mx-auto mb-2" />
+                      <div className="font-semibold">Descobrir Temperamento</div>
+                      <div className="text-sm opacity-90">6 perguntas personalizadas</div>
+                    </div>
+                  </Button>
+                  
+                  <Button
+                    onClick={() => setActiveSection('couple-exercises')}
+                    className="bg-gradient-to-r from-pink-500 to-rose-500 text-white p-6 h-auto"
+                  >
+                    <div className="text-center">
+                      <Heart className="h-8 w-8 mx-auto mb-2" />
+                      <div className="font-semibold">Exercícios de Casal</div>
+                      <div className="text-sm opacity-90">Fortaleça sua conexão</div>
+                    </div>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        );
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Navigation */}
+      <div className="bg-white shadow-sm border-b">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex space-x-8 overflow-x-auto">
+            {sections.map(section => {
+              const IconComponent = section.icon;
+              const isActive = activeSection === section.id;
+              const isLocked = section.premium && !isPremium;
+              
+              return (
+                <button
+                  key={section.id}
+                  onClick={() => {
+                    if (isLocked) {
+                      toast.info('Faça upgrade para Premium para acessar esta funcionalidade!');
+                      return;
+                    }
+                    setActiveSection(section.id);
+                  }}
+                  className={`flex items-center gap-2 px-4 py-4 border-b-2 whitespace-nowrap transition-colors ${
+                    isActive
+                      ? 'border-pink-500 text-pink-600'
+                      : isLocked
+                      ? 'border-transparent text-gray-400 hover:text-gray-500'  
+                      : 'border-transparent text-gray-500 hover:text-gray-700'
+                  }`}
+                >
+                  <IconComponent className="h-5 w-5" />
+                  <span className="font-medium">{section.title}</span>
+                  {isLocked && <Lock className="h-4 w-4" />}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        {renderActiveSection()}
+      </div>
+    </div>
+  );
+};
