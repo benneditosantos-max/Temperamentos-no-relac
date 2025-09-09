@@ -2445,7 +2445,17 @@ async def api_health_check():
 @api_router.get("/couple-exercises")
 async def get_couple_exercises():
     """Get all available couple exercises"""
-    return COUPLE_EXERCISES_DATA
+    # Convert dict to list format for easier frontend consumption
+    exercises_list = []
+    for exercise_type, exercise_data in COUPLE_EXERCISES_DATA.items():
+        exercise_info = {
+            "type": exercise_type,
+            "title": exercise_data["title"],
+            "description": exercise_data["description"],
+            "questions_count": len(exercise_data["questions"])
+        }
+        exercises_list.append(exercise_info)
+    return exercises_list
 
 @api_router.get("/couple-exercises/{exercise_type}")
 async def get_couple_exercise(exercise_type: ExerciseType):
