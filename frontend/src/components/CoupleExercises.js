@@ -265,10 +265,17 @@ const CoupleExercises = ({ userId, isPremium = false }) => {
     );
   }
 
-  // Exercise Detail View
-  const currentExercise = exercises[selectedExercise];
-  const currentQuestion = currentExercise.questions[currentQuestionIndex];
-  const totalQuestions = currentExercise.questions.length;
+  // Exercise Detail View - wait for exercise details to load
+  if (!exerciseDetails) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500"></div>
+      </div>
+    );
+  }
+
+  const currentQuestion = exerciseDetails.questions[currentQuestionIndex];
+  const totalQuestions = exerciseDetails.questions.length;
   const isLastQuestion = currentQuestionIndex === totalQuestions - 1;
   const isFirstQuestion = currentQuestionIndex === 0;
   const currentResponse = responses[currentQuestionIndex] || '';
