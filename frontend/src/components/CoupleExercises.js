@@ -82,7 +82,8 @@ const CoupleExercises = ({ userId, isPremium = false }) => {
     try {
       const response = await axios.get(`${backendUrl}/api/users/${userId}/exercise-responses/${exerciseType}`);
       const exerciseResponses = {};
-      response.data.responses.forEach(resp => {
+      // Backend returns direct array now
+      response.data.forEach(resp => {
         exerciseResponses[resp.question_index] = resp.response_text;
       });
       setResponses(exerciseResponses);
