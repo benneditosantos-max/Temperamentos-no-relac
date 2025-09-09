@@ -2439,6 +2439,425 @@ async def health_check():
 async def api_health_check():
     return {"status": "ok", "message": "API is running"}
 
+# New Enhanced Endpoints
+
+# Couple Exercises Endpoints
+@api_router.get("/couple-exercises")
+async def get_couple_exercises():
+    """Get all available couple exercises"""
+    return COUPLE_EXERCISES_DATA
+
+@api_router.get("/couple-exercises/{exercise_type}")
+async def get_couple_exercise(exercise_type: ExerciseType):
+    """Get specific couple exercise"""
+    if exercise_type not in COUPLE_EXERCISES_DATA:
+        raise HTTPException(status_code=404, detail="Exercise not found")
+    return COUPLE_EXERCISES_DATA[exercise_type]
+
+@api_router.post("/users/{user_id}/exercise-responses")
+async def save_exercise_response(user_id: str, request: ExerciseResponseRequest):
+    """Save or update user response to an exercise question"""
+    # Check if response already exists
+    existing_response = await db.couple_exercise_responses.find_one({
+        "user_id": user_id,
+        "exercise_type": request.exercise_type,
+        "question_index": request.question_index
+    })
+    
+    if existing_response:
+        # Update existing response
+        await db.couple_exercise_responses.update_one(
+            {"_id": existing_response["_id"]},
+            {
+                "$set": {
+                    "response_text": request.response_text,
+                    "updated_at": datetime.now(timezone.utc)
+                }
+            }
+        )
+        response_id = existing_response["id"]
+    else:
+        # Create new response
+        question_text = COUPLE_EXERCISES_DATA[request.exercise_type]["questions"][request.question_index]
+        response = CoupleExerciseResponse(
+            user_id=user_id,
+            exercise_type=request.exercise_type,
+            question_index=request.question_index,
+            question_text=question_text,
+            response_text=request.response_text
+        )
+        await db.couple_exercise_responses.insert_one(response.dict())
+        response_id = response.id
+    
+    return {"status": "success", "response_id": response_id}
+
+@api_router.get("/users/{user_id}/exercise-responses/{exercise_type}")
+async def get_user_exercise_responses(user_id: str, exercise_type: ExerciseType):
+    """Get all user responses for a specific exercise"""
+    responses = await db.couple_exercise_responses.find({
+        "user_id": user_id,
+        "exercise_type": exercise_type
+    }).to_list(length=None)
+    
+    return {"responses": responses}
+
+@api_router.post("/users/{user_id}/complete-exercise/{exercise_type}")
+async def complete_exercise(user_id: str, exercise_type: ExerciseType):
+    """Mark an exercise as completed"""
+    # Check if all questions have responses
+    exercise_data = COUPLE_EXERCISES_DATA[exercise_type]
+    total_questions = len(exercise_data["questions"])
+    
+    user_responses = await db.couple_exercise_responses.count_documents({
+        "user_id": user_id,
+        "exercise_type": exercise_type
+    })
+    
+    if user_responses < total_questions:
+        raise HTTPException(status_code=400, detail="Complete all questions before marking exercise as done")
+    
+    # Mark as completed
+    completion = CoupleExerciseCompletion(
+        user_id=user_id,
+        exercise_type=exercise_type
+    )
+    await db.couple_exercise_completions.insert_one(completion.dict())
+    
+    # Add badge
+    await db.users.update_one(
+        {"id": user_id},
+        {"$addToSet": {"badges": BadgeType.COUPLE_EXERCISE_COMPLETED}}
+    )
+    
+    return {"status": "completed", "completion_id": completion.id}
+
+@api_router.get("/users/{user_id}/exercise-completions")
+async def get_user_exercise_completions(user_id: str):
+    """Get all completed exercises for a user"""
+    completions = await db.couple_exercise_completions.find({
+        "user_id": user_id
+    }).to_list(length=None)
+    
+    return {"completions": completions}
+
+# Temperament Questionnaire Endpoints
+@api_router.get("/temperament-questionnaire")
+async def get_temperament_questionnaire():
+    """Get the enhanced temperament questionnaire"""
+    return {"questions": TEMPERAMENT_QUESTIONNAIRE}
+
+@api_router.post("/users/{user_id}/temperament-questionnaire")
+async def submit_temperament_questionnaire(user_id: str, request: TemperamentQuestionnaireRequest):
+    """Submit temperament questionnaire and get results"""
+    # Calculate temperament scores
+    temperament_scores = {
+        "colerico": 0.0,
+        "sanguineo": 0.0,
+        "melancolico": 0.0,
+        "fleumatico": 0.0
+    }
+    
+    questions_answers = []
+    for answer in request.answers:
+        question_id = answer["question_id"]
+        selected_option = answer["selected_option"]
+        
+        # Find the question and option
+        question = next((q for q in TEMPERAMENT_QUESTIONNAIRE if q["id"] == question_id), None)
+        if question:
+            option = next((opt for opt in question["options"] if opt["text"] == selected_option), None)
+            if option:
+                temperament = option["temperament"]
+                weight = option["weight"]
+                temperament_scores[temperament] += weight
+                
+                questions_answers.append({
+                    "question_id": question_id,
+                    "question": question["question"],
+                    "answer": selected_option,
+                    "temperament_weight": {temperament: weight}
+                })
+    
+    # Find dominant temperament
+    dominant_temperament = max(temperament_scores, key=temperament_scores.get)
+    total_score = sum(temperament_scores.values())
+    temperament_percentage = (temperament_scores[dominant_temperament] / total_score * 100) if total_score > 0 else 0
+    
+    # Save response
+    response = TemperamentQuestionnaireResponse(
+        user_id=user_id,
+        questions_answers=questions_answers,
+        temperament_scores=temperament_scores,
+        dominant_temperament=TemperamentType(dominant_temperament),
+        temperament_percentage=temperament_percentage
+    )
+    await db.temperament_questionnaire_responses.insert_one(response.dict())
+    
+    # Get practical tip for temperament
+    tips = {
+        "colerico": "Como Colérico, você é um líder natural. Pratique a paciência e escute mais antes de decidir.",
+        "sanguineo": "Como Sanguíneo, você traz energia e alegria. Foque em ser mais consistente nos compromissos.",
+        "melancolico": "Como Melancólico, você oferece profundidade e lealdade. Pratique expressar seus sentimentos mais abertamente.",
+        "fleumatico": "Como Fleumático, você traz paz e estabilidade. Desenvolva mais assertividade quando necessário."
+    }
+    
+    return {
+        "dominant_temperament": dominant_temperament,
+        "temperament_percentage": round(temperament_percentage, 1),
+        "practical_tip": tips[dominant_temperament],
+        "scores": temperament_scores,
+        "response_id": response.id
+    }
+
+@api_router.get("/users/{user_id}/temperament-results")
+async def get_user_temperament_results(user_id: str):
+    """Get user's temperament questionnaire results"""
+    results = await db.temperament_questionnaire_responses.find_one(
+        {"user_id": user_id}, 
+        sort=[("created_at", -1)]
+    )
+    
+    if not results:
+        raise HTTPException(status_code=404, detail="No temperament results found")
+    
+    return results
+
+# Advanced Compatibility Analysis
+@api_router.post("/users/{user_id}/advanced-compatibility")
+async def generate_advanced_compatibility(user_id: str, request: CompatibilityAnalysisRequest):
+    """Generate advanced compatibility report"""
+    # Get user data
+    user_data = await db.users.find_one({"id": user_id})
+    if not user_data:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Get user's temperament
+    user_temperament_data = await db.temperament_questionnaire_responses.find_one(
+        {"user_id": user_id}, 
+        sort=[("created_at", -1)]
+    )
+    
+    if not user_temperament_data:
+        raise HTTPException(status_code=400, detail="Complete temperament questionnaire first")
+    
+    user_temperament = user_temperament_data["dominant_temperament"]
+    partner_temperament = request.partner_temperament or TemperamentType.SANGUINEO  # Default if not provided
+    
+    # Calculate compatibility scores
+    compatibility_matrix = {
+        ("colerico", "colerico"): {"overall": 70, "temperament": 65, "intimacy": 75, "conflict": 60, "shared_life": 80, "achievements": 85},
+        ("colerico", "sanguineo"): {"overall": 85, "temperament": 80, "intimacy": 85, "conflict": 70, "shared_life": 90, "achievements": 95},
+        ("colerico", "melancolico"): {"overall": 78, "temperament": 75, "intimacy": 80, "conflict": 65, "shared_life": 85, "achievements": 85},
+        ("colerico", "fleumatico"): {"overall": 72, "temperament": 70, "intimacy": 70, "conflict": 75, "shared_life": 75, "achievements": 70},
+        ("sanguineo", "sanguineo"): {"overall": 75, "temperament": 80, "intimacy": 90, "conflict": 60, "shared_life": 70, "achievements": 75},
+        ("sanguineo", "melancolico"): {"overall": 68, "temperament": 65, "intimacy": 75, "conflict": 55, "shared_life": 70, "achievements": 75},
+        ("sanguineo", "fleumatico"): {"overall": 79, "temperament": 75, "intimacy": 80, "conflict": 80, "shared_life": 80, "achievements": 75},
+        ("melancolico", "melancolico"): {"overall": 82, "temperament": 85, "intimacy": 90, "conflict": 70, "shared_life": 85, "achievements": 80},
+        ("melancolico", "fleumatico"): {"overall": 88, "temperament": 85, "intimacy": 85, "conflict": 90, "shared_life": 90, "achievements": 85},
+        ("fleumatico", "fleumatico"): {"overall": 71, "temperament": 70, "intimacy": 75, "conflict": 85, "shared_life": 70, "achievements": 55}
+    }
+    
+    # Get compatibility scores (handle reverse combinations)
+    key = (user_temperament, partner_temperament)
+    if key not in compatibility_matrix:
+        key = (partner_temperament, user_temperament)
+    
+    scores = compatibility_matrix.get(key, {"overall": 75, "temperament": 75, "intimacy": 75, "conflict": 75, "shared_life": 75, "achievements": 75})
+    
+    # Generate insights
+    strengths = [
+        "Complementaridade natural de temperamentos",
+        "Potencial para crescimento mútuo",
+        "Base sólida para comunicação efetiva"
+    ]
+    
+    challenges = [
+        "Diferenças de ritmo podem gerar tensões",
+        "Necessidade de alinhar expectativas",
+        "Importância de respeitar os espaços individuais"
+    ]
+    
+    action_plan = [
+        "Pratiquem exercícios de comunicação semanalmente",
+        "Estabeleçam rituais de conexão diária",
+        "Desenvolvam estratégias para resolução de conflitos",
+        "Celebrem as diferenças como oportunidades de crescimento"
+    ]
+    
+    # Create report
+    report = AdvancedCompatibilityReport(
+        user_id=user_id,
+        partner_name=request.partner_name,
+        overall_score=scores["overall"],
+        temperament_compatibility=scores["temperament"],
+        intimacy_compatibility=scores["intimacy"],
+        conflict_resolution_compatibility=scores["conflict"],
+        shared_life_compatibility=scores["shared_life"],
+        achievements_compatibility=scores["achievements"],
+        strengths=strengths,
+        challenges=challenges,
+        action_plan=action_plan,
+        practical_recommendations=action_plan,
+        is_premium=user_data.get("is_premium", False)
+    )
+    
+    await db.advanced_compatibility_reports.insert_one(report.dict())
+    
+    # Add badge
+    await db.users.update_one(
+        {"id": user_id},
+        {"$addToSet": {"badges": BadgeType.ADVANCED_COMPATIBILITY_GENERATED}}
+    )
+    
+    return report
+
+@api_router.get("/users/{user_id}/advanced-compatibility-preview")
+async def get_compatibility_preview(user_id: str):
+    """Get preview of advanced compatibility (for free users)"""
+    user_data = await db.users.find_one({"id": user_id})
+    if not user_data:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Get latest temperament data
+    temperament_data = await db.temperament_questionnaire_responses.find_one(
+        {"user_id": user_id}, 
+        sort=[("created_at", -1)]
+    )
+    
+    if not temperament_data:
+        raise HTTPException(status_code=400, detail="Complete temperament questionnaire first")
+    
+    return {
+        "overall_score": 78,
+        "preview_message": "Vocês têm uma compatibilidade promissora com potencial para crescimento mútuo.",
+        "is_premium": user_data.get("is_premium", False),
+        "upgrade_message": "Faça upgrade para Premium e veja análise completa com pontuações detalhadas, plano de ação personalizado e recomendações práticas."
+    }
+
+# Detailed Temperament Profile
+@api_router.get("/users/{user_id}/detailed-temperament-profile")
+async def get_detailed_temperament_profile(user_id: str):
+    """Get detailed temperament profile (Premium feature)"""
+    user_data = await db.users.find_one({"id": user_id})
+    if not user_data:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    if not user_data.get("is_premium", False):
+        raise HTTPException(status_code=403, detail="Premium feature - upgrade required")
+    
+    # Get temperament data
+    temperament_data = await db.temperament_questionnaire_responses.find_one(
+        {"user_id": user_id}, 
+        sort=[("created_at", -1)]
+    )
+    
+    if not temperament_data:
+        raise HTTPException(status_code=400, detail="Complete temperament questionnaire first")
+    
+    dominant_temperament = temperament_data["dominant_temperament"]
+    
+    # Generate detailed profile
+    profiles = {
+        "colerico": {
+            "deep_insights": [
+                "Você possui uma energia natural para liderar e tomar decisões rápidas",
+                "Sua determinação é uma força, mas pode intimidar parceiros mais sensíveis",
+                "Você tem potencial para ser um catalisador de crescimento no relacionamento"
+            ],
+            "communication_style": {
+                "style": "Direto e objetivo",
+                "strengths": "Clareza e assertividade",
+                "areas_to_develop": "Paciência e escuta empática"
+            },
+            "relationship_patterns": [
+                "Tende a assumir o controle em situações desafiadoras",
+                "Valoriza eficiência e resultados na parceria",
+                "Pode ser impaciente com processos emocionais lentos"
+            ]
+        },
+        "sanguineo": {
+            "deep_insights": [
+                "Você traz energia contagiante e otimismo ao relacionamento",
+                "Sua capacidade de conexão emocional é um grande diferencial",
+                "Você tem o dom de transformar momentos difíceis em oportunidades de crescimento"
+            ],
+            "communication_style": {
+                "style": "Expressivo e caloroso",
+                "strengths": "Empatia e conexão emocional",
+                "areas_to_develop": "Consistência e foco nas conversas importantes"
+            },
+            "relationship_patterns": [
+                "Busca constantemente conexão e validação emocional",
+                "Prefere resolver conflitos através do diálogo aberto",
+                "Pode ter dificuldade com rotinas e compromissos de longo prazo"
+            ]
+        },
+        "melancolico": {
+            "deep_insights": [
+                "Você oferece profundidade e lealdade incomparáveis ao relacionamento",
+                "Sua capacidade de análise ajuda a construir bases sólidas",
+                "Você valoriza a autenticidade e a conexão genuína acima de tudo"
+            ],
+            "communication_style": {
+                "style": "Reflexivo e profundo",
+                "strengths": "Análise cuidadosa e lealdade",
+                "areas_to_develop": "Expressão de sentimentos e espontaneidade"
+            },
+            "relationship_patterns": [
+                "Prefere qualidade à quantidade em relacionamentos",
+                "Pode ser autocrítico e perfeccionista",
+                "Valoriza tradições e compromissos de longo prazo"
+            ]
+        },
+        "fleumatico": {
+            "deep_insights": [
+                "Você é um porto seguro de paz e estabilidade",
+                "Sua capacidade de mediação é valiosa em conflitos",
+                "Você oferece constância e confiabilidade ao relacionamento"
+            ],
+            "communication_style": {
+                "style": "Tranquilo e harmonioso",
+                "strengths": "Mediação e estabilidade emocional",
+                "areas_to_develop": "Assertividade e expressão de necessidades"
+            },
+            "relationship_patterns": [
+                "Evita conflitos e busca sempre o equilíbrio",
+                "Pode ter dificuldade em expressar necessidades pessoais",
+                "Valoriza rotina e previsibilidade no relacionamento"
+            ]
+        }
+    }
+    
+    profile_data = profiles.get(dominant_temperament, profiles["sanguineo"])
+    
+    # Create detailed profile
+    profile = DetailedTemperamentProfile(
+        user_id=user_id,
+        dominant_temperament=TemperamentType(dominant_temperament),
+        temperament_percentages=temperament_data["temperament_scores"],
+        corrected_analysis={"refinement": "Análise baseada em padrões aprofundados de comportamento"},
+        deep_insights=profile_data["deep_insights"],
+        relationship_patterns=profile_data["relationship_patterns"],
+        communication_style=profile_data["communication_style"],
+        conflict_resolution_style={"approach": "Baseado no temperamento dominante"},
+        intimacy_preferences={"style": "Alinhado com características naturais"},
+        growth_recommendations=[
+            "Desenvolva autoconsciência dos seus padrões naturais",
+            "Pratique flexibilidade nas áreas de crescimento identificadas",
+            "Use seus pontos fortes para contribuir positivamente no relacionamento"
+        ],
+        personalized_tips=[
+            f"Como {dominant_temperament.title()}, foque em desenvolver {profile_data['communication_style']['areas_to_develop']}",
+            "Pratique exercícios de autoconhecimento semanalmente",
+            "Celebre suas qualidades naturais enquanto trabalha nas áreas de crescimento"
+        ],
+        pdf_report_available=True
+    )
+    
+    await db.detailed_temperament_profiles.insert_one(profile.dict())
+    
+    return profile
+
 # Include the router in the main app
 app.include_router(api_router)
 
