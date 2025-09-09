@@ -224,6 +224,83 @@ class AdvancedSelfKnowledgeQuestion(BaseModel):
     follow_up_questions: List[str]
     interpretation_guide: str
 
+# New Models for Enhanced Functionality
+
+class CoupleExerciseResponse(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    exercise_type: ExerciseType
+    question_index: int
+    question_text: str
+    response_text: str
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class CoupleExerciseCompletion(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    exercise_type: ExerciseType
+    completed: bool = True
+    completed_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class TemperamentQuestionnaireResponse(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    questions_answers: List[Dict[str, Any]]  # [{question_id: int, answer: str, temperament_weight: dict}]
+    temperament_scores: Dict[str, float]  # {colerico: 25, sanguineo: 35, ...}
+    dominant_temperament: TemperamentType
+    temperament_percentage: float
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class AdvancedCompatibilityReport(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    partner_id: Optional[str] = None
+    partner_name: str
+    overall_score: int  # 0-100
+    temperament_compatibility: int
+    intimacy_compatibility: int
+    conflict_resolution_compatibility: int
+    shared_life_compatibility: int
+    achievements_compatibility: int
+    strengths: List[str]
+    challenges: List[str]
+    action_plan: List[str]
+    practical_recommendations: List[str]
+    is_premium: bool = False
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class DetailedTemperamentProfile(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    dominant_temperament: TemperamentType
+    temperament_percentages: Dict[str, float]
+    corrected_analysis: Dict[str, Any]
+    deep_insights: List[str]
+    relationship_patterns: List[str]
+    communication_style: Dict[str, str]
+    conflict_resolution_style: Dict[str, str]
+    intimacy_preferences: Dict[str, str]
+    growth_recommendations: List[str]
+    personalized_tips: List[str]
+    partner_compatibility_preview: Optional[Dict[str, Any]] = None
+    pdf_report_available: bool = False
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+# Request Models
+class ExerciseResponseRequest(BaseModel):
+    exercise_type: ExerciseType
+    question_index: int
+    response_text: str
+
+class TemperamentQuestionnaireRequest(BaseModel):
+    answers: List[Dict[str, Any]]  # [{question_id: int, selected_option: str}]
+
+class CompatibilityAnalysisRequest(BaseModel):
+    partner_name: str
+    partner_temperament: Optional[TemperamentType] = None
+    user_responses: Optional[List[str]] = None
+    partner_responses: Optional[List[str]] = None
 class PersonalizedReport(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     user_id: str
