@@ -31,7 +31,8 @@ import {
   DailyAdviceCard,
   PersonalizedReportPanel,
   RelationshipCoach,
-  IndividualExerciseCards
+  IndividualExerciseCards,
+  AdvancedPremiumHub
 } from "./components/AdvancedPremium";
 import {
   CompatibilityDashboard
