@@ -24,6 +24,7 @@ const CoupleExercises = ({ userId, isPremium = false }) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [responses, setResponses] = useState({});
   const [completedExercises, setCompletedExercises] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [exerciseDetails, setExerciseDetails] = useState(null);
   const [saving, setSaving] = useState(false);
 
