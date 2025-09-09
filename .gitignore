@@ -123,3 +123,7 @@ hostinger-deploy/upload-to-hostinger/vps-complete-upload.tar.gz
 # Environment files
 *.env
 *.env.*
+-e 
+# Environment files
+*.env
+*.env.*
