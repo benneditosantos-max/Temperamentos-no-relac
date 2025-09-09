@@ -53,6 +53,20 @@ class BadgeType(str, Enum):
     REPORT_GENERATED = "report_generated"
     SHARED_WITH_PARTNER = "shared_with_partner"
     FIRST_CONNECTION_CREATED = "first_connection_created"
+    COUPLE_EXERCISE_COMPLETED = "couple_exercise_completed"
+    ADVANCED_COMPATIBILITY_GENERATED = "advanced_compatibility_generated"
+
+class TemperamentType(str, Enum):
+    COLERICO = "colerico"
+    SANGUINEO = "sanguineo"
+    MELANCOLICO = "melancolico"
+    FLEUMATICO = "fleumatico"
+
+class ExerciseType(str, Enum):
+    RITUAL_CONEXAO = "ritual_conexao_diaria"
+    ROLEPLAY_CONFLITOS = "roleplay_resolucao_conflitos"
+    MAPA_INTIMIDADE = "mapa_intimidade"
+    ARQUITETURA_VIDA = "arquitetura_vida_compartilhada"
 
 # Models
 class User(BaseModel):
