@@ -145,7 +145,7 @@ const CoupleExercises = ({ userId, isPremium = false }) => {
 
   const getCompletionPercentage = (exerciseType) => {
     if (!exercises[exerciseType]) return 0;
-    const totalQuestions = exercises[exerciseType].questions.length;
+    const totalQuestions = exercises[exerciseType].questions_count || 6;
     const completedQuestions = Object.keys(responses).length;
     return Math.round((completedQuestions / totalQuestions) * 100);
   };
