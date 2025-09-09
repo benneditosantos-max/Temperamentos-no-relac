@@ -155,6 +155,7 @@ const CoupleExercises = ({ userId, isPremium = false }) => {
     setSelectedExercise(null);
     setCurrentQuestionIndex(0);
     setResponses({});
+    setExerciseDetails(null);
   };
 
   const getCompletionPercentage = (exerciseType) => {
