@@ -408,15 +408,18 @@ frontend:
 
   - task: "Advanced Premium Features"
     implemented: true
-    working: "NA"
+    working: false
     file: "/app/frontend/src/components/AdvancedPremium.js"
-    stuck_count: 0
-    priority: "medium"
-    needs_retesting: true
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "testing"
         comment: "Need to test premium-only features: detailed temperament profiles, couple exercises, self-knowledge questionnaires, virtual counselor, journey levels, weekly missions, and personalized reports."
+      - working: false
+        agent: "testing"
+        comment: "❌ CRITICAL ISSUES FOUND - Advanced Premium Hub loads with navigation (✅ 6 tabs, dashboard stats, quick actions) but has major JavaScript runtime errors preventing proper functionality. Errors: 'Cannot read properties of undefined (reading length)' in CoupleExercises component. Hub interface works (11/31 score) but individual sections fail to load content. Backend APIs working (couple-exercises returns 4 exercises) but frontend components have undefined data issues. Responsive design works. NEEDS MAIN AGENT ATTENTION to fix JavaScript errors in advanced components."
 
   - task: "Enhanced Compatibility System"
     implemented: true
