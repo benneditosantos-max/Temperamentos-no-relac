@@ -143,3 +143,5 @@ hostinger-deploy/upload-to-hostinger/vps-complete-upload.tar.gz
 # Environment files
 *.env
 *.env.*
+hostinger-files/vps-complete-upload.tar.gz
+hostinger-files/vps-complete/frontend/node_modules/.cache/default-development/15.pack
